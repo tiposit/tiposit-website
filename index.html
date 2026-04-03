@@ -693,14 +693,18 @@
     }
     .plan-features li::before { content: '✓'; color: var(--ice); font-weight: 700; }
     .waitlist-form {
-      display: flex; gap: 12px; max-width: 500px; margin: 32px auto 0;
-      flex-wrap: wrap; justify-content: center;
+      display: flex; flex-direction: column; gap: 14px; max-width: 520px; margin: 32px auto 0;
+      text-align: left;
     }
+    .waitlist-row { display: flex; gap: 14px; flex-wrap: wrap; }
+    .waitlist-row .waitlist-field { flex: 1; min-width: 200px; }
+    .waitlist-field { display: flex; flex-direction: column; gap: 5px; }
+    .waitlist-field label { font-size: 0.78rem; color: var(--ice2); font-family: 'Inter', sans-serif; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
     .waitlist-input {
-      flex: 1; min-width: 240px;
+      width: 100%;
       background: var(--navy2);
       border: 1px solid rgba(0,212,255,0.25);
-      border-radius: 50px;
+      border-radius: 12px;
       padding: 14px 22px;
       color: var(--white);
       font-family: 'Inter', sans-serif;
@@ -710,7 +714,24 @@
     }
     .waitlist-input:focus { border-color: var(--ice); }
     .waitlist-input::placeholder { color: var(--gray); }
-    .waitlist-note { font-size: 0.75rem; color: var(--gray); margin-top: 12px; }
+    .waitlist-note { font-size: 0.75rem; color: var(--gray); margin-top: 12px; text-align: center; }
+    .waitlist-submit {
+      width: 100%; padding: 16px; margin-top: 6px;
+      background: linear-gradient(135deg, var(--ice), #00A8E8);
+      color: var(--navy); font-family: 'Poppins', sans-serif;
+      font-weight: 700; font-size: 1rem; border: none;
+      border-radius: 50px; cursor: pointer; letter-spacing: 0.5px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .waitlist-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,212,255,0.35); }
+    .waitlist-success {
+      display: none; text-align: center; padding: 28px 20px;
+      background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.3);
+      border-radius: 16px; margin-top: 24px;
+    }
+    .waitlist-success .success-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .waitlist-success h3 { color: var(--ice); font-family: 'Poppins', sans-serif; font-size: 1.2rem; margin-bottom: 8px; }
+    .waitlist-success p { color: var(--gray); font-size: 0.9rem; }
 
     /* ─── FAQ ─── */
     .faq-section { padding: 100px 0; background: var(--navy); }
@@ -1342,17 +1363,75 @@
 
 <!-- ═══ WAITLIST ═══ -->
 <section style="padding:80px 0; background:var(--navy);" id="waitlist">
-  <div class="container" style="text-align:center; max-width:640px;">
+  <div class="container" style="text-align:center; max-width:580px;">
     <div class="section-label">Join the Waitlist</div>
     <h2 class="section-title">Be First. <span class="ice-gradient">Be Founding.</span></h2>
-    <p style="color:var(--gray); font-size:0.95rem; margin-bottom:8px;">Enter your email to get early access, founding pricing, and a personal onboarding call from our team.</p>
-    <div class="waitlist-form">
-      <input type="email" class="waitlist-input" placeholder="your@company.com" />
-      <a href="#" class="btn-primary">Reserve My Spot →</a>
+    <p style="color:var(--gray); font-size:0.95rem; margin-bottom:8px;">Reserve your founding member spot. We'll reach out within 48 hours with your custom revenue share estimate and a personal onboarding call.</p>
+
+    <form
+      class="waitlist-form"
+      id="waitlist-form"
+      action="https://formspree.io/f/xvzvwwnn"
+      method="POST"
+    >
+      <div class="waitlist-row">
+        <div class="waitlist-field">
+          <label for="company">Company Name *</label>
+          <input class="waitlist-input" type="text" id="company" name="company" placeholder="Acme Restaurant Group" required />
+        </div>
+        <div class="waitlist-field">
+          <label for="name">Your Name *</label>
+          <input class="waitlist-input" type="text" id="name" name="name" placeholder="Jane Smith" required />
+        </div>
+      </div>
+      <div class="waitlist-field">
+        <label for="email">Work Email *</label>
+        <input class="waitlist-input" type="email" id="email" name="email" placeholder="jane@yourcompany.com" required />
+      </div>
+      <div class="waitlist-row">
+        <div class="waitlist-field">
+          <label for="phone">Phone Number</label>
+          <input class="waitlist-input" type="tel" id="phone" name="phone" placeholder="(555) 000-0000" />
+        </div>
+        <div class="waitlist-field">
+          <label for="employees">Number of Employees *</label>
+          <select class="waitlist-input" id="employees" name="employees" required style="cursor:pointer;">
+            <option value="" disabled selected>Select range</option>
+            <option value="1-24">1 – 24</option>
+            <option value="25-49">25 – 49</option>
+            <option value="50-99">50 – 99</option>
+            <option value="100-249">100 – 249</option>
+            <option value="250-499">250 – 499</option>
+            <option value="500+">500+</option>
+          </select>
+        </div>
+      </div>
+      <!-- Hidden honeypot field — keeps out spam bots -->
+      <input type="text" name="_gotcha" style="display:none" />
+      <!-- After submission, stay on the page and show success message -->
+      <input type="hidden" name="_next" value="https://tiposit.com/#waitlist-success" />
+      <button type="submit" class="waitlist-submit">Reserve My Founding Member Spot →</button>
+    </form>
+
+    <!-- Success message (shown via JS after ?success redirect) -->
+    <div class="waitlist-success" id="waitlist-success">
+      <div class="success-icon">🎉</div>
+      <h3>You're on the list!</h3>
+      <p>We'll reach out within 48 hours with your custom revenue share calculation and next steps. Welcome to TiposIt.</p>
     </div>
-    <p class="waitlist-note">No spam. No credit card. Unsubscribe anytime. &nbsp;|&nbsp; We will reach out within 48 hours.</p>
+
+    <p class="waitlist-note">No spam. No credit card required. Unsubscribe anytime.</p>
   </div>
 </section>
+
+<script>
+  // Show success message if URL contains #waitlist-success (Formspree redirect)
+  if (window.location.hash === '#waitlist-success') {
+    document.getElementById('waitlist-form').style.display = 'none';
+    document.getElementById('waitlist-success').style.display = 'block';
+    document.getElementById('waitlist-success').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+</script>
 
 <!-- ═══ FAQ ═══ -->
 <section class="faq-section" id="faq">
