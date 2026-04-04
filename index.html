@@ -747,15 +747,53 @@
 
     /* ─── FAQ ─── */
     .faq-section { padding: 100px 0; background: var(--navy); }
-    .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 48px; }
+    .faq-accordion { max-width: 780px; margin: 48px auto 0; }
     .faq-item {
       background: var(--navy2);
       border: 1px solid rgba(0,212,255,0.08);
       border-radius: 14px;
-      padding: 24px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: border-color 0.3s;
     }
-    .faq-item h4 { font-family: 'Poppins', sans-serif; font-size: 0.92rem; font-weight: 600; margin-bottom: 8px; color: var(--white); }
-    .faq-item p { font-size: 0.83rem; color: var(--gray); line-height: 1.7; }
+    .faq-item.open { border-color: rgba(0,212,255,0.25); }
+    .faq-trigger {
+      width: 100%; background: none; border: none; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 22px 24px; text-align: left;
+    }
+    .faq-trigger h4 {
+      font-family: 'Poppins', sans-serif; font-size: 0.95rem;
+      font-weight: 600; color: var(--white); margin: 0;
+    }
+    .faq-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-left: 16px;
+      color: var(--ice); font-size: 1.1rem; font-weight: 300;
+      transition: transform 0.3s, background 0.3s;
+    }
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+      background: rgba(0,212,255,0.2);
+    }
+    .faq-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+      padding: 0 24px;
+    }
+    .faq-body p { font-size: 0.85rem; color: var(--gray); line-height: 1.75; padding-bottom: 22px; margin: 0; }
+    .faq-item.open .faq-body { max-height: 300px; }
+    .faq-show-more {
+      display: block; margin: 24px auto 0;
+      background: none; border: 1px solid rgba(0,212,255,0.2);
+      color: var(--ice); font-size: 0.85rem; font-weight: 600;
+      padding: 12px 32px; border-radius: 50px; cursor: pointer;
+      transition: background 0.3s, border-color 0.3s;
+      font-family: 'Poppins', sans-serif;
+    }
+    .faq-show-more:hover { background: rgba(0,212,255,0.08); border-color: rgba(0,212,255,0.4); }
 
     /* ─── FOOTER ─── */
     footer {
@@ -796,7 +834,7 @@
       .clock-features { grid-template-columns: 1fr 1fr; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
       .stats-grid { grid-template-columns: 1fr 1fr; }
-      .faq-grid { grid-template-columns: 1fr; }
+      .faq-accordion { max-width: 100%; }
       .nav-links { display: none; }
     }
     @media (max-width: 580px) {
@@ -1488,6 +1526,19 @@
     document.getElementById('waitlist-success').style.display = 'block';
     document.getElementById('waitlist-success').scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    item.classList.toggle('open');
+  }
+
+  function toggleFaqExtra() {
+    const extra = document.getElementById('faq-extra');
+    const btn = document.getElementById('faq-toggle-btn');
+    const isHidden = extra.style.display === 'none';
+    extra.style.display = isHidden ? 'block' : 'none';
+    btn.textContent = isHidden ? 'Show Less ↑' : 'Show More Questions ↓';
+  }
 </script>
 
 <!-- ═══ FAQ ═══ -->
@@ -1495,39 +1546,72 @@
   <div class="container">
     <div class="section-label">FAQ</div>
     <h2 class="section-title">Got Questions? <span class="ice-gradient">We've Got Answers.</span></h2>
-    <div class="faq-grid">
-      <div class="faq-item">
-        <h4>Is TiposIt FDIC insured?</h4>
-        <p>Yes. TiposIt digital wallets are FDIC-insured up to $250,000 through our partner banking institution. Your money is protected.</p>
+    <div class="faq-accordion">
+
+      <!-- Visible by default -->
+      <div class="faq-item open">
+        <button class="faq-trigger" onclick="toggleFaq(this)">
+          <h4>Is TiposIt FDIC insured?</h4>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-body"><p>Yes. TiposIt digital wallets are FDIC-insured up to $250,000 through our partner banking institution. Your money is protected.</p></div>
       </div>
-      <div class="faq-item">
-        <h4>How is same-day pay different from competitors?</h4>
-        <p>Every major competitor caps same-day pay at 50% of wages or limits access to a certain number of days per week. TiposIt has no cap — if you worked it, you can access it, every day.</p>
+
+      <div class="faq-item open">
+        <button class="faq-trigger" onclick="toggleFaq(this)">
+          <h4>How is same-day pay different from competitors?</h4>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-body"><p>Every major competitor caps same-day pay at 50% of wages or limits access to a certain number of days per week. TiposIt has no cap — if you worked it, you can access it, every day.</p></div>
       </div>
-      <div class="faq-item">
-        <h4>How does the revenue share work for our company?</h4>
-        <p>When your employees use same-day pay or transfers, TiposIt collects a small fee. At month end, we deposit 20–33% of those fees directly into your company TiposIt account. You earn just for offering the benefit.</p>
+
+      <!-- Hidden until "Show More" clicked -->
+      <div id="faq-extra" style="display:none;">
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaq(this)">
+            <h4>How does the revenue share work for our company?</h4>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-body"><p>When your employees use same-day pay or transfers, TiposIt collects a small fee. At month end, we deposit 20–33% of those fees directly into your company TiposIt account. You earn just for offering the benefit.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaq(this)">
+            <h4>What does it cost to get started?</h4>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-body"><p>Pre-order pricing starts at $99/month for up to 50 employees. There are no per-employee per-month setup fees. The platform fee is flat.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaq(this)">
+            <h4>How long does it take to onboard?</h4>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-body"><p>Most companies are fully onboarded within 48–72 hours. We provide a dedicated onboarding specialist and HR-ready training materials.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaq(this)">
+            <h4>Does TiposIt replace our existing payroll system?</h4>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-body"><p>TiposIt can be used as a standalone payroll and salary management platform or as an enhancement layer on top of existing systems. We offer integrations with major HR software.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaq(this)">
+            <h4>What is Tipflic?</h4>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-body"><p>Tipflic is TiposIt's analytics subsidiary — a workforce intelligence platform that gives HR and finance teams real-time visibility into payroll trends, employee financial wellness, and cost optimization.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaq(this)">
+            <h4>How do ICE Credit Cards work?</h4>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-body"><p>TiposIt ICE Cards are offered to enrolled employees based on credit score, salary, and savings habits. Three tiers: White ICE (entry), Blue ICE (mid), and Black ICE (premium), with increasing limits and rewards.</p></div>
+        </div>
       </div>
-      <div class="faq-item">
-        <h4>What does it cost to get started?</h4>
-        <p>Pre-order pricing starts at $99/month for up to 50 employees. There are no per-employee per-month setup fees. The platform fee is flat.</p>
-      </div>
-      <div class="faq-item">
-        <h4>How long does it take to onboard?</h4>
-        <p>Most companies are fully onboarded within 48–72 hours. We provide a dedicated onboarding specialist and HR-ready training materials.</p>
-      </div>
-      <div class="faq-item">
-        <h4>Does TiposIt replace our existing payroll system?</h4>
-        <p>TiposIt can be used as a standalone payroll and salary management platform or as an enhancement layer on top of existing systems. We offer integrations with major HR software.</p>
-      </div>
-      <div class="faq-item">
-        <h4>What is Tipflic?</h4>
-        <p>Tipflic is TiposIt's analytics subsidiary — a workforce intelligence platform that gives HR and finance teams real-time visibility into payroll trends, employee financial wellness, and cost optimization.</p>
-      </div>
-      <div class="faq-item">
-        <h4>How do ICE Credit Cards work?</h4>
-        <p>TiposIt ICE Cards are offered to enrolled employees based on credit score, salary, and savings habits. Three tiers: White ICE (entry), Blue ICE (mid), and Black ICE (premium), with increasing limits and rewards.</p>
-      </div>
+
+      <button class="faq-show-more" id="faq-toggle-btn" onclick="toggleFaqExtra()">Show More Questions ↓</button>
     </div>
   </div>
 </section>
