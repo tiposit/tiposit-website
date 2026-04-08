@@ -1,678 +1,915 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TiposIt — Command Center</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TiposIt Admin Dashboard</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
   <style>
     :root {
-      --navy:#050E1F; --navy2:#0A1A35; --ice:#00D4FF; --ice2:#00A8E8;
-      --white:#FFFFFF; --gray:#8899BB; --gray2:#4A5A7A;
-      --gold:#FFD700; --green:#00FF88; --red:#FF4466; --orange:#FF9500;
-      --sw:240px;
+      --navy:  #050E1F;
+      --navy2: #0C1E3C;
+      --navy3: #122848;
+      --ice:   #00D4FF;
+      --ice2:  #7DE8FF;
+      --white: #FFFFFF;
+      --gray:  #8BA5C0;
+      --gold:  #FFD700;
+      --green: #00FF88;
+      --red:   #FF4D6D;
+      --purple:#B88AFF;
+      --sidebar-w: 230px;
     }
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--navy); color: var(--white); overflow-x: hidden; }
 
-    /* AUTH */
-    .auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
-      background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,212,255,.08) 0%,transparent 70%),
-      linear-gradient(180deg,#050E1F,#0A1A35);}
-    .auth-box{background:var(--navy2);border:1px solid rgba(0,212,255,.18);border-radius:20px;
-      padding:48px 40px;width:100%;max-width:420px;box-shadow:0 24px 80px rgba(0,0,0,.5);}
-    .a-logo{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:28px;}
-    .a-mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#00D4FF,#0070CC);
-      display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:900;font-size:1.2rem;color:#fff;}
-    .a-name{font-family:'Poppins',sans-serif;font-weight:800;font-size:1.4rem;}
-    .a-name span{color:var(--ice);}
-    .a-badge{text-align:center;font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ice);opacity:.7;margin-bottom:8px;}
-    .a-title{font-family:'Poppins',sans-serif;font-size:1.35rem;font-weight:700;text-align:center;margin-bottom:6px;}
-    .a-sub{font-size:.83rem;color:var(--gray);text-align:center;margin-bottom:28px;}
-    .f-group{margin-bottom:16px;}
-    .f-label{display:block;font-size:.75rem;font-weight:600;color:var(--gray);margin-bottom:6px;letter-spacing:.4px;}
-    .f-input{width:100%;background:rgba(0,0,0,.35);border:1px solid rgba(0,212,255,.12);
-      border-radius:10px;padding:12px 16px;color:#fff;font-size:.9rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
-    .f-input:focus{border-color:rgba(0,212,255,.45);}
-    .f-input::placeholder{color:var(--gray2);}
-    .btn-go{width:100%;padding:14px;background:linear-gradient(135deg,#00D4FF,#0070CC);border:none;
-      border-radius:10px;color:#050E1F;font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;
-      cursor:pointer;margin-top:8px;transition:opacity .2s,transform .2s;}
-    .btn-go:hover{opacity:.9;transform:translateY(-1px);}
-    .a-link{text-align:center;margin-top:16px;font-size:.8rem;color:var(--gray);}
-    .a-link a{color:var(--ice);text-decoration:none;cursor:pointer;}
-    .a-err{background:rgba(255,68,102,.1);border:1px solid rgba(255,68,102,.3);border-radius:8px;
-      padding:10px 14px;font-size:.82rem;color:#FF4466;margin-bottom:16px;display:none;}
-    .a-ok{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);border-radius:8px;
-      padding:10px 14px;font-size:.82rem;color:var(--green);margin-bottom:16px;text-align:center;}
-    .code-wrap{display:flex;gap:10px;justify-content:center;margin:20px 0;}
-    .c-dig{width:48px;height:56px;text-align:center;background:rgba(0,0,0,.35);
-      border:1px solid rgba(0,212,255,.15);border-radius:10px;color:#fff;
-      font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;outline:none;transition:border-color .2s;}
-    .c-dig:focus{border-color:rgba(0,212,255,.5);}
-    .c-timer{text-align:center;font-size:.78rem;color:var(--gray);margin-bottom:10px;}
-    .c-resend{color:var(--ice);cursor:pointer;}
-    .demo-note{text-align:center;font-size:.72rem;color:var(--gray2);margin-bottom:6px;}
+    /* ── AUTH OVERLAY ── */
+    #auth-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .auth-box {
+      background: var(--navy2);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 20px;
+      padding: 48px 40px;
+      width: 100%; max-width: 420px;
+      text-align: center;
+    }
+    .auth-logo { font-size: 2rem; font-weight: 900; color: var(--ice); margin-bottom: 8px; letter-spacing: -1px; }
+    .auth-sub { font-size: 0.8rem; color: var(--gray); margin-bottom: 32px; }
+    .auth-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 6px; }
+    .auth-desc { font-size: 0.82rem; color: var(--gray); margin-bottom: 28px; }
+    .auth-input {
+      width: 100%; padding: 13px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 10px; color: var(--white);
+      font-size: 0.9rem; margin-bottom: 14px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .auth-input:focus { border-color: var(--ice); }
+    .auth-btn {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, var(--ice), #00A8E8);
+      color: var(--navy); font-weight: 700; font-size: 0.95rem;
+      border: none; border-radius: 10px; cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .auth-btn:hover { opacity: 0.9; }
+    .auth-err { color: var(--red); font-size: 0.8rem; margin-bottom: 12px; display: none; }
+    .auth-link { font-size: 0.78rem; color: var(--gray); margin-top: 18px; cursor: pointer; }
+    .auth-link a { color: var(--ice); text-decoration: none; }
+    .tfa-digits { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; }
+    .tfa-digit {
+      width: 46px; height: 56px; text-align: center;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 10px; color: var(--white); font-size: 1.4rem; font-weight: 700;
+      outline: none;
+    }
+    .tfa-digit:focus { border-color: var(--ice); }
+    .alert-banner {
+      background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3);
+      border-radius: 10px; padding: 12px 16px; font-size: 0.8rem;
+      color: var(--green); margin-bottom: 20px; text-align: left;
+      display: none;
+    }
+    .alert-banner.warn { background: rgba(255,77,109,0.1); border-color: rgba(255,77,109,0.3); color: var(--red); }
 
-    /* DASHBOARD */
-    #dash{display:none;}
-    .d-wrap{display:flex;min-height:100vh;}
-    /* Sidebar */
-    .sidebar{width:var(--sw);background:var(--navy2);border-right:1px solid rgba(0,212,255,.08);
-      display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;overflow:hidden;}
-    .sb-logo{display:flex;align-items:center;gap:10px;padding:22px 20px;border-bottom:1px solid rgba(0,212,255,.08);}
-    .sb-mark{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#00D4FF,#0070CC);
-      display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:900;font-size:1rem;color:#fff;flex-shrink:0;}
-    .sb-name{font-family:'Poppins',sans-serif;font-weight:800;font-size:1.1rem;white-space:nowrap;}
-    .sb-name span{color:var(--ice);}
-    .sb-sect{font-size:.63rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray2);padding:14px 20px 4px;}
-    .sb-nav{flex:1;padding:6px 0;overflow-y:auto;}
-    .nav-btn{display:flex;align-items:center;gap:12px;padding:11px 20px;cursor:pointer;
-      font-size:.87rem;font-weight:500;color:var(--gray);white-space:nowrap;
-      border:none;background:none;width:100%;text-align:left;transition:background .2s,color .2s;position:relative;}
-    .nav-btn:hover{background:rgba(0,212,255,.05);color:#fff;}
-    .nav-btn.on{background:rgba(0,212,255,.1);color:var(--ice);}
-    .nav-btn.on::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ice);border-radius:0 3px 3px 0;}
-    .n-ico{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
-    .n-badge{margin-left:auto;background:var(--ice);color:var(--navy);font-size:.63rem;font-weight:700;border-radius:50px;padding:2px 7px;}
-    .n-badge.red{background:var(--red);color:#fff;}
-    .sb-foot{padding:14px 20px;border-top:1px solid rgba(0,212,255,.08);}
-    .sb-user{display:flex;align-items:center;gap:10px;}
-    .sb-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#00D4FF,#0070CC);
-      display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:.85rem;color:var(--navy);flex-shrink:0;}
-    .sb-uname{font-size:.82rem;font-weight:600;}
-    .sb-urole{font-size:.68rem;color:var(--gray);}
-    .sb-logout{background:none;border:none;color:var(--gray);cursor:pointer;font-size:1rem;padding:4px;transition:color .2s;flex-shrink:0;margin-left:auto;}
-    .sb-logout:hover{color:var(--red);}
-    /* Main */
-    .d-main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;}
-    .topbar{background:var(--navy2);border-bottom:1px solid rgba(0,212,255,.08);padding:0 28px;height:64px;
-      display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
-    .tb-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;}
-    .tb-right{display:flex;align-items:center;gap:14px;}
-    .tb-time{font-size:.78rem;color:var(--gray);}
-    .sys-pill{display:flex;align-items:center;gap:6px;background:rgba(0,255,136,.1);
-      border:1px solid rgba(0,255,136,.2);border-radius:50px;padding:4px 12px;font-size:.72rem;font-weight:600;color:var(--green);}
-    .sys-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-    .notif-btn{position:relative;background:none;border:none;color:var(--gray);cursor:pointer;font-size:1.1rem;padding:6px;transition:color .2s;}
-    .notif-btn:hover{color:#fff;}
-    .n-dot{position:absolute;top:4px;right:4px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid var(--navy2);}
-    .content{flex:1;padding:28px;}
-    /* Security Banner */
-    .sec-banner{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:12px;
-      padding:14px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:12px;}
-    .sec-left{display:flex;align-items:center;gap:12px;}
-    .sec-txt{font-size:.83rem;}
-    .sec-txt strong{color:var(--ice);}
-    .sec-txt span{color:var(--gray);}
-    .dis-btn{background:none;border:none;color:var(--gray);cursor:pointer;font-size:1rem;padding:4px;transition:color .2s;}
-    .dis-btn:hover{color:#fff;}
-    /* Pages */
-    .pg{display:none;} .pg.on{display:block;}
-    .pg-head{margin-bottom:24px;}
-    .pg-head h1{font-family:'Poppins',sans-serif;font-size:1.45rem;font-weight:700;}
-    .pg-head p{font-size:.85rem;color:var(--gray);margin-top:4px;}
-    /* KPIs */
-    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:24px;}
-    .kpi{background:var(--navy2);border:1px solid rgba(0,212,255,.08);border-radius:14px;padding:20px;transition:border-color .3s;}
-    .kpi:hover{border-color:rgba(0,212,255,.22);}
-    .kpi-lbl{font-size:.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:10px;}
-    .kpi-val{font-family:'Poppins',sans-serif;font-size:1.75rem;font-weight:800;line-height:1;margin-bottom:8px;}
-    .kpi-tr{display:flex;align-items:center;gap:4px;font-size:.78rem;}
-    .up{color:var(--green);} .dn{color:var(--red);} .tl{color:var(--gray);}
-    /* Chart cards */
-    .ch-grid{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:24px;}
-    .ch-card{background:var(--navy2);border:1px solid rgba(0,212,255,.08);border-radius:14px;padding:22px;}
-    .ch-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
-    .ch-title{font-family:'Poppins',sans-serif;font-size:.92rem;font-weight:600;}
-    .ch-sub{font-size:.75rem;color:var(--gray);margin-top:2px;}
-    /* Activity */
-    .act-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.05);}
-    .act-item:last-child{border-bottom:none;}
-    .act-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0;}
-    .act-txt{flex:1;}
-    .act-txt strong{font-size:.82rem;font-weight:600;display:block;}
-    .act-txt span{font-size:.75rem;color:var(--gray);}
-    .act-time{font-size:.7rem;color:var(--gray2);white-space:nowrap;}
-    /* Tables */
-    .tbl-card{background:var(--navy2);border:1px solid rgba(0,212,255,.08);border-radius:14px;overflow:hidden;}
-    .tbl-head{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,212,255,.08);}
-    .tbl-title{font-family:'Poppins',sans-serif;font-size:.93rem;font-weight:600;}
-    .tbl-acts{display:flex;gap:10px;align-items:center;}
-    .s-input{background:rgba(0,0,0,.3);border:1px solid rgba(0,212,255,.1);border-radius:8px;
-      padding:7px 13px;color:#fff;font-size:.8rem;outline:none;width:190px;transition:border-color .2s;}
-    .s-input:focus{border-color:rgba(0,212,255,.3);}
-    .s-input::placeholder{color:var(--gray2);}
-    .btn-p{background:linear-gradient(135deg,#00D4FF,#0070CC);border:none;border-radius:8px;
-      padding:7px 15px;color:var(--navy);font-family:'Poppins',sans-serif;font-weight:700;font-size:.78rem;cursor:pointer;white-space:nowrap;}
-    .btn-p:hover{opacity:.85;}
-    .btn-o{background:none;border:1px solid rgba(0,212,255,.2);border-radius:7px;padding:6px 12px;
-      color:var(--ice);font-size:.75rem;cursor:pointer;white-space:nowrap;}
-    .btn-o:hover{background:rgba(0,212,255,.08);}
-    table{width:100%;border-collapse:collapse;}
-    thead th{padding:11px 18px;text-align:left;font-size:.7rem;font-weight:700;letter-spacing:1px;
-      text-transform:uppercase;color:var(--gray);border-bottom:1px solid rgba(255,255,255,.05);white-space:nowrap;}
-    tbody tr{transition:background .15s;}
-    tbody tr:hover{background:rgba(0,212,255,.03);}
-    tbody td{padding:13px 18px;font-size:.82rem;border-bottom:1px solid rgba(255,255,255,.04);}
-    tbody tr:last-child td{border-bottom:none;}
-    /* Badges */
-    .b{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:50px;font-size:.7rem;font-weight:700;}
-    .bd{width:5px;height:5px;border-radius:50%;}
-    .b-active{background:rgba(0,255,136,.12);color:#00FF88;} .b-active .bd{background:#00FF88;}
-    .b-pending{background:rgba(255,149,0,.12);color:#FF9500;} .b-pending .bd{background:#FF9500;}
-    .b-onboard{background:rgba(0,212,255,.12);color:var(--ice);} .b-onboard .bd{background:var(--ice);}
-    .b-paused{background:rgba(136,153,187,.12);color:var(--gray);} .b-paused .bd{background:var(--gray);}
-    .b-start{background:rgba(255,255,255,.08);color:var(--gray);}
-    .b-pro{background:rgba(0,212,255,.1);color:var(--ice);}
-    .b-ent{background:rgba(255,215,0,.1);color:var(--gold);}
-    .b-wice{background:rgba(200,230,250,.1);color:#C8E6FA;}
-    .b-bice{background:rgba(0,100,255,.12);color:#4AA8FF;}
-    .b-kice{background:rgba(255,215,0,.1);color:var(--gold);}
-    /* Sub tiers */
-    .sub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:24px;}
-    .sub-card{background:var(--navy2);border:1px solid rgba(0,212,255,.08);border-radius:14px;padding:22px;}
-    .sub-name{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:700;margin-bottom:6px;}
-    .sub-price{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:800;color:var(--ice);margin-bottom:4px;}
-    .sub-price span{font-size:.78rem;color:var(--gray);font-weight:400;}
-    .sub-cnt{font-size:.77rem;color:var(--gray);margin-bottom:14px;}
-    .sub-bar{height:4px;background:rgba(0,212,255,.1);border-radius:2px;}
-    .sub-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#00D4FF,#0070CC);}
-    /* Analytics */
-    .an-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
-    /* Settings */
-    .set-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-    .set-card{background:var(--navy2);border:1px solid rgba(0,212,255,.08);border-radius:14px;padding:22px;}
-    .set-card h3{font-family:'Poppins',sans-serif;font-size:.93rem;font-weight:600;margin-bottom:4px;}
-    .set-sub{font-size:.77rem;color:var(--gray);margin-bottom:18px;}
-    .set-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;
-      border-bottom:1px solid rgba(255,255,255,.05);font-size:.82rem;}
-    .set-row:last-child{border-bottom:none;}
-    .set-lbl{color:var(--gray);font-size:.77rem;}
-    .tog{width:40px;height:22px;background:rgba(0,212,255,.15);border-radius:11px;position:relative;
-      cursor:pointer;transition:background .3s;flex-shrink:0;}
-    .tog.on{background:var(--ice);}
-    .tog::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;
-      background:#fff;border-radius:50%;transition:transform .3s;}
-    .tog.on::after{transform:translateX(18px);}
-    .log-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.8rem;}
-    .log-item:last-child{border-bottom:none;}
-    .log-ok{color:var(--green);} .log-warn{color:var(--orange);}
-    .log-info{flex:1;}
-    .log-info strong{display:block;font-size:.82rem;}
-    .log-info span{color:var(--gray);font-size:.72rem;}
-    .log-time{color:var(--gray2);font-size:.72rem;white-space:nowrap;}
+    /* ── SIDEBAR ── */
+    #sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: var(--sidebar-w);
+      background: var(--navy2);
+      border-right: 1px solid rgba(0,212,255,0.08);
+      display: flex; flex-direction: column;
+      z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 24px 20px 20px;
+      font-size: 1.3rem; font-weight: 900; color: var(--ice);
+      border-bottom: 1px solid rgba(0,212,255,0.08);
+      letter-spacing: -0.5px;
+    }
+    .sidebar-logo span { color: var(--white); }
+    .sidebar-label {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--gray);
+      padding: 20px 20px 8px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 20px; cursor: pointer;
+      font-size: 0.85rem; color: var(--gray);
+      transition: background 0.2s, color 0.2s;
+      border-left: 3px solid transparent;
+    }
+    .nav-item:hover { background: rgba(0,212,255,0.05); color: var(--white); }
+    .nav-item.active { background: rgba(0,212,255,0.08); color: var(--ice); border-left-color: var(--ice); }
+    .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px 20px;
+      border-top: 1px solid rgba(0,212,255,0.08);
+    }
+    .sidebar-user { font-size: 0.75rem; color: var(--gray); margin-bottom: 10px; }
+    .sidebar-user strong { display: block; color: var(--white); font-size: 0.82rem; }
+    .btn-logout {
+      width: 100%; padding: 9px; background: transparent;
+      border: 1px solid rgba(255,77,109,0.3); color: var(--red);
+      border-radius: 8px; font-size: 0.78rem; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-logout:hover { background: rgba(255,77,109,0.1); }
+
+    /* ── MAIN AREA ── */
+    #main {
+      margin-left: var(--sidebar-w);
+      min-height: 100vh;
+    }
+    .topbar {
+      padding: 18px 32px;
+      border-bottom: 1px solid rgba(0,212,255,0.08);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--navy);
+    }
+    .topbar-title { font-size: 1.15rem; font-weight: 700; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--gray); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; margin-right: 5px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .page-content { padding: 32px; display: none; }
+    .page-content.active { display: block; }
+
+    /* ── STAT CARDS ── */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 28px; }
+    .stat-card {
+      background: var(--navy2);
+      border: 1px solid rgba(0,212,255,0.08);
+      border-radius: 14px; padding: 22px 24px;
+    }
+    .stat-card-label { font-size: 0.72rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .stat-card-val { font-size: 1.8rem; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+    .stat-card-sub { font-size: 0.75rem; color: var(--gray); }
+    .stat-card-sub.up { color: var(--green); }
+    .stat-card-sub.down { color: var(--red); }
+
+    /* ── CHART PANELS ── */
+    .chart-row { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 28px; }
+    .chart-panel {
+      background: var(--navy2);
+      border: 1px solid rgba(0,212,255,0.08);
+      border-radius: 14px; padding: 24px;
+    }
+    .panel-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 18px; }
+    .panel-title span { color: var(--gray); font-weight: 400; font-size: 0.78rem; margin-left: 8px; }
+
+    /* ── TABLE ── */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .data-table th { text-align: left; padding: 10px 14px; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); border-bottom: 1px solid rgba(0,212,255,0.08); }
+    .data-table td { padding: 13px 14px; border-bottom: 1px solid rgba(0,212,255,0.04); vertical-align: middle; }
+    .data-table tr:hover td { background: rgba(0,212,255,0.03); }
+
+    /* ── BADGES ── */
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 600; }
+    .badge-green { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+    .badge-blue  { background: rgba(0,212,255,0.1); color: var(--ice);   border: 1px solid rgba(0,212,255,0.2); }
+    .badge-gold  { background: rgba(255,215,0,0.1);  color: var(--gold);  border: 1px solid rgba(255,215,0,0.2); }
+    .badge-red   { background: rgba(255,77,109,0.1); color: var(--red);   border: 1px solid rgba(255,77,109,0.2); }
+    .badge-gray  { background: rgba(139,165,192,0.1); color: var(--gray); border: 1px solid rgba(139,165,192,0.2); }
+
+    /* ── ALERT FEED ── */
+    .alert-feed { display: flex; flex-direction: column; gap: 10px; }
+    .alert-item { background: rgba(0,212,255,0.04); border: 1px solid rgba(0,212,255,0.08); border-radius: 10px; padding: 12px 14px; font-size: 0.78rem; }
+    .alert-item.crit { border-color: rgba(255,77,109,0.25); background: rgba(255,77,109,0.04); }
+    .alert-time { font-size: 0.68rem; color: var(--gray); margin-top: 3px; }
+
+    /* ── SETTINGS FORM ── */
+    .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .form-group { margin-bottom: 18px; }
+    .form-label { font-size: 0.75rem; color: var(--gray); margin-bottom: 6px; display: block; }
+    .form-input {
+      width: 100%; padding: 11px 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(0,212,255,0.15);
+      border-radius: 8px; color: var(--white); font-size: 0.85rem;
+      outline: none;
+    }
+    .form-input:focus { border-color: var(--ice); }
+    .btn-save {
+      padding: 11px 28px; background: linear-gradient(135deg, var(--ice), #00A8E8);
+      color: var(--navy); font-weight: 700; font-size: 0.85rem;
+      border: none; border-radius: 8px; cursor: pointer;
+    }
+    .section-box {
+      background: var(--navy2); border: 1px solid rgba(0,212,255,0.08);
+      border-radius: 14px; padding: 24px; margin-bottom: 20px;
+    }
+    .section-box-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 18px; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(0,212,255,0.05); font-size: 0.83rem; }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle { position: relative; width: 40px; height: 22px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: rgba(255,255,255,0.1);
+      border-radius: 22px; cursor: pointer; transition: background 0.3s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute; width: 16px; height: 16px;
+      background: var(--white); border-radius: 50%; top: 3px; left: 3px;
+      transition: transform 0.3s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--ice); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
   </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="s-login" class="auth-wrap">
-  <div class="auth-box">
-    <div class="a-logo"><div class="a-mark">T</div><div class="a-name">Tipos<span>It</span></div></div>
-    <div class="a-badge">Command Center</div>
-    <h2 class="a-title">Welcome back</h2>
-    <p class="a-sub">Sign in to your admin dashboard</p>
-    <div class="a-err" id="login-err"></div>
-    <div class="f-group">
-      <label class="f-label">Email Address</label>
-      <input type="email" class="f-input" id="l-email" placeholder="admin@tiposit.com">
+<!-- ═══ AUTH OVERLAY ═══ -->
+<div id="auth-overlay">
+  <!-- STEP 1: Login -->
+  <div class="auth-box" id="step-login">
+    <div class="auth-logo">TiposIt</div>
+    <div class="auth-sub">Admin Command Center</div>
+    <div class="auth-title">Sign In</div>
+    <div class="auth-desc">Authorized personnel only</div>
+    <div class="alert-banner warn" id="login-alert"></div>
+    <input class="auth-input" id="inp-email" type="email" placeholder="Email address" value="admin@tiposit.com"/>
+    <input class="auth-input" id="inp-pass"  type="password" placeholder="Password" value="TiposIt2025!"/>
+    <div class="auth-err" id="login-err">Invalid email or password.</div>
+    <button class="auth-btn" onclick="doLogin()">Continue →</button>
+    <div class="auth-link">Forgot password? <a onclick="showRecovery()">Send recovery link</a></div>
+  </div>
+
+  <!-- STEP 2: 2FA -->
+  <div class="auth-box" id="step-2fa" style="display:none;">
+    <div class="auth-logo">TiposIt</div>
+    <div class="auth-sub">Admin Command Center</div>
+    <div class="auth-title">Two-Factor Verification</div>
+    <div class="auth-desc" id="tfa-desc">Enter the 6-digit code sent to your device.</div>
+    <div class="alert-banner" id="tfa-alert"></div>
+    <div class="tfa-digits">
+      <input class="tfa-digit" id="d0" maxlength="1" oninput="tfaNext(this,1)" onkeydown="tfaBack(event,this,null)"/>
+      <input class="tfa-digit" id="d1" maxlength="1" oninput="tfaNext(this,2)" onkeydown="tfaBack(event,this,0)"/>
+      <input class="tfa-digit" id="d2" maxlength="1" oninput="tfaNext(this,3)" onkeydown="tfaBack(event,this,1)"/>
+      <input class="tfa-digit" id="d3" maxlength="1" oninput="tfaNext(this,4)" onkeydown="tfaBack(event,this,2)"/>
+      <input class="tfa-digit" id="d4" maxlength="1" oninput="tfaNext(this,5)" onkeydown="tfaBack(event,this,3)"/>
+      <input class="tfa-digit" id="d5" maxlength="1" oninput="tfaNext(this,null)" onkeydown="tfaBack(event,this,4)"/>
     </div>
-    <div class="f-group">
-      <label class="f-label">Password</label>
-      <input type="password" class="f-input" id="l-pass" placeholder="••••••••••••"
-        onkeydown="if(event.key==='Enter')doLogin()">
-    </div>
-    <button class="btn-go" onclick="doLogin()">Sign In →</button>
-    <div class="a-link"><a onclick="go('s-forgot')">Forgot password?</a></div>
+    <div class="auth-err" id="tfa-err">Incorrect code. Please try again.</div>
+    <button class="auth-btn" onclick="verify()">Verify &amp; Enter Dashboard</button>
+    <div class="auth-link"><a onclick="resend()">Resend code</a> &nbsp;·&nbsp; <a onclick="showLogin()">Back</a></div>
+  </div>
+
+  <!-- STEP 3: Recovery -->
+  <div class="auth-box" id="step-recovery" style="display:none;">
+    <div class="auth-logo">TiposIt</div>
+    <div class="auth-sub">Admin Command Center</div>
+    <div class="auth-title">Account Recovery</div>
+    <div class="auth-desc">A recovery link will be sent to your backup email.</div>
+    <input class="auth-input" id="inp-recovery" type="email" placeholder="Backup email" value="newton.bsd@gmail.com"/>
+    <button class="auth-btn" onclick="sendRecovery()">Send Recovery Link</button>
+    <div class="auth-link"><a onclick="showLogin()">← Back to Login</a></div>
   </div>
 </div>
 
-<!-- 2FA -->
-<div id="s-2fa" class="auth-wrap" style="display:none">
-  <div class="auth-box">
-    <div class="a-logo"><div class="a-mark">T</div><div class="a-name">Tipos<span>It</span></div></div>
-    <div class="a-badge">Two-Factor Authentication</div>
-    <h2 class="a-title">Verify your identity</h2>
-    <div class="a-ok">🔐 A 6-digit code has been sent to your recovery email</div>
-    <div class="demo-note" id="demo-note">[Demo mode — code auto-fills in 3 seconds]</div>
-    <p class="a-sub">Enter the code to continue</p>
-    <div class="code-wrap">
-      <input class="c-dig" maxlength="1" id="d1" oninput="nxt(this,'d2')" onkeydown="prv(event,this,'')">
-      <input class="c-dig" maxlength="1" id="d2" oninput="nxt(this,'d3')" onkeydown="prv(event,this,'d1')">
-      <input class="c-dig" maxlength="1" id="d3" oninput="nxt(this,'d4')" onkeydown="prv(event,this,'d2')">
-      <input class="c-dig" maxlength="1" id="d4" oninput="nxt(this,'d5')" onkeydown="prv(event,this,'d3')">
-      <input class="c-dig" maxlength="1" id="d5" oninput="nxt(this,'d6')" onkeydown="prv(event,this,'d4')">
-      <input class="c-dig" maxlength="1" id="d6" oninput="nxt(this,'')"  onkeydown="prv(event,this,'d5')">
+<!-- ═══ DASHBOARD ═══ -->
+<div id="dashboard" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sidebar-logo">Tipos<span>It</span></div>
+    <div class="sidebar-label">Main</div>
+    <div class="nav-item active" onclick="go('overview')"><span class="nav-icon">📊</span> Overview</div>
+    <div class="nav-item" onclick="go('partnerships')"><span class="nav-icon">🤝</span> Partnerships</div>
+    <div class="nav-item" onclick="go('subscriptions')"><span class="nav-icon">💳</span> Subscriptions</div>
+    <div class="nav-item" onclick="go('banking')"><span class="nav-icon">🏦</span> Banking Accounts</div>
+    <div class="sidebar-label">Analytics</div>
+    <div class="nav-item" onclick="go('analytics')"><span class="nav-icon">📈</span> Analytics</div>
+    <div class="sidebar-label">System</div>
+    <div class="nav-item" onclick="go('settings')"><span class="nav-icon">⚙️</span> Settings &amp; Security</div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <strong>Drew Newton</strong>
+        admin@tiposit.com
+      </div>
+      <button class="btn-logout" onclick="logout()">Sign Out</button>
     </div>
-    <div class="a-err" id="tfa-err">Incorrect code. Please try again.</div>
-    <div class="c-timer">Expires in <span id="c-timer">4:59</span> &nbsp;·&nbsp; <span class="c-resend" onclick="resend()">Resend</span></div>
-    <button class="btn-go" onclick="verify()">Verify & Enter Dashboard →</button>
-    <div class="a-link"><a onclick="go('s-login')">← Back to sign in</a></div>
   </div>
-</div>
 
-<!-- FORGOT -->
-<div id="s-forgot" class="auth-wrap" style="display:none">
-  <div class="auth-box">
-    <div class="a-logo"><div class="a-mark">T</div><div class="a-name">Tipos<span>It</span></div></div>
-    <div class="a-badge">Account Recovery</div>
-    <h2 class="a-title">Reset your password</h2>
-    <p class="a-sub">Enter your recovery email and we'll send a reset link</p>
-    <div class="a-ok" id="forgot-ok" style="display:none">✅ Recovery link sent to newton.bsd@gmail.com</div>
-    <div class="f-group">
-      <label class="f-label">Recovery Email</label>
-      <input type="email" class="f-input" id="r-email" placeholder="newton.bsd@gmail.com">
+  <!-- MAIN -->
+  <div id="main">
+    <div class="topbar">
+      <div class="topbar-title" id="page-title">Overview</div>
+      <div class="topbar-right">
+        <span><span class="status-dot"></span>All Systems Operational</span>
+        <span id="clock-display"></span>
+      </div>
     </div>
-    <button class="btn-go" onclick="doForgot()">Send Recovery Link</button>
-    <div class="a-link"><a onclick="go('s-login')">← Back to sign in</a></div>
-  </div>
-</div>
 
-<!-- DASHBOARD -->
-<div id="dash">
-  <div class="d-wrap">
-    <aside class="sidebar">
-      <div class="sb-logo">
-        <div class="sb-mark">T</div>
-        <div class="sb-name">Tipos<span>It</span></div>
-      </div>
-      <nav class="sb-nav">
-        <div class="sb-sect">Main Menu</div>
-        <button class="nav-btn on" onclick="pg('overview',this)"><span class="n-ico">📊</span>Overview</button>
-        <button class="nav-btn" onclick="pg('partnerships',this)"><span class="n-ico">🤝</span>Partnerships<span class="n-badge">8</span></button>
-        <button class="nav-btn" onclick="pg('subscriptions',this)"><span class="n-ico">💳</span>Subscriptions</button>
-        <button class="nav-btn" onclick="pg('banking',this)"><span class="n-ico">🏦</span>Banking Accounts</button>
-        <button class="nav-btn" onclick="pg('analytics',this)"><span class="n-ico">📈</span>Analytics</button>
-        <div class="sb-sect">System</div>
-        <button class="nav-btn" id="nav-settings" onclick="pg('settings',this)"><span class="n-ico">🔒</span>Settings &amp; Security<span class="n-badge red" id="alert-badge">1</span></button>
-      </nav>
-      <div class="sb-foot">
-        <div class="sb-user">
-          <div class="sb-av">D</div>
-          <div><div class="sb-uname">Drew Newton</div><div class="sb-urole">Super Admin</div></div>
-          <button class="sb-logout" onclick="logout()" title="Sign Out">⏻</button>
+    <!-- ── OVERVIEW ── -->
+    <div class="page-content active" id="page-overview">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-card-label">Total MRR</div>
+          <div class="stat-card-val" style="color:var(--ice);">$24,180</div>
+          <div class="stat-card-sub up">↑ 14.2% vs last month</div>
         </div>
-      </div>
-    </aside>
-
-    <div class="d-main">
-      <div class="topbar">
-        <span class="tb-title" id="tb-title">Overview</span>
-        <div class="tb-right">
-          <span class="tb-time" id="tb-time"></span>
-          <div class="sys-pill"><div class="sys-dot"></div>All Systems Operational</div>
-          <button class="notif-btn" onclick="pg('settings',document.getElementById('nav-settings'))">🔔<div class="n-dot" id="n-dot"></div></button>
+        <div class="stat-card">
+          <div class="stat-card-label">Active Partners</div>
+          <div class="stat-card-val">18</div>
+          <div class="stat-card-sub up">↑ 3 new this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Active Employees</div>
+          <div class="stat-card-val">1,247</div>
+          <div class="stat-card-sub up">↑ 8.7% growth</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Transactions (MTD)</div>
+          <div class="stat-card-val">9,834</div>
+          <div class="stat-card-sub up">↑ 22% vs prior MTD</div>
         </div>
       </div>
 
-      <div class="content">
-        <!-- Alert Banner -->
-        <div class="sec-banner" id="sec-banner">
-          <div class="sec-left">
-            <span style="font-size:1.1rem">🛡️</span>
-            <div class="sec-txt"><strong>New sign-in detected</strong><span id="alert-detail"> · Verified via 2FA · Just now</span></div>
+      <div class="chart-row">
+        <div class="chart-panel">
+          <div class="panel-title">Monthly Recurring Revenue <span>Last 12 months</span></div>
+          <canvas id="chart-mrr" height="90"></canvas>
+        </div>
+        <div class="chart-panel">
+          <div class="panel-title">Revenue Mix <span>This month</span></div>
+          <canvas id="chart-mix" height="180"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-panel" style="margin-bottom:28px;">
+        <div class="panel-title">Recent Security Alerts</div>
+        <div class="alert-feed">
+          <div class="alert-item"><strong>Login from new device</strong> — Chrome / MacOS · Austin, TX<div class="alert-time">Today, 9:14 AM</div></div>
+          <div class="alert-item"><strong>2FA verified successfully</strong> — admin@tiposit.com<div class="alert-time">Today, 9:14 AM</div></div>
+          <div class="alert-item crit"><strong>Failed login attempt</strong> — 3 incorrect passwords · IP 192.168.4.22<div class="alert-time">Yesterday, 11:47 PM</div></div>
+          <div class="alert-item"><strong>Password changed</strong> — admin@tiposit.com<div class="alert-time">Apr 1, 2026</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PARTNERSHIPS ── -->
+    <div class="page-content" id="page-partnerships">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-card-label">Total Partners</div>
+          <div class="stat-card-val" style="color:var(--ice);">18</div>
+          <div class="stat-card-sub up">↑ 3 this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Pending Onboard</div>
+          <div class="stat-card-val" style="color:var(--gold);">5</div>
+          <div class="stat-card-sub">Awaiting contracts</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Avg Employees/Partner</div>
+          <div class="stat-card-val">69</div>
+          <div class="stat-card-sub">Across active partners</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Rev Share Paid (MTD)</div>
+          <div class="stat-card-val" style="color:var(--green);">$3,840</div>
+          <div class="stat-card-sub up">↑ 18% vs prior MTD</div>
+        </div>
+      </div>
+      <div class="chart-panel">
+        <div class="panel-title">Partner Accounts</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Company</th><th>Plan</th><th>Employees</th><th>MRR</th><th>Rev Share</th><th>Status</th><th>Joined</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Atlas Hospitality Group</strong></td><td><span class="badge badge-gold">Enterprise</span></td><td>214</td><td>$2,140</td><td>$642</td><td><span class="badge badge-green">Active</span></td><td>Jan 2026</td></tr>
+            <tr><td><strong>Sunrise Logistics LLC</strong></td><td><span class="badge badge-blue">Pro</span></td><td>88</td><td>$440</td><td>$132</td><td><span class="badge badge-green">Active</span></td><td>Feb 2026</td></tr>
+            <tr><td><strong>Verde Staffing Co.</strong></td><td><span class="badge badge-blue">Pro</span></td><td>142</td><td>$710</td><td>$213</td><td><span class="badge badge-green">Active</span></td><td>Feb 2026</td></tr>
+            <tr><td><strong>Lone Star Retail Inc.</strong></td><td><span class="badge badge-gray">Starter</span></td><td>47</td><td>$188</td><td>$56</td><td><span class="badge badge-green">Active</span></td><td>Mar 2026</td></tr>
+            <tr><td><strong>Gulf Coast Medical</strong></td><td><span class="badge badge-gold">Enterprise</span></td><td>310</td><td>$3,100</td><td>$930</td><td><span class="badge badge-green">Active</span></td><td>Mar 2026</td></tr>
+            <tr><td><strong>Meridian Construction</strong></td><td><span class="badge badge-blue">Pro</span></td><td>76</td><td>$380</td><td>$114</td><td><span class="badge badge-red">Pending</span></td><td>Apr 2026</td></tr>
+            <tr><td><strong>TXG Security Services</strong></td><td><span class="badge badge-gray">Starter</span></td><td>38</td><td>$152</td><td>$45</td><td><span class="badge badge-red">Onboarding</span></td><td>Apr 2026</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── SUBSCRIPTIONS ── -->
+    <div class="page-content" id="page-subscriptions">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-card-label">Total Subscriptions</div>
+          <div class="stat-card-val" style="color:var(--ice);">18</div>
+          <div class="stat-card-sub">Across all tiers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Starter Accounts</div>
+          <div class="stat-card-val">6</div>
+          <div class="stat-card-sub">$99/mo per account</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Pro Accounts</div>
+          <div class="stat-card-val">8</div>
+          <div class="stat-card-sub">$299/mo per account</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Enterprise Accounts</div>
+          <div class="stat-card-val" style="color:var(--gold);">4</div>
+          <div class="stat-card-sub">Custom pricing</div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-panel">
+          <div class="panel-title">Subscription Growth <span>Last 6 months</span></div>
+          <canvas id="chart-subs" height="110"></canvas>
+        </div>
+        <div class="chart-panel">
+          <div class="panel-title">Plan Distribution</div>
+          <canvas id="chart-plans" height="180"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-panel">
+        <div class="panel-title">Subscription Management</div>
+        <table class="data-table">
+          <thead>
+            <tr><th>Account</th><th>Plan</th><th>Billing</th><th>Next Renewal</th><th>Amount</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Atlas Hospitality Group</td><td><span class="badge badge-gold">Enterprise</span></td><td>Annual</td><td>Jan 15, 2027</td><td>$24,000/yr</td><td><span class="badge badge-green">Current</span></td></tr>
+            <tr><td>Gulf Coast Medical</td><td><span class="badge badge-gold">Enterprise</span></td><td>Annual</td><td>Mar 8, 2027</td><td>$36,000/yr</td><td><span class="badge badge-green">Current</span></td></tr>
+            <tr><td>Verde Staffing Co.</td><td><span class="badge badge-blue">Pro</span></td><td>Monthly</td><td>May 1, 2026</td><td>$299/mo</td><td><span class="badge badge-green">Current</span></td></tr>
+            <tr><td>Sunrise Logistics LLC</td><td><span class="badge badge-blue">Pro</span></td><td>Monthly</td><td>May 3, 2026</td><td>$299/mo</td><td><span class="badge badge-green">Current</span></td></tr>
+            <tr><td>Lone Star Retail Inc.</td><td><span class="badge badge-gray">Starter</span></td><td>Monthly</td><td>May 7, 2026</td><td>$99/mo</td><td><span class="badge badge-green">Current</span></td></tr>
+            <tr><td>Meridian Construction</td><td><span class="badge badge-blue">Pro</span></td><td>Monthly</td><td>May 12, 2026</td><td>$299/mo</td><td><span class="badge badge-red">Pending</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── BANKING ── -->
+    <div class="page-content" id="page-banking">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-card-label">Operating Balance</div>
+          <div class="stat-card-val" style="color:var(--ice);">$142,880</div>
+          <div class="stat-card-sub up">↑ $18,400 this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Reserve Fund</div>
+          <div class="stat-card-val">$50,000</div>
+          <div class="stat-card-sub">Minimum maintained</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Pending Payouts</div>
+          <div class="stat-card-val" style="color:var(--gold);">$3,840</div>
+          <div class="stat-card-sub">Rev share disbursements</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Float Utilized</div>
+          <div class="stat-card-val">$28,450</div>
+          <div class="stat-card-sub">EWA advances outstanding</div>
+        </div>
+      </div>
+
+      <div class="chart-panel" style="margin-bottom:20px;">
+        <div class="panel-title">Connected Banking Accounts</div>
+        <table class="data-table">
+          <thead>
+            <tr><th>Account Name</th><th>Institution</th><th>Account #</th><th>Type</th><th>Balance</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>TiposIt Operating</strong></td><td>Evolve Bank &amp; Trust</td><td>••••7841</td><td>Checking</td><td>$142,880.44</td><td><span class="badge badge-green">Active</span></td></tr>
+            <tr><td><strong>TiposIt Reserve</strong></td><td>Evolve Bank &amp; Trust</td><td>••••3320</td><td>Savings</td><td>$50,000.00</td><td><span class="badge badge-green">Active</span></td></tr>
+            <tr><td><strong>EWA Float Pool</strong></td><td>Synapse Financial</td><td>••••9104</td><td>Custodial</td><td>$28,450.00</td><td><span class="badge badge-green">Active</span></td></tr>
+            <tr><td><strong>Rev Share Disbursement</strong></td><td>Synapse Financial</td><td>••••6677</td><td>Disbursement</td><td>$3,840.00</td><td><span class="badge badge-gold">Queued</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="chart-panel">
+        <div class="panel-title">Recent Transactions</div>
+        <table class="data-table">
+          <thead>
+            <tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th>Account</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Apr 7</td><td>Atlas Hospitality – Monthly Fee</td><td><span class="badge badge-blue">Subscription</span></td><td style="color:var(--green);">+$2,140</td><td>Operating</td></tr>
+            <tr><td>Apr 7</td><td>Gulf Coast Medical – Monthly Fee</td><td><span class="badge badge-blue">Subscription</span></td><td style="color:var(--green);">+$3,100</td><td>Operating</td></tr>
+            <tr><td>Apr 6</td><td>EWA Advance – Verde Staffing</td><td><span class="badge badge-gray">EWA Float</span></td><td style="color:var(--red);">-$4,200</td><td>Float Pool</td></tr>
+            <tr><td>Apr 5</td><td>EWA Repayment – Verde Staffing</td><td><span class="badge badge-gray">EWA Float</span></td><td style="color:var(--green);">+$4,200</td><td>Float Pool</td></tr>
+            <tr><td>Apr 4</td><td>Rev Share Payout – Sunrise Logistics</td><td><span class="badge badge-gold">Rev Share</span></td><td style="color:var(--red);">-$132</td><td>Operating</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── ANALYTICS ── */
+    <div class="page-content" id="page-analytics">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-card-label">Avg Employee Adoption</div>
+          <div class="stat-card-val" style="color:var(--green);">91%</div>
+          <div class="stat-card-sub up">↑ 4pts this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">EWA Utilization Rate</div>
+          <div class="stat-card-val" style="color:var(--ice);">68%</div>
+          <div class="stat-card-sub">Of enrolled employees</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Avg Transaction Fee</div>
+          <div class="stat-card-val">$3.82</div>
+          <div class="stat-card-sub">Per EWA withdrawal</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Retention Lift</div>
+          <div class="stat-card-val" style="color:var(--purple);">+3.4%</div>
+          <div class="stat-card-sub">Partner avg vs baseline</div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-panel">
+          <div class="panel-title">Transaction Volume <span>Daily, last 30 days</span></div>
+          <canvas id="chart-txn" height="100"></canvas>
+        </div>
+        <div class="chart-panel">
+          <div class="panel-title">Platform Usage <span>By product</span></div>
+          <canvas id="chart-usage" height="180"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-panel">
+        <div class="panel-title">Employee Financial Wellness <span>Aggregate snapshot</span></div>
+        <canvas id="chart-wellness" height="70"></canvas>
+      </div>
+    </div>
+
+    <!-- ── SETTINGS ── -->
+    <div class="page-content" id="page-settings">
+      <div class="settings-grid">
+        <div>
+          <div class="section-box">
+            <div class="section-box-title">Profile &amp; Credentials</div>
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input class="form-input" value="Drew Newton"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Admin Email</label>
+              <input class="form-input" value="admin@tiposit.com"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Recovery Email</label>
+              <input class="form-input" value="newton.bsd@gmail.com"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <input class="form-input" type="password" placeholder="Leave blank to keep current"/>
+            </div>
+            <button class="btn-save">Save Changes</button>
           </div>
-          <button class="dis-btn" onclick="dismissAlert()">✕</button>
+
+          <div class="section-box">
+            <div class="section-box-title">Two-Factor Authentication</div>
+            <div class="toggle-row">
+              <span>2FA on Login <span style="font-size:0.72rem;color:var(--gray);">Required for all admin sessions</span></span>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <span>Email code fallback</span>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <span>Authenticator app (TOTP)</span>
+              <label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label>
+            </div>
+          </div>
         </div>
 
-        <!-- OVERVIEW -->
-        <div class="pg on" id="pg-overview">
-          <div class="pg-head"><h1>Command Center Overview</h1><p id="ov-date"></p></div>
-          <div class="kpis">
-            <div class="kpi"><div class="kpi-lbl">Active Partners</div><div class="kpi-val" style="color:var(--ice)">8</div><div class="kpi-tr"><span class="up">↑ 2</span><span class="tl">&nbsp;this month</span></div></div>
-            <div class="kpi"><div class="kpi-lbl">Active Subscriptions</div><div class="kpi-val" style="color:var(--green)">6</div><div class="kpi-tr"><span class="up">↑ 1</span><span class="tl">&nbsp;vs last month</span></div></div>
-            <div class="kpi"><div class="kpi-lbl">Monthly Recurring Revenue</div><div class="kpi-val" style="color:var(--gold)">$3,394</div><div class="kpi-tr"><span class="up">↑ 23%</span><span class="tl">&nbsp;vs last month</span></div></div>
-            <div class="kpi"><div class="kpi-lbl">Employee Accounts</div><div class="kpi-val">428</div><div class="kpi-tr"><span class="up">↑ 116</span><span class="tl">&nbsp;this month</span></div></div>
-          </div>
-          <div class="ch-grid">
-            <div class="ch-card">
-              <div class="ch-head"><div><div class="ch-title">Revenue Growth</div><div class="ch-sub">Monthly recurring revenue — last 6 months</div></div></div>
-              <canvas id="rev-chart"></canvas>
+        <div>
+          <div class="section-box">
+            <div class="section-box-title">Security Alerts</div>
+            <div class="toggle-row">
+              <span>Login from new device</span>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
             </div>
-            <div class="ch-card">
-              <div class="ch-head"><div><div class="ch-title">Partner Status</div><div class="ch-sub">Current breakdown</div></div></div>
-              <canvas id="status-chart"></canvas>
+            <div class="toggle-row">
+              <span>Failed login attempts</span>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <span>Password changes</span>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <span>Large transaction alerts</span>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <span>New partner onboarded</span>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
             </div>
           </div>
-          <div class="ch-card">
-            <div class="ch-head"><div class="ch-title">Recent Activity</div></div>
-            <div class="act-item"><div class="act-ico" style="background:rgba(0,255,136,.1)">✅</div><div class="act-txt"><strong>Gulf Coast Healthcare activated</strong><span>Enterprise plan · 200 employees onboarded</span></div><div class="act-time">2h ago</div></div>
-            <div class="act-item"><div class="act-ico" style="background:rgba(0,212,255,.1)">💳</div><div class="act-txt"><strong>New subscription — Meridian Financial</strong><span>Pro plan · $249/month</span></div><div class="act-time">5h ago</div></div>
-            <div class="act-item"><div class="act-ico" style="background:rgba(255,215,0,.1)">💰</div><div class="act-txt"><strong>Revenue share payout processed</strong><span>$1,240 distributed across 6 partners</span></div><div class="act-time">Yesterday</div></div>
-            <div class="act-item"><div class="act-ico" style="background:rgba(0,212,255,.1)">🏦</div><div class="act-txt"><strong>116 new employee accounts activated</strong><span>Texas Iron Works · Blue ICE tier</span></div><div class="act-time">2 days ago</div></div>
-            <div class="act-item"><div class="act-ico" style="background:rgba(255,149,0,.1)">⏳</div><div class="act-txt"><strong>DataBridge Corp pending approval</strong><span>Starter plan · 30 employees · awaiting contract</span></div><div class="act-time">3 days ago</div></div>
-          </div>
-        </div>
 
-        <!-- PARTNERSHIPS -->
-        <div class="pg" id="pg-partnerships">
-          <div class="pg-head"><h1>Partnership Management</h1><p>Manage corporate clients, onboarding status, and revenue share agreements</p></div>
-          <div class="tbl-card">
-            <div class="tbl-head">
-              <div class="tbl-title">All Partners <span style="color:var(--gray);font-weight:400;font-size:.78rem">(8 companies)</span></div>
-              <div class="tbl-acts">
-                <input class="s-input" placeholder="🔍  Search..." oninput="filter(this,'p-body')">
-                <button class="btn-p">+ Add Partner</button>
-              </div>
+          <div class="section-box">
+            <div class="section-box-title">Active Sessions</div>
+            <div class="alert-feed">
+              <div class="alert-item"><strong>Current Session</strong> — Chrome / MacOS · Austin, TX<div class="alert-time">Started today, 9:14 AM</div></div>
             </div>
-            <table><thead><tr><th>Company</th><th>Contact</th><th>Plan</th><th>Employees</th><th>Rev Share</th><th>Status</th><th>Since</th><th></th></tr></thead>
-            <tbody id="p-body">
-              <tr><td><strong>Gulf Coast Healthcare</strong></td><td style="color:var(--gray)">Sarah M.</td><td><span class="b b-ent">Enterprise</span></td><td>200</td><td style="color:var(--green)">33%</td><td><span class="b b-active"><span class="bd"></span>Active</span></td><td style="color:var(--gray)">Jan 2025</td><td><button class="btn-o">View</button></td></tr>
-              <tr><td><strong>BlueStar Hospitality</strong></td><td style="color:var(--gray)">James R.</td><td><span class="b b-ent">Enterprise</span></td><td>300</td><td style="color:var(--green)">33%</td><td><span class="b b-active"><span class="bd"></span>Active</span></td><td style="color:var(--gray)">Feb 2025</td><td><button class="btn-o">View</button></td></tr>
-              <tr><td><strong>Summit Retail Group</strong></td><td style="color:var(--gray)">Karen L.</td><td><span class="b b-pro">Pro</span></td><td>150</td><td style="color:var(--green)">28%</td><td><span class="b b-active"><span class="bd"></span>Active</span></td><td style="color:var(--gray)">Jan 2025</td><td><button class="btn-o">View</button></td></tr>
-              <tr><td><strong>Riverside Logistics</strong></td><td style="color:var(--gray)">Tom B.</td><td><span class="b b-start">Starter</span></td><td>50</td><td style="color:var(--green)">20%</td><td><span class="b b-active"><span class="bd"></span>Active</span></td><td style="color:var(--gray)">Mar 2025</td><td><button class="btn-o">View</button></td></tr>
-              <tr><td><strong>Texas Iron Works</strong></td><td style="color:var(--gray)">Mike D.</td><td><span class="b b-pro">Pro</span></td><td>80</td><td style="color:var(--ice)">28%</td><td><span class="b b-onboard"><span class="bd"></span>Onboarding</span></td><td style="color:var(--gray)">Mar 2025</td><td><button class="btn-o">View</button></td></tr>
-              <tr><td><strong>Meridian Financial</strong></td><td style="color:var(--gray)">Lisa P.</td><td><span class="b b-pro">Pro</span></td><td>100</td><td style="color:var(--ice)">28%</td><td><span class="b b-onboard"><span class="bd"></span>Onboarding</span></td><td style="color:var(--gray)">Apr 2025</td><td><button class="btn-o">View</button></td></tr>
-              <tr><td><strong>DataBridge Corp</strong></td><td style="color:var(--gray)">Chris N.</td><td><span class="b b-start">Starter</span></td><td>30</td><td style="color:var(--orange)">20%</td><td><span class="b b-pending"><span class="bd"></span>Pending</span></td><td style="color:var(--gray)">Apr 2025</td><td><button class="btn-o">View</button></td></tr>
-              <tr><td><strong>Lone Star Construction</strong></td><td style="color:var(--gray)">Roy H.</td><td><span class="b b-start">Starter</span></td><td>45</td><td style="color:var(--gray)">20%</td><td><span class="b b-paused"><span class="bd"></span>Paused</span></td><td style="color:var(--gray)">Dec 2024</td><td><button class="btn-o">View</button></td></tr>
-            </tbody></table>
+            <button style="margin-top:14px;padding:8px 18px;background:transparent;border:1px solid rgba(255,77,109,0.3);color:var(--red);border-radius:8px;font-size:0.78rem;cursor:pointer;">Revoke All Other Sessions</button>
           </div>
-        </div>
 
-        <!-- SUBSCRIPTIONS -->
-        <div class="pg" id="pg-subscriptions">
-          <div class="pg-head"><h1>Subscription Management</h1><p>Monitor plans, billing cycles, and monthly recurring revenue</p></div>
-          <div class="sub-grid">
-            <div class="sub-card"><div class="sub-name">Starter</div><div class="sub-price">$99<span>/month</span></div><div class="sub-cnt">3 clients · up to 50 employees</div><div class="sub-bar"><div class="sub-fill" style="width:37%"></div></div></div>
-            <div class="sub-card" style="border-color:rgba(0,212,255,.22)"><div class="sub-name" style="color:var(--ice)">Pro</div><div class="sub-price">$249<span>/month</span></div><div class="sub-cnt">3 clients · 51–200 employees</div><div class="sub-bar"><div class="sub-fill" style="width:37%"></div></div></div>
-            <div class="sub-card" style="border-color:rgba(255,215,0,.22)"><div class="sub-name" style="color:var(--gold)">Enterprise</div><div class="sub-price" style="color:var(--gold)">$599<span>/month</span></div><div class="sub-cnt">2 clients · 200+ employees</div><div class="sub-bar"><div class="sub-fill" style="width:25%;background:linear-gradient(90deg,#FFD700,#CC9900)"></div></div></div>
-          </div>
-          <div class="ch-card" style="margin-bottom:18px">
-            <div class="ch-head"><div><div class="ch-title">MRR Growth</div><div class="ch-sub">Monthly recurring revenue trend</div></div></div>
-            <canvas id="mrr-chart"></canvas>
-          </div>
-          <div class="tbl-card">
-            <div class="tbl-head">
-              <div class="tbl-title">All Subscriptions</div>
-              <div class="tbl-acts"><input class="s-input" placeholder="🔍  Search..." oninput="filter(this,'s-body')"><button class="btn-o">Export CSV</button></div>
+          <div class="section-box">
+            <div class="section-box-title">System</div>
+            <div class="toggle-row">
+              <span>Maintenance mode</span>
+              <label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label>
             </div>
-            <table><thead><tr><th>Company</th><th>Plan</th><th>Monthly</th><th>Next Billing</th><th>Status</th><th>Employees</th></tr></thead>
-            <tbody id="s-body">
-              <tr><td><strong>Gulf Coast Healthcare</strong></td><td><span class="b b-ent">Enterprise</span></td><td style="color:var(--gold)">$599</td><td style="color:var(--gray)">May 1, 2025</td><td><span class="b b-active"><span class="bd"></span>Active</span></td><td>200</td></tr>
-              <tr><td><strong>BlueStar Hospitality</strong></td><td><span class="b b-ent">Enterprise</span></td><td style="color:var(--gold)">$599</td><td style="color:var(--gray)">May 3, 2025</td><td><span class="b b-active"><span class="bd"></span>Active</span></td><td>300</td></tr>
-              <tr><td><strong>Summit Retail Group</strong></td><td><span class="b b-pro">Pro</span></td><td style="color:var(--ice)">$249</td><td style="color:var(--gray)">May 5, 2025</td><td><span class="b b-active"><span class="bd"></span>Active</span></td><td>150</td></tr>
-              <tr><td><strong>Texas Iron Works</strong></td><td><span class="b b-pro">Pro</span></td><td style="color:var(--ice)">$249</td><td style="color:var(--gray)">May 12, 2025</td><td><span class="b b-onboard"><span class="bd"></span>Onboarding</span></td><td>80</td></tr>
-              <tr><td><strong>Meridian Financial</strong></td><td><span class="b b-pro">Pro</span></td><td style="color:var(--ice)">$249</td><td style="color:var(--gray)">May 18, 2025</td><td><span class="b b-onboard"><span class="bd"></span>Onboarding</span></td><td>100</td></tr>
-              <tr><td><strong>Riverside Logistics</strong></td><td><span class="b b-start">Starter</span></td><td style="color:var(--gray)">$99</td><td style="color:var(--gray)">May 8, 2025</td><td><span class="b b-active"><span class="bd"></span>Active</span></td><td>50</td></tr>
-              <tr><td><strong>DataBridge Corp</strong></td><td><span class="b b-start">Starter</span></td><td style="color:var(--gray)">$99</td><td style="color:var(--orange)">Pending</td><td><span class="b b-pending"><span class="bd"></span>Pending</span></td><td>30</td></tr>
-              <tr><td><strong>Lone Star Construction</strong></td><td><span class="b b-start">Starter</span></td><td style="color:var(--gray)">$99</td><td style="color:var(--gray)">Paused</td><td><span class="b b-paused"><span class="bd"></span>Paused</span></td><td>45</td></tr>
-            </tbody></table>
-          </div>
-        </div>
-
-        <!-- BANKING -->
-        <div class="pg" id="pg-banking">
-          <div class="pg-head"><h1>Digital Banking Accounts</h1><p>Employee account roll, wallet balances, ICE card tiers, and transfer activity</p></div>
-          <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
-            <div class="kpi"><div class="kpi-lbl">Total Active Accounts</div><div class="kpi-val" style="color:var(--ice)">428</div><div class="kpi-tr"><span class="up">↑ 116</span><span class="tl">&nbsp;this month</span></div></div>
-            <div class="kpi"><div class="kpi-lbl">Total Wallet Balances</div><div class="kpi-val" style="color:var(--green)">$84,320</div><div class="kpi-tr"><span class="up">↑ 18%</span><span class="tl">&nbsp;vs last month</span></div></div>
-            <div class="kpi"><div class="kpi-lbl">Same-Day Pay Volume (MTD)</div><div class="kpi-val" style="color:var(--gold)">$142,880</div><div class="kpi-tr"><span class="up">↑ 31%</span><span class="tl">&nbsp;vs last month</span></div></div>
-          </div>
-          <div class="tbl-card">
-            <div class="tbl-head">
-              <div class="tbl-title">Employee Account Roll</div>
-              <div class="tbl-acts"><input class="s-input" placeholder="🔍  Search accounts..." oninput="filter(this,'b-body')"><button class="btn-o">Export</button></div>
+            <div class="toggle-row">
+              <span>Public waitlist open</span>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
             </div>
-            <table><thead><tr><th>Employee</th><th>Company</th><th>Account #</th><th>ICE Tier</th><th>Wallet Balance</th><th>MTD Transfers</th><th>Status</th></tr></thead>
-            <tbody id="b-body">
-              <tr><td><strong>Maria Torres</strong></td><td style="color:var(--gray)">Gulf Coast</td><td style="color:var(--gray);font-family:monospace">••••4821</td><td><span class="b b-bice">Blue ICE</span></td><td style="color:var(--green)">$312.40</td><td>$1,840</td><td><span class="b b-active"><span class="bd"></span>Active</span></td></tr>
-              <tr><td><strong>James Okafor</strong></td><td style="color:var(--gray)">BlueStar</td><td style="color:var(--gray);font-family:monospace">••••7734</td><td><span class="b b-kice">Black ICE</span></td><td style="color:var(--green)">$880.00</td><td>$4,200</td><td><span class="b b-active"><span class="bd"></span>Active</span></td></tr>
-              <tr><td><strong>Priya Nair</strong></td><td style="color:var(--gray)">Summit Retail</td><td style="color:var(--gray);font-family:monospace">••••2290</td><td><span class="b b-wice">White ICE</span></td><td style="color:var(--green)">$124.50</td><td>$620</td><td><span class="b b-active"><span class="bd"></span>Active</span></td></tr>
-              <tr><td><strong>Carlos Vega</strong></td><td style="color:var(--gray)">Texas Iron</td><td style="color:var(--gray);font-family:monospace">••••5512</td><td><span class="b b-bice">Blue ICE</span></td><td style="color:var(--green)">$247.50</td><td>$1,320</td><td><span class="b b-onboard"><span class="bd"></span>Onboarding</span></td></tr>
-              <tr><td><strong>Aisha Johnson</strong></td><td style="color:var(--gray)">Gulf Coast</td><td style="color:var(--gray);font-family:monospace">••••9003</td><td><span class="b b-wice">White ICE</span></td><td style="color:var(--green)">$98.20</td><td>$480</td><td><span class="b b-active"><span class="bd"></span>Active</span></td></tr>
-              <tr><td><strong>Derek Mills</strong></td><td style="color:var(--gray)">BlueStar</td><td style="color:var(--gray);font-family:monospace">••••6641</td><td><span class="b b-bice">Blue ICE</span></td><td style="color:var(--green)">$430.00</td><td>$2,100</td><td><span class="b b-active"><span class="bd"></span>Active</span></td></tr>
-              <tr><td><strong>Fatima Al-Hassan</strong></td><td style="color:var(--gray)">Riverside</td><td style="color:var(--gray);font-family:monospace">••••1178</td><td><span class="b b-wice">White ICE</span></td><td style="color:var(--green)">$67.80</td><td>$290</td><td><span class="b b-active"><span class="bd"></span>Active</span></td></tr>
-              <tr><td><strong>Ryan Schultz</strong></td><td style="color:var(--gray)">Summit Retail</td><td style="color:var(--gray);font-family:monospace">••••3355</td><td><span class="b b-wice">White ICE</span></td><td style="color:var(--green)">$155.90</td><td>$740</td><td><span class="b b-active"><span class="bd"></span>Active</span></td></tr>
-            </tbody></table>
-          </div>
-        </div>
-
-        <!-- ANALYTICS -->
-        <div class="pg" id="pg-analytics">
-          <div class="pg-head"><h1>Analytics</h1><p>Growth metrics, adoption rates, revenue performance, and payout trends</p></div>
-          <div class="an-grid">
-            <div class="ch-card"><div class="ch-head"><div><div class="ch-title">Employee Account Growth</div><div class="ch-sub">Cumulative active accounts by month</div></div></div><canvas id="acct-chart"></canvas></div>
-            <div class="ch-card"><div class="ch-head"><div><div class="ch-title">Revenue Share Payouts</div><div class="ch-sub">Monthly payouts to partners ($)</div></div></div><canvas id="payout-chart"></canvas></div>
-          </div>
-          <div class="an-grid">
-            <div class="ch-card"><div class="ch-head"><div><div class="ch-title">Partner Pipeline</div><div class="ch-sub">Stage distribution</div></div></div><canvas id="pipe-chart"></canvas></div>
-            <div class="ch-card"><div class="ch-head"><div><div class="ch-title">Same-Day Pay Volume</div><div class="ch-sub">Monthly transfer volume ($)</div></div></div><canvas id="vol-chart"></canvas></div>
-          </div>
-        </div>
-
-        <!-- SETTINGS -->
-        <div class="pg" id="pg-settings">
-          <div class="pg-head"><h1>Settings &amp; Security</h1><p>Manage your account, 2FA, and security preferences</p></div>
-          <div class="set-grid">
-            <div class="set-card">
-              <h3>Account Information</h3><div class="set-sub">Your admin profile details</div>
-              <div class="set-row"><span class="set-lbl">Name</span><span>Drew Newton</span></div>
-              <div class="set-row"><span class="set-lbl">Role</span><span style="color:var(--ice)">Super Admin</span></div>
-              <div class="set-row"><span class="set-lbl">Login Email</span><span>admin@tiposit.com</span></div>
-              <div class="set-row"><span class="set-lbl">Recovery Email</span><span style="color:var(--green)">newton.bsd@gmail.com ✓</span></div>
-              <div class="set-row"><span class="set-lbl">Session Started</span><span id="sess-time" style="color:var(--gray)"></span></div>
-            </div>
-            <div class="set-card">
-              <h3>Security Settings</h3><div class="set-sub">Authentication &amp; protection options</div>
-              <div class="set-row"><span>Two-Factor Authentication</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
-              <div class="set-row"><span>Sign-In Email Alerts</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
-              <div class="set-row"><span>Session Timeout (8 hrs)</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
-              <div class="set-row"><span>Remember Device (30 days)</span><div class="tog" onclick="this.classList.toggle('on')"></div></div>
-              <div class="set-row"><span>IP Change Detection</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
-            </div>
-            <div class="set-card" style="grid-column:1/-1">
-              <h3>Recent Login History</h3><div class="set-sub">Last 5 sign-in events</div>
-              <div class="log-item"><span class="log-ok">✓</span><div class="log-info"><strong>Successful login — 2FA verified</strong><span id="cur-login">Current session · Just now</span></div><div class="log-time">Just now</div></div>
-              <div class="log-item"><span class="log-ok">✓</span><div class="log-info"><strong>Successful login — 2FA verified</strong><span>Chrome · macOS · 104.21.x.x</span></div><div class="log-time">2 days ago</div></div>
-              <div class="log-item"><span class="log-ok">✓</span><div class="log-info"><strong>Successful login — 2FA verified</strong><span>Chrome · macOS · 104.21.x.x</span></div><div class="log-time">5 days ago</div></div>
-              <div class="log-item"><span class="log-warn">⚠</span><div class="log-info"><strong>Failed login attempt (3x) — account locked</strong><span>Unknown browser · 189.44.x.x</span></div><div class="log-time">1 week ago</div></div>
-              <div class="log-item"><span class="log-ok">✓</span><div class="log-info"><strong>Successful login — 2FA verified</strong><span>Safari · macOS · 104.21.x.x</span></div><div class="log-time">2 weeks ago</div></div>
+            <div class="toggle-row">
+              <span>Pre-order mode active</span>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
             </div>
           </div>
         </div>
+      </div>
+    </div>
 
-      </div><!-- /content -->
-    </div><!-- /d-main -->
-  </div><!-- /d-wrap -->
-</div><!-- /dash -->
+  </div><!-- /main -->
+</div><!-- /dashboard -->
 
 <script>
-// ── HELPERS ──
-function go(id) {
-  ['s-login','s-2fa','s-forgot'].forEach(function(s){
-    document.getElementById(s).style.display = s===id ? 'flex' : 'none';
-  });
-}
+  /* ── AUTH ── */
+  var CORRECT_EMAIL = 'admin@tiposit.com';
+  var CORRECT_PASS  = 'TiposIt2025!';
+  var tfa_code = '';
 
-// ── STATE ──
-var attempts=0, code='', timerID=null, timerSecs=299;
-var mrrDone=false, anDone=false;
-
-// ── CLOCK ──
-function tick() {
-  var now = new Date();
-  var te = document.getElementById('tb-time');
-  if(te) te.textContent = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-  var de = document.getElementById('ov-date');
-  if(de) de.textContent = now.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-}
-setInterval(tick,1000);
-
-// ── LOGIN ──
-function doLogin() {
-  var email = document.getElementById('l-email').value.trim();
-  var pass  = document.getElementById('l-pass').value;
-  var err   = document.getElementById('login-err');
-  if(attempts>=3){
-    err.style.display='block';
-    err.textContent='🔒 Account locked after 3 failed attempts. Use account recovery.';
-    return;
+  function doLogin() {
+    var email = document.getElementById('inp-email').value.trim();
+    var pass  = document.getElementById('inp-pass').value;
+    var err   = document.getElementById('login-err');
+    if (email === CORRECT_EMAIL && pass === CORRECT_PASS) {
+      err.style.display = 'none';
+      send2FA();
+    } else {
+      err.style.display = 'block';
+    }
   }
-  if(email==='admin@tiposit.com' && pass==='TiposIt2025!'){
-    err.style.display='none';
-    code = String(Math.floor(100000+Math.random()*900000));
-    go('s-2fa');
-    startTimer();
-    setTimeout(function(){
-      for(var i=1;i<=6;i++) document.getElementById('d'+i).value=code[i-1];
-      document.getElementById('demo-note').textContent='[Demo: code auto-filled — '+code+']';
-    },3000);
-  } else {
-    attempts++;
-    err.style.display='block';
-    var left=3-attempts;
-    err.textContent='Incorrect email or password.'+(left>0?' '+left+' attempt'+(left>1?'s':'')+' remaining.':'');
-    if(attempts>=3) err.textContent='🔒 Too many attempts. Account locked for 15 minutes.';
+
+  function send2FA() {
+    tfa_code = '';
+    for (var i = 0; i < 6; i++) { tfa_code += Math.floor(Math.random() * 10); }
+    document.getElementById('step-login').style.display = 'none';
+    document.getElementById('step-2fa').style.display   = 'block';
+    var alert = document.getElementById('tfa-alert');
+    alert.style.display = 'block';
+    alert.className = 'alert-banner';
+    alert.textContent = '✓ Code sent to admin@tiposit.com  —  Demo: auto-filling in 3s';
+    // Auto-fill digits after 3s (demo mode)
+    setTimeout(function() {
+      for (var j = 0; j < 6; j++) {
+        document.getElementById('d' + j).value = tfa_code[j];
+      }
+      alert.textContent = '✓ Code auto-filled (demo mode). Click Verify to enter.';
+    }, 3000);
   }
-}
 
-// ── TIMER ──
-function startTimer(){
-  timerSecs=299;
-  if(timerID) clearInterval(timerID);
-  timerID=setInterval(function(){
-    timerSecs--;
-    var m=Math.floor(timerSecs/60), s=timerSecs%60;
-    var el=document.getElementById('c-timer');
-    if(el) el.textContent=m+':'+(s<10?'0':'')+s;
-    if(timerSecs<=0){clearInterval(timerID);if(el)el.textContent='Expired';}
-  },1000);
-}
-
-function resend(){
-  code=String(Math.floor(100000+Math.random()*900000));
-  for(var i=1;i<=6;i++) document.getElementById('d'+i).value='';
-  document.getElementById('demo-note').textContent='[Demo mode — new code auto-fills in 3s]';
-  startTimer();
-  setTimeout(function(){
-    for(var i=1;i<=6;i++) document.getElementById('d'+i).value=code[i-1];
-    document.getElementById('demo-note').textContent='[Demo: code auto-filled — '+code+']';
-  },3000);
-}
-
-// ── CODE INPUT NAV ──
-function nxt(el,nextId){ if(el.value&&nextId) document.getElementById(nextId).focus(); }
-function prv(e,el,prevId){ if(e.key==='Backspace'&&!el.value&&prevId) document.getElementById(prevId).focus(); }
-
-// ── VERIFY 2FA ──
-function verify(){
-  var entered='';
-  for(var i=1;i<=6;i++) entered+=document.getElementById('d'+i).value;
-  if(entered===code){
-    clearInterval(timerID);
-    sessionStorage.setItem('tiposit_auth','1');
-    launch();
-  } else {
-    document.getElementById('tfa-err').style.display='block';
+  function verify() {
+    var entered = '';
+    for (var i = 0; i < 6; i++) { entered += document.getElementById('d' + i).value; }
+    if (entered === tfa_code) {
+      sessionStorage.setItem('tiposit_auth', '1');
+      launch();
+    } else {
+      document.getElementById('tfa-err').style.display = 'block';
+    }
   }
-}
 
-// ── FORGOT ──
-function doForgot(){
-  document.getElementById('forgot-ok').style.display='block';
-  setTimeout(function(){ go('s-login'); },3000);
-}
+  function resend() {
+    for (var i = 0; i < 6; i++) { document.getElementById('d' + i).value = ''; }
+    document.getElementById('tfa-err').style.display = 'none';
+    send2FA();
+  }
 
-// ── LAUNCH DASHBOARD ──
-function launch(){
-  document.getElementById('s-2fa').style.display='none';
-  document.getElementById('dash').style.display='block';
-  var now=new Date();
-  var ts=now.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' at '+now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('alert-detail').innerHTML=' · Verified via 2FA · '+ts;
-  document.getElementById('sess-time').textContent=ts;
-  tick();
-  setTimeout(initCharts,300);
-}
+  function showRecovery() {
+    document.getElementById('step-login').style.display    = 'none';
+    document.getElementById('step-recovery').style.display = 'block';
+  }
 
-// ── LOGOUT ──
-function logout(){
-  sessionStorage.removeItem('tiposit_auth');
-  document.getElementById('dash').style.display='none';
-  document.getElementById('l-pass').value='';
-  attempts=0;
-  document.getElementById('login-err').style.display='none';
-  go('s-login');
-}
+  function sendRecovery() {
+    var email = document.getElementById('inp-recovery').value;
+    alert('Recovery link sent to ' + email + '. Check your inbox.');
+    showLogin();
+  }
 
-// ── DISMISS ALERT ──
-function dismissAlert(){
-  document.getElementById('sec-banner').style.display='none';
-  var b=document.getElementById('alert-badge');
-  var n=document.getElementById('n-dot');
-  if(b) b.style.display='none';
-  if(n) n.style.display='none';
-}
+  function showLogin() {
+    document.getElementById('step-login').style.display    = 'block';
+    document.getElementById('step-2fa').style.display      = 'none';
+    document.getElementById('step-recovery').style.display = 'none';
+  }
 
-// ── PAGE SWITCH ──
-var titles={overview:'Overview',partnerships:'Partnership Management',subscriptions:'Subscription Management',banking:'Digital Banking Accounts',analytics:'Analytics',settings:'Settings & Security'};
-function pg(id,btn){
-  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
-  document.querySelectorAll('.nav-btn').forEach(function(n){n.classList.remove('on');});
-  document.getElementById('pg-'+id).classList.add('on');
-  if(btn) btn.classList.add('on');
-  document.getElementById('tb-title').textContent=titles[id]||id;
-  if(id==='subscriptions'&&!mrrDone) setTimeout(initMRR,150);
-  if(id==='analytics'&&!anDone) setTimeout(initAnalytics,150);
-}
+  function launch() {
+    document.getElementById('auth-overlay').style.display = 'none';
+    document.getElementById('dashboard').style.display    = 'block';
+    initCharts();
+    startClock();
+  }
 
-// ── TABLE FILTER ──
-function filter(input,tbodyId){
-  var q=input.value.toLowerCase();
-  document.querySelectorAll('#'+tbodyId+' tr').forEach(function(row){
-    row.style.display=row.textContent.toLowerCase().includes(q)?'':'none';
-  });
-}
+  function logout() {
+    sessionStorage.removeItem('tiposit_auth');
+    document.getElementById('auth-overlay').style.display = 'flex';
+    document.getElementById('dashboard').style.display    = 'none';
+    showLogin();
+    for (var i = 0; i < 6; i++) { document.getElementById('d' + i).value = ''; }
+  }
 
-// ── CHARTS ──
-var MO=['Nov','Dec','Jan','Feb','Mar','Apr'];
-function mkLine(id,data,color){
-  return new Chart(document.getElementById(id),{
-    type:'line',
-    data:{labels:MO,datasets:[{data:data,borderColor:color,backgroundColor:color.replace(')',',0.08)').replace('rgb','rgba'),fill:true,tension:0.4,pointBackgroundColor:color,pointRadius:4,borderWidth:2}]},
-    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8899BB',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8899BB',font:{size:11}}}}}
-  });
-}
-function mkBar(id,data,color){
-  return new Chart(document.getElementById(id),{
-    type:'bar',
-    data:{labels:MO,datasets:[{data:data,backgroundColor:color.replace(')',',0.2)').replace('rgb','rgba'),borderColor:color,borderWidth:1,borderRadius:6}]},
-    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8899BB',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8899BB',font:{size:11}}}}}
-  });
-}
-function mkDoughnut(id,labels,data,colors){
-  return new Chart(document.getElementById(id),{
-    type:'doughnut',
-    data:{labels:labels,datasets:[{data:data,backgroundColor:colors,borderWidth:0,hoverOffset:6}]},
-    options:{responsive:true,cutout:'65%',plugins:{legend:{display:true,position:'bottom',labels:{color:'#8899BB',font:{size:11},boxWidth:10,padding:12}}}}
-  });
-}
+  // Auto-restore session
+  if (sessionStorage.getItem('tiposit_auth') === '1') {
+    document.getElementById('auth-overlay').style.display = 'none';
+    document.getElementById('dashboard').style.display    = 'block';
+    initCharts();
+    startClock();
+  }
 
-var chartsDone=false;
-function initCharts(){
-  if(chartsDone) return; chartsDone=true;
-  mkLine('rev-chart',[2100,2748,3146,2897,3145,3394],'rgb(0,212,255)');
-  mkDoughnut('status-chart',['Active','Onboarding','Pending','Paused'],[4,2,1,1],['#00FF88','#00D4FF','#FF9500','#4A5A7A']);
-}
+  /* ── NAVIGATION ── */
+  function go(id) {
+    var pages = document.querySelectorAll('.page-content');
+    for (var i = 0; i < pages.length; i++) { pages[i].classList.remove('active'); }
+    document.getElementById('page-' + id).classList.add('active');
+    var navItems = document.querySelectorAll('.nav-item');
+    for (var j = 0; j < navItems.length; j++) { navItems[j].classList.remove('active'); }
+    event.currentTarget.classList.add('active');
+    var titles = {overview:'Overview', partnerships:'Partnerships', subscriptions:'Subscriptions', banking:'Banking Accounts', analytics:'Analytics', settings:'Settings & Security'};
+    document.getElementById('page-title').textContent = titles[id] || id;
+    if (id === 'analytics') { initAnalytics(); }
+  }
 
-function initMRR(){
-  if(mrrDone) return; mrrDone=true;
-  mkBar('mrr-chart',[2100,2748,3146,2897,3145,3394],'rgb(0,212,255)');
-}
+  /* ── 2FA DIGIT INPUT ── */
+  function tfaNext(el, nextIdx) {
+    if (el.value && nextIdx !== null) { document.getElementById('d' + nextIdx).focus(); }
+  }
+  function tfaBack(e, el, prevIdx) {
+    if (e.key === 'Backspace' && !el.value && prevIdx !== null) { document.getElementById('d' + prevIdx).focus(); }
+  }
 
-function initAnalytics(){
-  if(anDone) return; anDone=true;
-  mkLine('acct-chart',[45,98,156,234,312,428],'rgb(0,255,136)');
-  mkBar('payout-chart',[420,580,740,690,890,1240],'rgb(255,215,0)');
-  mkDoughnut('pipe-chart',['Active','Onboarding','Pending','Paused'],[4,2,1,1],['#00FF88','#00D4FF','#FF9500','#4A5A7A']);
-  mkLine('vol-chart',[18400,34200,52800,78400,109200,142880],'rgb(0,168,232)');
-}
+  /* ── CLOCK ── */
+  function startClock() {
+    function tick() {
+      var d = new Date();
+      var h = d.getHours(); var m = d.getMinutes(); var s = d.getSeconds();
+      var ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      var el = document.getElementById('clock-display');
+      if (el) { el.textContent = h + ':' + (m<10?'0':'')+m + ':' + (s<10?'0':'')+s + ' ' + ampm; }
+    }
+    tick(); setInterval(tick, 1000);
+  }
 
-// ── AUTO SESSION ──
-if(sessionStorage.getItem('tiposit_auth')) launch();
+  /* ── CHARTS ── */
+  var chartsInited = false;
+  var analyticsInited = false;
+
+  function mkLine(id, labels, data, color) {
+    var ctx = document.getElementById(id);
+    if (!ctx) return;
+    return new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          borderColor: color,
+          backgroundColor: color.replace(')', ', 0.1)').replace('rgb', 'rgba'),
+          borderWidth: 2,
+          pointRadius: 3,
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#8BA5C0', font: { size: 10 } } },
+          y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#8BA5C0', font: { size: 10 } } }
+        }
+      }
+    });
+  }
+
+  function mkBar(id, labels, data, color) {
+    var ctx = document.getElementById(id);
+    if (!ctx) return;
+    return new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{ data: data, backgroundColor: color, borderRadius: 4 }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#8BA5C0', font: { size: 10 } } },
+          y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#8BA5C0', font: { size: 10 } } }
+        }
+      }
+    });
+  }
+
+  function mkDoughnut(id, labels, data, colors) {
+    var ctx = document.getElementById(id);
+    if (!ctx) return;
+    return new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{ data: data, backgroundColor: colors, borderWidth: 0 }]
+      },
+      options: {
+        responsive: true,
+        cutout: '65%',
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#8BA5C0', font: { size: 10 }, padding: 12 } }
+        }
+      }
+    });
+  }
+
+  function initCharts() {
+    if (chartsInited) return;
+    chartsInited = true;
+
+    // MRR line
+    mkLine('chart-mrr',
+      ['May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr'],
+      [0, 0, 0, 1200, 2400, 3800, 5600, 8200, 11400, 15800, 20100, 24180],
+      'rgb(0,212,255)'
+    );
+
+    // Revenue mix doughnut
+    mkDoughnut('chart-mix',
+      ['Subscription Fees','EWA Fees','BNPL Fees','ICE Card Interchange'],
+      [58, 24, 11, 7],
+      ['#00D4FF','#00FF88','#B88AFF','#FFD700']
+    );
+
+    // Subscription growth bar
+    mkBar('chart-subs',
+      ['Nov','Dec','Jan','Feb','Mar','Apr'],
+      [2, 4, 8, 11, 15, 18],
+      'rgba(0,212,255,0.7)'
+    );
+
+    // Plan distribution doughnut
+    mkDoughnut('chart-plans',
+      ['Starter','Pro','Enterprise'],
+      [6, 8, 4],
+      ['#8BA5C0','#00D4FF','#FFD700']
+    );
+  }
+
+  function initAnalytics() {
+    if (analyticsInited) return;
+    analyticsInited = true;
+
+    // Transaction volume
+    var days = [];
+    var txns = [];
+    for (var i = 30; i >= 1; i--) {
+      var d = new Date(); d.setDate(d.getDate() - i);
+      days.push((d.getMonth()+1) + '/' + d.getDate());
+      txns.push(Math.floor(200 + Math.random() * 400));
+    }
+    mkBar('chart-txn', days, txns, 'rgba(0,212,255,0.65)');
+
+    // Platform usage doughnut
+    mkDoughnut('chart-usage',
+      ['Same-Day Pay','Digital Wallet','BNPL','Clock In/Out','ICE Cards'],
+      [42, 23, 14, 12, 9],
+      ['#00D4FF','#00FF88','#B88AFF','#FFD700','#FF6B9D']
+    );
+
+    // Financial wellness line
+    mkLine('chart-wellness',
+      ['Nov','Dec','Jan','Feb','Mar','Apr'],
+      [61, 65, 70, 75, 82, 91],
+      'rgb(0,255,136)'
+    );
+  }
 </script>
 </body>
 </html>
