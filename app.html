@@ -1,0 +1,2783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="theme-color" content="#050E1F"/>
+  <title>TiposIt — Your Pay, Your Way</title>
+  <style>
+    :root {
+      --navy:  #050E1F;
+      --navy2: #0C1E3C;
+      --navy3: #122848;
+      --navy4: #0A1628;
+      --ice:   #00D4FF;
+      --ice2:  #7DE8FF;
+      --ice3:  #C0F4FF;
+      --white: #FFFFFF;
+      --offwhite: #E8F4FC;
+      --gray:  #8BA5C0;
+      --gray2: #4A6580;
+      --gold:  #FFD700;
+      --green: #00FF88;
+      --red:   #FF4D6D;
+      --purple:#B88AFF;
+      --r: 16px;
+      --r2: 20px;
+      --nav-h: 72px;
+      --hdr-h: 60px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%; overflow: hidden;
+      font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+      background: var(--navy); color: var(--white);
+      -webkit-tap-highlight-color: transparent;
+    }
+    a { text-decoration: none; color: inherit; }
+    input, button, select, textarea { font-family: inherit; }
+    img { max-width: 100%; }
+
+    /* ── UTILITY ── */
+    .hidden { display: none !important; }
+    .flex { display: flex; }
+    .flex-col { display: flex; flex-direction: column; }
+    .flex-center { display: flex; align-items: center; justify-content: center; }
+    .gap-8 { gap: 8px; }
+    .gap-12 { gap: 12px; }
+    .gap-16 { gap: 16px; }
+    .text-ice { color: var(--ice); }
+    .text-gold { color: var(--gold); }
+    .text-green { color: var(--green); }
+    .text-red { color: var(--red); }
+    .text-gray { color: var(--gray); }
+    .text-sm { font-size: 0.82rem; }
+    .text-xs { font-size: 0.72rem; }
+    .fw-700 { font-weight: 700; }
+    .fw-800 { font-weight: 800; }
+    .mt-8 { margin-top: 8px; }
+    .mt-16 { margin-top: 16px; }
+    .mt-24 { margin-top: 24px; }
+
+    /* ── SCROLLABLE CONTENT ── */
+    .scroll-y { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .scroll-y::-webkit-scrollbar { display: none; }
+
+    /* ── SCREEN SYSTEM ── */
+    .screen {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      background: var(--navy);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .screen.out { opacity: 0; pointer-events: none; transform: translateY(16px); }
+
+    /* ── SPLASH ── */
+    #screen-splash {
+      align-items: center; justify-content: center;
+      background: linear-gradient(180deg, #050E1F 0%, #0A1E3C 100%);
+    }
+    .splash-logo {
+      font-size: 3rem; font-weight: 900; color: var(--ice);
+      letter-spacing: -2px; text-align: center;
+      animation: fadeUp 0.8s ease both;
+    }
+    .splash-logo span { color: var(--white); }
+    .splash-tag {
+      font-size: 0.85rem; color: var(--gray); margin-top: 8px;
+      text-align: center; animation: fadeUp 0.8s 0.2s ease both;
+    }
+    .splash-pulse {
+      width: 60px; height: 4px; border-radius: 2px;
+      background: linear-gradient(90deg, var(--ice), var(--ice2));
+      margin: 40px auto 0;
+      animation: pulseBar 1.2s ease infinite;
+    }
+    @keyframes pulseBar { 0%,100%{opacity:0.3;width:40px} 50%{opacity:1;width:80px} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── AUTH SCREENS ── */
+    #screen-auth {
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
+    }
+    .auth-header {
+      padding: 20px 24px 0;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .auth-back {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: none; color: var(--white); font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .auth-logo-sm { font-size: 1.1rem; font-weight: 900; color: var(--ice); }
+    .auth-logo-sm span { color: var(--white); }
+    .auth-body { padding: 24px 24px 40px; }
+    .auth-title { font-size: 1.6rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+    .auth-sub { font-size: 0.85rem; color: var(--gray); margin-bottom: 28px; }
+
+    /* Progress bar for signup */
+    .signup-progress { padding: 0 24px; margin-top: 8px; }
+    .progress-track { height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; }
+    .progress-fill { height: 3px; background: linear-gradient(90deg, var(--ice), var(--ice2)); border-radius: 2px; transition: width 0.4s ease; }
+    .progress-label { font-size: 0.7rem; color: var(--gray); margin-top: 6px; text-align: right; }
+
+    /* ── FORM ELEMENTS ── */
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 0.75rem; color: var(--gray); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 7px; display: block; }
+    .form-input {
+      width: 100%; padding: 14px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(0,212,255,0.15);
+      border-radius: var(--r); color: var(--white);
+      font-size: 0.95rem; outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .form-input:focus { border-color: var(--ice); background: rgba(0,212,255,0.05); }
+    .form-input::placeholder { color: var(--gray2); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-hint { font-size: 0.72rem; color: var(--gray); margin-top: 5px; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: block; width: 100%; padding: 16px;
+      border: none; border-radius: var(--r);
+      font-size: 0.95rem; font-weight: 700; cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+      text-align: center;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--ice), #00A8E8);
+      color: var(--navy);
+    }
+    .btn-secondary {
+      background: rgba(0,212,255,0.1);
+      border: 1.5px solid rgba(0,212,255,0.3);
+      color: var(--ice);
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      color: var(--white);
+    }
+    .btn-danger {
+      background: rgba(255,77,109,0.1);
+      border: 1.5px solid rgba(255,77,109,0.3);
+      color: var(--red);
+    }
+    .btn-sm { padding: 10px 20px; font-size: 0.82rem; width: auto; display: inline-block; }
+    .btn-icon {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+
+    /* ── ERROR / ALERT ── */
+    .form-error { font-size: 0.78rem; color: var(--red); margin-top: 6px; display: none; }
+    .alert {
+      padding: 12px 16px; border-radius: var(--r);
+      font-size: 0.82rem; margin-bottom: 16px; display: none;
+    }
+    .alert-success { background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); color: var(--green); }
+    .alert-warn { background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.25); color: var(--gold); }
+    .alert-info { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2); color: var(--ice2); }
+
+    /* ── CAMERA CAPTURE ── */
+    .camera-container {
+      position: relative; background: #000;
+      border-radius: var(--r2); overflow: hidden;
+      aspect-ratio: 1; margin: 0 auto;
+      max-width: 300px;
+    }
+    .camera-video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .camera-overlay {
+      position: absolute; inset: 0;
+      border: 3px solid var(--ice);
+      border-radius: var(--r2);
+      pointer-events: none;
+    }
+    .camera-corner {
+      position: absolute; width: 24px; height: 24px;
+      border-color: var(--ice); border-style: solid;
+    }
+    .camera-corner.tl { top: 12px; left: 12px; border-width: 3px 0 0 3px; }
+    .camera-corner.tr { top: 12px; right: 12px; border-width: 3px 3px 0 0; }
+    .camera-corner.bl { bottom: 12px; left: 12px; border-width: 0 0 3px 3px; }
+    .camera-corner.br { bottom: 12px; right: 12px; border-width: 0 3px 3px 0; }
+    .camera-captured { width: 100%; height: 100%; object-fit: cover; display: none; border-radius: var(--r2); }
+    .camera-btn-row { display: flex; gap: 12px; margin-top: 16px; }
+
+    /* ── OTP DIGITS ── */
+    .otp-row { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+    .otp-digit {
+      width: 48px; height: 60px;
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(0,212,255,0.2);
+      border-radius: 12px; color: var(--white);
+      font-size: 1.5rem; font-weight: 700;
+      text-align: center; outline: none;
+    }
+    .otp-digit:focus { border-color: var(--ice); }
+
+    /* ── APP SHELL ── */
+    #screen-app { background: var(--navy); }
+    .app-header {
+      height: var(--hdr-h); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px;
+      background: rgba(5,14,31,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,212,255,0.08);
+      position: relative; z-index: 10;
+    }
+    .app-header-logo { font-size: 1.1rem; font-weight: 900; color: var(--ice); }
+    .app-header-logo span { color: var(--white); }
+    .app-header-right { display: flex; align-items: center; gap: 12px; }
+    .notif-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.06); border: none;
+      color: var(--white); font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .notif-dot {
+      position: absolute; top: 6px; right: 6px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--red); border: 2px solid var(--navy);
+    }
+    .avatar-sm {
+      width: 36px; height: 36px; border-radius: 50%;
+      object-fit: cover; border: 2px solid var(--ice);
+      cursor: pointer;
+    }
+    .avatar-placeholder {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--ice), var(--ice2));
+      color: var(--navy); font-weight: 800; font-size: 0.85rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border: 2px solid var(--ice);
+    }
+
+    /* ── TAB CONTENT AREA ── */
+    .app-content {
+      flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+      padding-bottom: calc(var(--nav-h) + 12px);
+    }
+    .app-content::-webkit-scrollbar { display: none; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* ── BOTTOM NAV ── */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      background: rgba(12,30,60,0.97);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(0,212,255,0.1);
+      display: flex; align-items: stretch;
+      z-index: 100;
+    }
+    .nav-tab {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 4px; cursor: pointer;
+      background: none; border: none;
+      color: var(--gray); font-size: 0.62rem; font-weight: 600;
+      letter-spacing: 0.3px; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-tab.active { color: var(--ice); }
+    .nav-tab-icon { font-size: 1.3rem; line-height: 1; }
+    .nav-tab.active .nav-tab-icon { filter: drop-shadow(0 0 6px rgba(0,212,255,0.6)); }
+
+    /* ── HOME TAB ── */
+    .home-hero {
+      background: linear-gradient(160deg, var(--navy2) 0%, var(--navy3) 100%);
+      padding: 24px 20px 32px;
+      position: relative; overflow: hidden;
+    }
+    .home-greeting { font-size: 0.82rem; color: var(--gray); margin-bottom: 4px; }
+    .home-name { font-size: 1.4rem; font-weight: 800; }
+    .home-balance-label { font-size: 0.75rem; color: var(--gray); margin-top: 20px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+    .home-balance { font-size: 2.8rem; font-weight: 900; color: var(--white); line-height: 1; }
+    .home-balance-cents { font-size: 1.4rem; color: var(--gray); }
+    .home-accrued {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(0,255,136,0.12); border: 1px solid rgba(0,255,136,0.25);
+      border-radius: 50px; padding: 5px 12px;
+      font-size: 0.78rem; font-weight: 600; color: var(--green);
+      margin-top: 12px;
+    }
+    .home-hero-bg {
+      position: absolute; right: -20px; bottom: -20px;
+      width: 140px; opacity: 0.06; pointer-events: none;
+    }
+    .quick-actions {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 12px; padding: 20px 16px;
+    }
+    .quick-action {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 8px; cursor: pointer; background: none; border: none;
+    }
+    .quick-action-icon {
+      width: 52px; height: 52px; border-radius: 16px;
+      background: var(--navy2);
+      border: 1px solid rgba(0,212,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .quick-action:active .quick-action-icon { transform: scale(0.93); background: rgba(0,212,255,0.1); }
+    .quick-action-label { font-size: 0.68rem; color: var(--gray); font-weight: 600; text-align: center; }
+
+    .section-hdr { padding: 0 20px 12px; display: flex; align-items: center; justify-content: space-between; }
+    .section-hdr-title { font-size: 0.88rem; font-weight: 700; }
+    .section-hdr-link { font-size: 0.75rem; color: var(--ice); }
+
+    /* ── CARD COMPONENT ── */
+    .card {
+      background: var(--navy2);
+      border: 1px solid rgba(0,212,255,0.08);
+      border-radius: var(--r2); padding: 20px;
+      margin: 0 16px 14px;
+    }
+    .card-title { font-size: 0.78rem; color: var(--gray); margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; }
+
+    /* Transaction items */
+    .txn-list { margin: 0 16px; }
+    .txn-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(0,212,255,0.05);
+    }
+    .txn-item:last-child { border-bottom: none; }
+    .txn-icon {
+      width: 42px; height: 42px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .txn-icon.green { background: rgba(0,255,136,0.1); }
+    .txn-icon.red { background: rgba(255,77,109,0.1); }
+    .txn-icon.blue { background: rgba(0,212,255,0.1); }
+    .txn-icon.gold { background: rgba(255,215,0,0.1); }
+    .txn-info { flex: 1; }
+    .txn-name { font-size: 0.88rem; font-weight: 600; }
+    .txn-date { font-size: 0.72rem; color: var(--gray); margin-top: 2px; }
+    .txn-amount { font-size: 0.92rem; font-weight: 700; }
+
+    /* ── CLOCK TAB ── */
+    .clock-hero {
+      background: linear-gradient(160deg, var(--navy2) 0%, #0A1E3C 100%);
+      padding: 28px 20px; text-align: center;
+    }
+    .clock-time-display {
+      font-size: 3rem; font-weight: 900; color: var(--white);
+      font-variant-numeric: tabular-nums; letter-spacing: -1px;
+      margin-bottom: 4px;
+    }
+    .clock-date-display { font-size: 0.85rem; color: var(--gray); }
+    .clock-status {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 18px; border-radius: 50px;
+      font-size: 0.78rem; font-weight: 700;
+      margin-top: 16px;
+    }
+    .clock-status.out { background: rgba(139,165,192,0.12); border: 1px solid rgba(139,165,192,0.2); color: var(--gray); }
+    .clock-status.in { background: rgba(0,255,136,0.12); border: 1px solid rgba(0,255,136,0.3); color: var(--green); }
+    .clock-status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .clock-btn {
+      width: 120px; height: 120px; border-radius: 50%;
+      border: none; cursor: pointer; margin: 28px auto;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-size: 0.9rem; font-weight: 800;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .clock-btn.clock-in-btn {
+      background: linear-gradient(135deg, var(--green), #00C870);
+      color: #002A14; box-shadow: 0 8px 32px rgba(0,255,136,0.3);
+    }
+    .clock-btn.clock-out-btn {
+      background: linear-gradient(135deg, var(--red), #CC2244);
+      color: var(--white); box-shadow: 0 8px 32px rgba(255,77,109,0.3);
+    }
+    .clock-btn:active { transform: scale(0.95); }
+    .clock-btn-icon { font-size: 2rem; margin-bottom: 4px; }
+
+    .shift-timer { text-align: center; font-size: 0.85rem; color: var(--gray); margin-top: 8px; }
+    .shift-timer strong { color: var(--ice); font-size: 1.1rem; }
+
+    .shift-list-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(0,212,255,0.05);
+    }
+    .shift-photo {
+      width: 44px; height: 44px; border-radius: 12px;
+      object-fit: cover; flex-shrink: 0;
+      border: 2px solid rgba(0,212,255,0.2);
+    }
+    .shift-photo-placeholder {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--navy3); display: flex; align-items: center;
+      justify-content: center; font-size: 1.2rem; flex-shrink: 0;
+    }
+    .shift-info { flex: 1; }
+    .shift-type { font-size: 0.85rem; font-weight: 700; }
+    .shift-time { font-size: 0.72rem; color: var(--gray); margin-top: 2px; }
+    .shift-earn { font-size: 0.82rem; font-weight: 700; color: var(--green); }
+
+    /* ── WALLET TAB ── */
+    .wallet-card {
+      margin: 20px 16px 0;
+      background: linear-gradient(135deg, #0A2A6E, #0D3A9E, #1A5DB8);
+      border-radius: 20px; padding: 24px;
+      position: relative; overflow: hidden;
+      min-height: 180px;
+    }
+    .wallet-card-label { font-size: 0.72rem; color: rgba(255,255,255,0.6); letter-spacing: 1px; text-transform: uppercase; }
+    .wallet-card-balance { font-size: 2.4rem; font-weight: 900; margin: 8px 0 4px; }
+    .wallet-card-name { font-size: 0.82rem; color: rgba(255,255,255,0.7); margin-top: 16px; }
+    .wallet-card-num { font-size: 0.82rem; color: rgba(255,255,255,0.5); letter-spacing: 2px; margin-top: 4px; }
+    .wallet-chip {
+      width: 36px; height: 28px;
+      background: linear-gradient(135deg, #d4aa70, #c8903a);
+      border-radius: 6px; position: absolute; top: 24px; right: 24px;
+    }
+    .wallet-actions {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px; padding: 20px 16px 4px;
+    }
+    .wallet-action {
+      background: var(--navy2); border: 1px solid rgba(0,212,255,0.1);
+      border-radius: var(--r); padding: 16px 12px;
+      text-align: center; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .wallet-action:active { background: rgba(0,212,255,0.08); }
+    .wallet-action-icon { font-size: 1.4rem; margin-bottom: 6px; }
+    .wallet-action-label { font-size: 0.7rem; color: var(--gray); font-weight: 600; }
+
+    /* ── SAME-DAY PAY TAB ── */
+    .pay-hero {
+      background: linear-gradient(160deg, #0A2040 0%, var(--navy) 100%);
+      padding: 24px 20px; margin-bottom: 4px;
+    }
+    .pay-accrued-label { font-size: 0.75rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+    .pay-accrued-amount { font-size: 2.4rem; font-weight: 900; color: var(--green); margin: 4px 0; }
+    .pay-accrued-sub { font-size: 0.78rem; color: var(--gray); }
+    .pay-slider-wrap { padding: 0 20px; margin: 20px 0; }
+    .pay-slider {
+      width: 100%; -webkit-appearance: none; appearance: none;
+      height: 6px; border-radius: 3px;
+      background: rgba(255,255,255,0.1); outline: none;
+    }
+    .pay-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--ice); cursor: pointer;
+      box-shadow: 0 0 10px rgba(0,212,255,0.4);
+    }
+    .pay-withdraw-amount { font-size: 1.6rem; font-weight: 800; color: var(--ice); text-align: center; margin: 12px 0; }
+
+    /* ── CARDS TAB ── */
+    .ice-card-display {
+      margin: 20px 16px 0;
+      border-radius: 20px; padding: 24px;
+      position: relative; overflow: hidden;
+      aspect-ratio: 1.586;
+    }
+    .ice-card-display.locked {
+      background: linear-gradient(145deg, #1A1A2E, #16213E, #0F3460);
+      border: 2px dashed rgba(0,212,255,0.2);
+    }
+    .ice-card-display.white { background: linear-gradient(145deg, #E8F4FD, #C5DFF0, #9EC8E4); }
+    .ice-card-display.blue  { background: linear-gradient(145deg, #0A2A6E, #0D3A9E, #1A5DB8); }
+    .ice-card-display.black { background: linear-gradient(145deg, #0A0A0A, #1A1A1A, #0D1520); border: 1px solid rgba(255,215,0,0.15); }
+    .ice-card-locked-msg {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 20px;
+    }
+    .ice-card-locked-icon { font-size: 2.5rem; margin-bottom: 8px; }
+    .ice-card-locked-text { font-size: 0.88rem; color: var(--gray); }
+    .ice-card-locked-status { font-size: 0.78rem; color: var(--ice); margin-top: 4px; font-weight: 600; }
+
+    /* ── PROFILE TAB ── */
+    .profile-header {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 32px 20px 24px;
+      background: linear-gradient(160deg, var(--navy2) 0%, var(--navy) 100%);
+    }
+    .profile-avatar {
+      width: 90px; height: 90px; border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--ice);
+      box-shadow: 0 0 20px rgba(0,212,255,0.3);
+    }
+    .profile-avatar-placeholder {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--ice), var(--ice2));
+      color: var(--navy); font-size: 2rem; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      border: 3px solid var(--ice);
+    }
+    .profile-name { font-size: 1.3rem; font-weight: 800; margin-top: 14px; }
+    .profile-email { font-size: 0.82rem; color: var(--gray); margin-top: 4px; }
+    .profile-badges { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; justify-content: center; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px; border-radius: 50px; font-size: 0.68rem; font-weight: 700;
+    }
+    .badge-ice { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.25); color: var(--ice); }
+    .badge-green { background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.25); color: var(--green); }
+    .badge-gold { background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.25); color: var(--gold); }
+    .badge-gray { background: rgba(139,165,192,0.1); border: 1px solid rgba(139,165,192,0.25); color: var(--gray); }
+
+    .menu-list { margin: 0 16px 16px; }
+    .menu-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 18px;
+      background: var(--navy2);
+      border: 1px solid rgba(0,212,255,0.06);
+      border-radius: var(--r); margin-bottom: 8px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .menu-item:active { background: rgba(0,212,255,0.06); }
+    .menu-icon { font-size: 1.2rem; width: 24px; text-align: center; }
+    .menu-info { flex: 1; }
+    .menu-label { font-size: 0.88rem; font-weight: 600; }
+    .menu-sub { font-size: 0.72rem; color: var(--gray); margin-top: 2px; }
+    .menu-arrow { color: var(--gray); font-size: 0.8rem; }
+
+    /* ── MODALS ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+      display: flex; align-items: flex-end;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-sheet {
+      width: 100%;
+      background: var(--navy2);
+      border-radius: 24px 24px 0 0;
+      padding: 20px 24px 40px;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      max-height: 92vh; overflow-y: auto;
+    }
+    .modal-overlay.open .modal-sheet { transform: translateY(0); }
+    .modal-handle {
+      width: 40px; height: 4px; border-radius: 2px;
+      background: rgba(255,255,255,0.15);
+      margin: 0 auto 20px;
+    }
+    .modal-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 6px; }
+    .modal-sub { font-size: 0.82rem; color: var(--gray); margin-bottom: 24px; }
+
+    /* ── COMING SOON RIBBON ── */
+    .coming-soon-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.3);
+      color: var(--gold); font-size: 0.7rem; font-weight: 700;
+      padding: 4px 10px; border-radius: 50px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: rgba(0,212,255,0.06); margin: 0 16px; }
+    .section-pad { height: 16px; }
+
+    /* ── TOGGLE ── */
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 15px 18px; }
+    .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-slider { position: absolute; inset: 0; background: rgba(255,255,255,0.1); border-radius: 24px; cursor: pointer; transition: background 0.3s; }
+    .toggle-slider::before { content:''; position: absolute; width: 18px; height: 18px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.3s; }
+    .toggle input:checked + .toggle-slider { background: var(--ice); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+    /* ── LOADING SPINNER ── */
+    .spinner {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 3px solid rgba(0,212,255,0.2);
+      border-top-color: var(--ice);
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { text-align: center; padding: 40px 20px; }
+    .empty-icon { font-size: 2.8rem; margin-bottom: 12px; }
+    .empty-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .empty-sub { font-size: 0.82rem; color: var(--gray); }
+
+    /* ── ICE TIER CARDS ── */
+    .tier-row { display: flex; flex-direction: column; gap: 12px; margin: 0 16px; }
+    .tier-card {
+      border-radius: var(--r); padding: 18px;
+      display: flex; align-items: center; gap: 16px;
+      cursor: pointer; transition: transform 0.15s;
+    }
+    .tier-card:active { transform: scale(0.98); }
+    .tier-card.white { background: linear-gradient(135deg, #E8F4FD, #C5DFF0); }
+    .tier-card.blue  { background: linear-gradient(135deg, #0A2A6E, #1A5DB8); }
+    .tier-card.black { background: linear-gradient(135deg, #0A0A0A, #1A1A1A); border: 1px solid rgba(255,215,0,0.2); }
+    .tier-card-name { font-size: 1rem; font-weight: 800; }
+    .tier-card.white .tier-card-name { color: #0A3A7C; }
+    .tier-card.black .tier-card-name { color: var(--gold); }
+    .tier-card-limit { font-size: 0.75rem; margin-top: 2px; }
+    .tier-card.white .tier-card-limit { color: rgba(10,42,85,0.7); }
+    .tier-card.blue  .tier-card-limit { color: rgba(255,255,255,0.65); }
+    .tier-card.black .tier-card-limit { color: rgba(255,215,0,0.6); }
+    .tier-card-score { font-size: 0.72rem; font-weight: 600; padding: 3px 8px; border-radius: 50px; margin-top: 6px; display: inline-block; }
+    .tier-card.white .tier-card-score { background: rgba(10,42,85,0.15); color: #0A3A7C; }
+    .tier-card.blue  .tier-card-score { background: rgba(255,255,255,0.15); color: #fff; }
+    .tier-card.black .tier-card-score { background: rgba(255,215,0,0.1); color: var(--gold); }
+
+    /* ── STATS ROW ── */
+    .stats-mini-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 16px 14px; }
+    .stats-mini {
+      background: var(--navy2); border: 1px solid rgba(0,212,255,0.08);
+      border-radius: var(--r); padding: 16px;
+    }
+    .stats-mini-val { font-size: 1.4rem; font-weight: 800; }
+    .stats-mini-label { font-size: 0.7rem; color: var(--gray); margin-top: 3px; }
+
+    /* media */
+    @media (min-width: 480px) {
+      #screen-splash, #screen-auth, #screen-app {
+        max-width: 480px; margin: 0 auto;
+        box-shadow: 0 0 60px rgba(0,0,0,0.5);
+      }
+      .bottom-nav { max-width: 480px; left: 50%; transform: translateX(-50%); }
+      .modal-overlay .modal-sheet { max-width: 480px; margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     SPLASH SCREEN
+══════════════════════════════════════════ -->
+<div class="screen" id="screen-splash">
+  <div class="splash-logo">Tipos<span>It</span></div>
+  <div class="splash-tag">"This is just the tip of the iceberg."</div>
+  <div class="splash-pulse"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     AUTH SCREENS
+══════════════════════════════════════════ -->
+<div class="screen out" id="screen-auth">
+
+  <!-- ── LOGIN ── -->
+  <div id="auth-login">
+    <div class="auth-header">
+      <div class="auth-logo-sm">Tipos<span>It</span></div>
+    </div>
+    <div class="auth-body">
+      <div class="auth-title">Welcome back 👋</div>
+      <div class="auth-sub">Sign in to your TiposIt account</div>
+      <div class="alert alert-warn" id="login-alert"></div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="login-email" type="email" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="login-pass" type="password" placeholder="Your password" autocomplete="current-password"/>
+        <div class="form-error" id="login-err">Incorrect email or password.</div>
+      </div>
+      <div style="text-align:right; margin-bottom:20px;">
+        <span style="font-size:0.8rem; color:var(--ice); cursor:pointer;" onclick="showModal('modal-forgot')">Forgot password?</span>
+      </div>
+      <button class="btn btn-primary" onclick="doLogin()">Sign In</button>
+      <div style="text-align:center; margin-top:20px; font-size:0.85rem; color:var(--gray);">
+        Don't have an account? <span style="color:var(--ice); cursor:pointer;" onclick="showSignup()">Sign Up</span>
+      </div>
+      <div style="text-align:center; margin-top:12px; font-size:0.78rem; color:var(--gray);">
+        Are you an employer? <a href="/employer" style="color:var(--gold);">Partner Portal →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2FA VERIFY ── -->
+  <div id="auth-2fa" class="hidden">
+    <div class="auth-header">
+      <button class="auth-back" onclick="showAuthSection('auth-login')">←</button>
+      <div class="auth-logo-sm">Tipos<span>It</span></div>
+    </div>
+    <div class="auth-body">
+      <div class="auth-title">Verify It's You 🔐</div>
+      <div class="auth-sub" id="tfa-sub">Enter the 6-digit code sent to your email.</div>
+      <div class="alert alert-info" id="tfa-info-msg"></div>
+      <div class="otp-row">
+        <input class="otp-digit" id="o0" maxlength="1" inputmode="numeric" oninput="otpNext(this,1)" onkeydown="otpBack(event,this,null)"/>
+        <input class="otp-digit" id="o1" maxlength="1" inputmode="numeric" oninput="otpNext(this,2)" onkeydown="otpBack(event,this,0)"/>
+        <input class="otp-digit" id="o2" maxlength="1" inputmode="numeric" oninput="otpNext(this,3)" onkeydown="otpBack(event,this,1)"/>
+        <input class="otp-digit" id="o3" maxlength="1" inputmode="numeric" oninput="otpNext(this,4)" onkeydown="otpBack(event,this,2)"/>
+        <input class="otp-digit" id="o4" maxlength="1" inputmode="numeric" oninput="otpNext(this,5)" onkeydown="otpBack(event,this,3)"/>
+        <input class="otp-digit" id="o5" maxlength="1" inputmode="numeric" oninput="otpNext(this,null)" onkeydown="otpBack(event,this,4)"/>
+      </div>
+      <div class="form-error" id="tfa-err" style="text-align:center;">Incorrect code. Please try again.</div>
+      <button class="btn btn-primary" onclick="doVerify2FA()">Verify & Sign In</button>
+      <div style="text-align:center; margin-top:16px;">
+        <span style="font-size:0.8rem; color:var(--ice); cursor:pointer;" onclick="resendOTP()">Resend code</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SIGNUP ── -->
+  <div id="auth-signup" class="hidden">
+    <div class="auth-header">
+      <button class="auth-back" id="signup-back-btn" onclick="signupBack()">←</button>
+      <div class="auth-logo-sm">Tipos<span>It</span></div>
+    </div>
+    <div class="signup-progress">
+      <div class="progress-track"><div class="progress-fill" id="signup-progress" style="width:20%"></div></div>
+      <div class="progress-label" id="signup-progress-label">Step 1 of 5</div>
+    </div>
+
+    <!-- Step 1: Personal Info -->
+    <div class="auth-body" id="signup-step-1">
+      <div class="auth-title">Let's get started</div>
+      <div class="auth-sub">Create your TiposIt account — it takes 2 minutes.</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input class="form-input" id="s1-first" placeholder="Jane" autocomplete="given-name"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input class="form-input" id="s1-last" placeholder="Doe" autocomplete="family-name"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" id="s1-email" type="email" placeholder="jane@example.com" autocomplete="email"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input class="form-input" id="s1-phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date of Birth</label>
+        <input class="form-input" id="s1-dob" type="date"/>
+      </div>
+      <div class="form-error" id="s1-err">Please fill in all fields.</div>
+      <button class="btn btn-primary mt-16" onclick="signupNext(1)">Continue →</button>
+      <div style="text-align:center; margin-top:16px; font-size:0.82rem; color:var(--gray);">
+        Already have an account? <span style="color:var(--ice); cursor:pointer;" onclick="showAuthSection('auth-login')">Sign In</span>
+      </div>
+    </div>
+
+    <!-- Step 2: Profile Selfie -->
+    <div class="auth-body hidden" id="signup-step-2">
+      <div class="auth-title">Take a selfie 📸</div>
+      <div class="auth-sub">We use this to verify your identity and personalize your account.</div>
+      <div class="camera-container" id="selfie-container">
+        <video class="camera-video" id="selfie-video" autoplay playsinline muted></video>
+        <div class="camera-overlay">
+          <div class="camera-corner tl"></div>
+          <div class="camera-corner tr"></div>
+          <div class="camera-corner bl"></div>
+          <div class="camera-corner br"></div>
+        </div>
+        <img class="camera-captured" id="selfie-preview" alt="Your photo"/>
+        <canvas id="selfie-canvas" style="display:none;" width="400" height="400"></canvas>
+      </div>
+      <div class="camera-btn-row">
+        <button class="btn btn-ghost btn-sm" id="selfie-retake-btn" style="display:none;" onclick="retakeSelfie()">↺ Retake</button>
+        <button class="btn btn-primary btn-sm" id="selfie-capture-btn" onclick="captureSelfie()">📸 Capture</button>
+      </div>
+      <div class="alert alert-warn mt-16" id="camera-err">Camera access denied. Tap below to skip and upload later.</div>
+      <div class="form-error" id="s2-err">Please capture or skip your photo.</div>
+      <button class="btn btn-primary mt-16" id="s2-next-btn" onclick="signupNext(2)">Continue →</button>
+      <div style="text-align:center; margin-top:12px;">
+        <span style="font-size:0.78rem; color:var(--gray); cursor:pointer;" onclick="skipSelfie()">Skip for now →</span>
+      </div>
+    </div>
+
+    <!-- Step 3: Employer Info -->
+    <div class="auth-body hidden" id="signup-step-3">
+      <div class="auth-title">Your Employer 🏢</div>
+      <div class="auth-sub">Link your account to your employer to unlock same-day pay and all benefits.</div>
+      <div class="form-group">
+        <label class="form-label">Employer Code</label>
+        <input class="form-input" id="s3-code" placeholder="e.g. ATLAS001" style="text-transform:uppercase;" oninput="lookupEmployer()"/>
+        <div class="form-hint">Your employer should have provided this code. Check with HR if unsure.</div>
+      </div>
+      <div id="employer-found" class="hidden" style="background:rgba(0,255,136,0.08); border:1px solid rgba(0,255,136,0.25); border-radius:var(--r); padding:14px 16px; margin-bottom:16px;">
+        <div style="font-size:0.72rem; color:var(--green); font-weight:700; margin-bottom:3px;">✓ EMPLOYER FOUND</div>
+        <div style="font-size:0.95rem; font-weight:700;" id="employer-found-name"></div>
+        <div style="font-size:0.75rem; color:var(--gray);" id="employer-found-plan"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Job Title</label>
+        <input class="form-input" id="s3-title" placeholder="e.g. Server, Manager, Associate"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Hourly Rate (USD)</label>
+        <input class="form-input" id="s3-rate" type="number" placeholder="e.g. 18.50" step="0.25"/>
+        <div class="form-hint">Used to calculate your accrued wages and same-day pay eligibility.</div>
+      </div>
+      <div class="form-error" id="s3-err">Please enter your job title and hourly rate.</div>
+      <button class="btn btn-primary mt-16" onclick="signupNext(3)">Continue →</button>
+      <div style="text-align:center; margin-top:12px;">
+        <span style="font-size:0.78rem; color:var(--gray); cursor:pointer;" onclick="skipEmployer()">I'll link my employer later</span>
+      </div>
+    </div>
+
+    <!-- Step 4: Password + 2FA -->
+    <div class="auth-body hidden" id="signup-step-4">
+      <div class="auth-title">Secure Your Account 🔒</div>
+      <div class="auth-sub">Create a strong password and choose your two-factor authentication method.</div>
+      <div class="form-group">
+        <label class="form-label">Create Password</label>
+        <input class="form-input" id="s4-pass" type="password" placeholder="At least 8 characters" oninput="checkPasswordStrength()"/>
+        <div style="height:4px; background:rgba(255,255,255,0.1); border-radius:2px; margin-top:8px; overflow:hidden;">
+          <div id="pass-strength-bar" style="height:100%; width:0%; border-radius:2px; transition:width 0.3s, background 0.3s;"></div>
+        </div>
+        <div id="pass-strength-label" class="form-hint"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <input class="form-input" id="s4-pass2" type="password" placeholder="Repeat your password"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Two-Factor Authentication</label>
+        <select class="form-input" id="s4-2fa">
+          <option value="email">📧 Email OTP (Recommended)</option>
+          <option value="sms">📱 SMS Text Code</option>
+          <option value="none">🔓 Skip 2FA (Not Recommended)</option>
+        </select>
+      </div>
+      <div class="form-error" id="s4-err">Please check your password and try again.</div>
+      <button class="btn btn-primary mt-16" onclick="signupNext(4)">Create Account →</button>
+    </div>
+
+    <!-- Step 5: Welcome -->
+    <div class="auth-body hidden" id="signup-step-5">
+      <div style="text-align:center; padding: 20px 0;">
+        <div style="font-size:4rem; margin-bottom:16px;" id="welcome-emoji">🎉</div>
+        <div class="auth-title" id="welcome-title">Welcome to TiposIt!</div>
+        <div class="auth-sub" id="welcome-sub">Your account has been created. You're ready to access your wages on your terms.</div>
+        <div class="card" style="margin: 24px 0 0;">
+          <div style="display:flex; gap:12px; align-items:center; margin-bottom:14px;">
+            <span style="font-size:1.4rem;">💵</span>
+            <div><div style="font-size:0.88rem; font-weight:700;">Same-Day Pay</div><div class="form-hint">Access earned wages instantly</div></div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:center; margin-bottom:14px;">
+            <span style="font-size:1.4rem;">👛</span>
+            <div><div style="font-size:0.88rem; font-weight:700;">Digital Wallet</div><div class="form-hint">Send, receive, and manage money</div></div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:center;">
+            <span style="font-size:1.4rem;">💳</span>
+            <div><div style="font-size:0.88rem; font-weight:700;">ICE Credit Card</div><div class="form-hint">Apply when ready — 3 tiers available</div></div>
+          </div>
+        </div>
+        <button class="btn btn-primary mt-24" onclick="launchApp()">Enter My Dashboard →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MAIN APP SHELL
+══════════════════════════════════════════ -->
+<div class="screen out" id="screen-app" style="flex-direction:column;">
+
+  <!-- Header -->
+  <div class="app-header">
+    <div class="app-header-logo">Tipos<span>It</span></div>
+    <div class="app-header-right">
+      <button class="notif-btn" onclick="showModal('modal-notifs')">
+        🔔<div class="notif-dot" id="notif-dot"></div>
+      </button>
+      <div class="avatar-placeholder" id="header-avatar" onclick="switchTab('profile')"></div>
+    </div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="app-content">
+
+    <!-- ─── HOME TAB ─── -->
+    <div class="tab-pane active" id="tab-home">
+      <div class="home-hero">
+        <div class="home-greeting" id="home-greeting">Good morning,</div>
+        <div class="home-name" id="home-name">Loading…</div>
+        <div class="home-balance-label">Wallet Balance</div>
+        <div class="home-balance">$<span id="home-balance-int">0</span><span class="home-balance-cents">.<span id="home-balance-dec">00</span></span></div>
+        <div class="home-accrued">
+          <span>💰</span> <span id="home-accrued-display">$0.00 accrued today</span>
+        </div>
+        <svg class="home-hero-bg" viewBox="0 0 200 330" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="100,6 28,130 66,68" fill="white" opacity="0.4"/>
+          <polygon points="100,6 66,68 100,98 136,72" fill="white" opacity="0.9"/>
+          <polygon points="100,6 136,72 126,130 172,130" fill="white" opacity="0.3"/>
+          <polygon points="74,130 126,130 112,280 85,280" fill="white" opacity="0.5"/>
+        </svg>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <button class="quick-action" onclick="showModal('modal-send')">
+          <div class="quick-action-icon">📤</div>
+          <div class="quick-action-label">Send</div>
+        </button>
+        <button class="quick-action" onclick="showModal('modal-add-money')">
+          <div class="quick-action-icon">➕</div>
+          <div class="quick-action-label">Add Money</div>
+        </button>
+        <button class="quick-action" onclick="switchTab('pay')">
+          <div class="quick-action-icon">⚡</div>
+          <div class="quick-action-label">Get Paid</div>
+        </button>
+        <button class="quick-action" onclick="switchTab('clock')">
+          <div class="quick-action-icon">🕐</div>
+          <div class="quick-action-label">Clock In</div>
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-mini-row">
+        <div class="stats-mini">
+          <div class="stats-mini-val text-green" id="stat-earned">$0.00</div>
+          <div class="stats-mini-label">Earned This Week</div>
+        </div>
+        <div class="stats-mini">
+          <div class="stats-mini-val text-ice" id="stat-hours">0h 0m</div>
+          <div class="stats-mini-label">Hours This Week</div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="section-hdr">
+        <div class="section-hdr-title">Recent Activity</div>
+        <div class="section-hdr-link" onclick="switchTab('wallet')">See All</div>
+      </div>
+      <div id="home-txn-list" class="txn-list" style="margin:0 16px;"></div>
+      <div id="home-empty" class="empty-state hidden">
+        <div class="empty-icon">💸</div>
+        <div class="empty-title">No activity yet</div>
+        <div class="empty-sub">Clock in to start earning and your transactions will appear here.</div>
+      </div>
+      <div class="section-pad"></div>
+
+      <!-- Employer Card -->
+      <div class="section-hdr"><div class="section-hdr-title">My Employer</div></div>
+      <div class="card" id="employer-card">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div style="width:48px;height:48px;border-radius:14px;background:var(--navy3);display:flex;align-items:center;justify-content:center;font-size:1.5rem;" id="employer-card-icon">🏢</div>
+          <div>
+            <div style="font-size:0.95rem;font-weight:700;" id="employer-card-name">No employer linked</div>
+            <div style="font-size:0.75rem;color:var(--gray);" id="employer-card-sub">Link your employer to unlock same-day pay</div>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm mt-16" id="employer-link-btn" onclick="showModal('modal-link-employer')" style="width:auto;">Link Employer →</button>
+      </div>
+      <div class="section-pad"></div>
+    </div>
+
+    <!-- ─── CLOCK TAB ─── -->
+    <div class="tab-pane" id="tab-clock">
+      <div class="clock-hero">
+        <div class="clock-time-display" id="live-clock">12:00 AM</div>
+        <div class="clock-date-display" id="live-date">Loading...</div>
+        <div class="clock-status out" id="clock-status-badge">
+          <div class="clock-status-dot"></div>
+          <span id="clock-status-text">Clocked Out</span>
+        </div>
+      </div>
+
+      <div style="text-align:center; padding:8px 20px 0;">
+        <div class="shift-timer" id="shift-timer-display" style="display:none;">
+          Current shift: <strong id="shift-elapsed">0h 0m</strong>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:center;">
+        <button class="clock-btn clock-in-btn" id="clock-main-btn" onclick="handleClockAction()">
+          <div class="clock-btn-icon">▶</div>
+          <div id="clock-btn-label">CLOCK IN</div>
+        </button>
+      </div>
+
+      <div style="text-align:center; padding:0 20px 8px;">
+        <div style="font-size:0.75rem; color:var(--gray);" id="clock-note">
+          📍 Location and selfie required for verification
+        </div>
+      </div>
+
+      <!-- Shift History -->
+      <div class="section-hdr" style="margin-top:8px;">
+        <div class="section-hdr-title">Shift History</div>
+        <div class="section-hdr-link" id="week-earn-display">This week: $0.00</div>
+      </div>
+      <div id="shift-history-list"></div>
+      <div id="shift-empty" class="empty-state">
+        <div class="empty-icon">🕐</div>
+        <div class="empty-title">No shifts yet</div>
+        <div class="empty-sub">Clock in to start tracking your hours and earnings.</div>
+      </div>
+      <div class="section-pad"></div>
+    </div>
+
+    <!-- ─── WALLET TAB ─── -->
+    <div class="tab-pane" id="tab-wallet">
+      <div class="wallet-card">
+        <div class="wallet-chip"></div>
+        <div class="wallet-card-label">Wallet Balance</div>
+        <div class="wallet-card-balance">$<span id="wallet-balance-disp">0.00</span></div>
+        <div class="wallet-card-name" id="wallet-card-name">Your Name</div>
+        <div class="wallet-card-num">TIPOSIT •••• •••• <span id="wallet-card-last">0000</span></div>
+      </div>
+
+      <div class="wallet-actions">
+        <div class="wallet-action" onclick="showModal('modal-send')">
+          <div class="wallet-action-icon">📤</div>
+          <div class="wallet-action-label">Send</div>
+        </div>
+        <div class="wallet-action" onclick="showModal('modal-add-money')">
+          <div class="wallet-action-icon">➕</div>
+          <div class="wallet-action-label">Add Money</div>
+        </div>
+        <div class="wallet-action" onclick="showModal('modal-withdraw')">
+          <div class="wallet-action-icon">🏦</div>
+          <div class="wallet-action-label">Withdraw</div>
+        </div>
+      </div>
+
+      <!-- BNPL Banner -->
+      <div class="card" style="background:linear-gradient(135deg,rgba(184,138,255,0.12),rgba(0,212,255,0.08)); border-color:rgba(184,138,255,0.25);">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:0.88rem; font-weight:700;">Buy Now, Pay Later</div>
+            <div style="font-size:0.75rem; color:var(--gray); margin-top:3px;">Split purchases into 4 payments — 0% interest</div>
+            <span class="coming-soon-badge mt-8">🔜 Q3 2026</span>
+          </div>
+          <div style="font-size:2.5rem;">🛒</div>
+        </div>
+      </div>
+
+      <!-- Transaction History -->
+      <div class="section-hdr">
+        <div class="section-hdr-title">Transaction History</div>
+      </div>
+      <div id="wallet-txn-list" class="txn-list" style="margin:0 16px 0;"></div>
+      <div id="wallet-empty" class="empty-state">
+        <div class="empty-icon">📊</div>
+        <div class="empty-title">No transactions yet</div>
+        <div class="empty-sub">Your transaction history will appear here.</div>
+      </div>
+      <div class="section-pad"></div>
+    </div>
+
+    <!-- ─── SAME-DAY PAY TAB ─── -->
+    <div class="tab-pane" id="tab-pay">
+      <div class="pay-hero">
+        <div class="pay-accrued-label">Wages Accrued Today</div>
+        <div class="pay-accrued-amount" id="pay-accrued-amount">$0.00</div>
+        <div class="pay-accrued-sub" id="pay-accrued-sub">Clock in to start accruing wages</div>
+      </div>
+
+      <!-- Withdraw Card -->
+      <div class="card">
+        <div class="card-title">Request Same-Day Pay</div>
+        <div style="font-size:0.82rem; color:var(--gray); margin-bottom:16px;">How much would you like to withdraw?</div>
+        <div class="pay-slider-wrap" style="padding:0;">
+          <input type="range" class="pay-slider" id="pay-slider" min="0" max="100" value="50" oninput="updatePaySlider()"/>
+        </div>
+        <div class="pay-withdraw-amount" id="pay-withdraw-display">$0.00</div>
+        <div style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--gray); margin-bottom:16px;">
+          <span>$0</span>
+          <span>Fee: <span id="pay-fee">$0.00</span></span>
+          <span>Max: <span id="pay-max">$0.00</span></span>
+        </div>
+        <button class="btn btn-primary btn-icon" onclick="requestPay()">⚡ Get Paid Now</button>
+      </div>
+
+      <!-- How It Works -->
+      <div class="card">
+        <div class="card-title">How Same-Day Pay Works</div>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div style="display:flex; gap:12px; align-items:flex-start;">
+            <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,212,255,0.15);color:var(--ice);font-size:0.78rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+            <div><div style="font-size:0.85rem;font-weight:700;">Clock In to Start Earning</div><div style="font-size:0.75rem;color:var(--gray);margin-top:2px;">Every hour worked accrues wages in real-time.</div></div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:flex-start;">
+            <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,212,255,0.15);color:var(--ice);font-size:0.78rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+            <div><div style="font-size:0.85rem;font-weight:700;">Choose Your Amount</div><div style="font-size:0.75rem;color:var(--gray);margin-top:2px;">Withdraw any amount up to 100% of earned wages. No caps.</div></div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:flex-start;">
+            <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,212,255,0.15);color:var(--ice);font-size:0.78rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+            <div><div style="font-size:0.85rem;font-weight:700;">Money Hits Your Wallet</div><div style="font-size:0.75rem;color:var(--gray);margin-top:2px;">Funds are in your TiposIt wallet in seconds. Small fee applies.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pay Period Info -->
+      <div class="card" style="background:rgba(255,215,0,0.04); border-color:rgba(255,215,0,0.15);">
+        <div style="display:flex; gap:12px; align-items:center;">
+          <span style="font-size:1.6rem;">📅</span>
+          <div>
+            <div style="font-size:0.88rem; font-weight:700; color:var(--gold);">Regular Paycheck</div>
+            <div style="font-size:0.75rem; color:var(--gray); margin-top:3px;">Your employer's regular pay cycle still applies. Same-Day Pay simply gives you early access to what you've already earned.</div>
+          </div>
+        </div>
+      </div>
+      <div class="section-pad"></div>
+    </div>
+
+    <!-- ─── ICE CARDS TAB ─── -->
+    <div class="tab-pane" id="tab-cards">
+      <div style="padding:20px 20px 12px;">
+        <div style="font-size:1.2rem; font-weight:800; margin-bottom:4px;">ICE Credit Cards</div>
+        <div style="font-size:0.82rem; color:var(--gray);">Three tiers, designed for your financial journey.</div>
+      </div>
+
+      <!-- Current Card Status -->
+      <div class="ice-card-display locked" style="margin:0 16px 20px;">
+        <div class="ice-card-locked-msg">
+          <div class="ice-card-locked-icon">🧊</div>
+          <div style="font-size:1rem; font-weight:800; margin-bottom:4px;">No ICE Card Yet</div>
+          <div class="ice-card-locked-text">Apply for your first ICE Card below.</div>
+          <div class="ice-card-locked-status">Pending Regulatory Approval — Q3 2026</div>
+        </div>
+      </div>
+
+      <!-- Tier cards -->
+      <div class="tier-row">
+        <div class="tier-card white" onclick="showModal('modal-ice-white')">
+          <div style="flex:1;">
+            <div class="tier-card-name">White ICE</div>
+            <div class="tier-card-limit">$500 – $2,500 limit</div>
+            <div class="tier-card-score">580+ Credit Score</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.78rem; color:rgba(10,42,85,0.7); font-weight:700;">1% Cash Back</div>
+            <div style="font-size:0.7rem; color:rgba(10,42,85,0.5);">$0 Annual Fee</div>
+          </div>
+        </div>
+        <div class="tier-card blue" onclick="showModal('modal-ice-blue')">
+          <div style="flex:1;">
+            <div class="tier-card-name" style="color:var(--ice2);">Blue ICE</div>
+            <div class="tier-card-limit">$2,500 – $10,000 limit</div>
+            <div class="tier-card-score">660+ Credit Score</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.78rem; color:rgba(255,255,255,0.7); font-weight:700;">2% + 3x Dining</div>
+            <div style="font-size:0.7rem; color:rgba(255,255,255,0.5);">$49/yr</div>
+          </div>
+        </div>
+        <div class="tier-card black" onclick="showModal('modal-ice-black')">
+          <div style="flex:1;">
+            <div class="tier-card-name">Black ICE</div>
+            <div class="tier-card-limit">$10,000 – $50,000 limit</div>
+            <div class="tier-card-score">720+ Credit Score</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.78rem; color:rgba(255,215,0,0.8); font-weight:700;">3% + 5x Categories</div>
+            <div style="font-size:0.7rem; color:rgba(255,215,0,0.5);">$149/yr</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pre-Apply Banner -->
+      <div class="card" style="margin-top:16px; background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(0,212,255,0.03));">
+        <div style="font-size:0.88rem; font-weight:700; margin-bottom:6px;">🔔 Get Notified First</div>
+        <div style="font-size:0.78rem; color:var(--gray); margin-bottom:14px;">ICE Cards are pending final regulatory approval. Pre-register to be first in line when they launch — Q3 2026.</div>
+        <button class="btn btn-secondary btn-sm" onclick="preRegisterCard()">Pre-Register for ICE Card</button>
+      </div>
+
+      <!-- BNPL Section -->
+      <div style="padding:0 20px; margin-top:16px;">
+        <div style="font-size:1rem; font-weight:800; margin-bottom:4px;">Buy Now, Pay Later</div>
+        <div style="font-size:0.8rem; color:var(--gray); margin-bottom:14px;">Split any purchase into 4 equal payments. No interest, no credit check.</div>
+      </div>
+      <div class="card" style="background:linear-gradient(135deg,rgba(184,138,255,0.1),rgba(0,212,255,0.06)); border-color:rgba(184,138,255,0.2);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div style="font-size:0.92rem; font-weight:700;">BNPL Coming Q3 2026</div>
+          <span class="coming-soon-badge">🔜</span>
+        </div>
+        <div style="font-size:0.78rem; color:var(--gray);">Shop anywhere and split purchases of $25–$2,500 into 4 bi-weekly payments.</div>
+        <button class="btn btn-ghost btn-sm mt-16" onclick="preRegisterBNPL()">Notify Me →</button>
+      </div>
+      <div class="section-pad"></div>
+    </div>
+
+    <!-- ─── PROFILE TAB ─── -->
+    <div class="tab-pane" id="tab-profile">
+      <div class="profile-header">
+        <div id="profile-avatar-wrap">
+          <div class="profile-avatar-placeholder" id="profile-initials-avatar"></div>
+        </div>
+        <div class="profile-name" id="profile-full-name">Loading…</div>
+        <div class="profile-email" id="profile-email-display"></div>
+        <div class="profile-badges">
+          <span class="badge badge-ice">✓ Verified</span>
+          <span class="badge badge-green" id="profile-employer-badge" style="display:none;"></span>
+          <span class="badge badge-gray" id="profile-card-badge">No ICE Card</span>
+        </div>
+      </div>
+
+      <div class="menu-list">
+        <div class="menu-item" onclick="showModal('modal-edit-profile')">
+          <div class="menu-icon">👤</div>
+          <div class="menu-info">
+            <div class="menu-label">Edit Profile</div>
+            <div class="menu-sub">Update name, phone, address</div>
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+        <div class="menu-item" onclick="showModal('modal-security')">
+          <div class="menu-icon">🔒</div>
+          <div class="menu-info">
+            <div class="menu-label">Security</div>
+            <div class="menu-sub">Password, 2FA, biometrics</div>
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+        <div class="menu-item" onclick="showModal('modal-link-employer')">
+          <div class="menu-icon">🏢</div>
+          <div class="menu-info">
+            <div class="menu-label">Employer & Pay</div>
+            <div class="menu-sub" id="menu-employer-sub">Link your employer</div>
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+        <div class="menu-item" onclick="showModal('modal-notif-settings')">
+          <div class="menu-icon">🔔</div>
+          <div class="menu-info">
+            <div class="menu-label">Notifications</div>
+            <div class="menu-sub">Manage alerts and reminders</div>
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+        <div class="menu-item" onclick="showModal('modal-banking-info')">
+          <div class="menu-icon">🏦</div>
+          <div class="menu-info">
+            <div class="menu-label">Banking & Payouts</div>
+            <div class="menu-sub">Linked bank accounts, routing</div>
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+        <div class="menu-item" onclick="showModal('modal-tipflic')">
+          <div class="menu-icon">📊</div>
+          <div class="menu-info">
+            <div class="menu-label">Tipflic Analytics</div>
+            <div class="menu-sub">Your earnings and financial health</div>
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+        <div class="menu-item" onclick="showModal('modal-help')">
+          <div class="menu-icon">❓</div>
+          <div class="menu-info">
+            <div class="menu-label">Help & Support</div>
+            <div class="menu-sub">FAQs, contact us, tutorials</div>
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+        <div class="menu-item" onclick="doLogout()">
+          <div class="menu-icon">🚪</div>
+          <div class="menu-info">
+            <div class="menu-label" style="color:var(--red);">Sign Out</div>
+          </div>
+        </div>
+      </div>
+      <div class="section-pad"></div>
+      <div style="text-align:center; padding:0 20px 32px; font-size:0.7rem; color:var(--gray);">
+        TiposIt v1.0 MVP · <a href="/" style="color:var(--ice);">tiposit.com</a> · <a href="https://tiposit.com" style="color:var(--gray);">Privacy Policy</a>
+      </div>
+    </div>
+
+  </div><!-- /app-content -->
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav">
+    <button class="nav-tab active" id="nav-home" onclick="switchTab('home')"><span class="nav-tab-icon">🏠</span>Home</button>
+    <button class="nav-tab" id="nav-clock" onclick="switchTab('clock')"><span class="nav-tab-icon">🕐</span>Clock</button>
+    <button class="nav-tab" id="nav-wallet" onclick="switchTab('wallet')"><span class="nav-tab-icon">👛</span>Wallet</button>
+    <button class="nav-tab" id="nav-pay" onclick="switchTab('pay')"><span class="nav-tab-icon">⚡</span>Pay</button>
+    <button class="nav-tab" id="nav-cards" onclick="switchTab('cards')"><span class="nav-tab-icon">💳</span>Cards</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CAMERA MODAL (Clock In/Out)
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-camera">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="camera-modal-title">Verify Identity</div>
+    <div class="modal-sub" id="camera-modal-sub">Take a quick selfie to clock in. This confirms you're on location.</div>
+    <div class="camera-container">
+      <video class="camera-video" id="clock-video" autoplay playsinline muted></video>
+      <div class="camera-overlay">
+        <div class="camera-corner tl"></div><div class="camera-corner tr"></div>
+        <div class="camera-corner bl"></div><div class="camera-corner br"></div>
+      </div>
+      <img class="camera-captured" id="clock-preview" alt="Clock photo"/>
+      <canvas id="clock-canvas" style="display:none;" width="400" height="400"></canvas>
+    </div>
+    <div class="camera-btn-row">
+      <button class="btn btn-ghost btn-sm" id="clock-retake-btn" style="display:none;" onclick="retakeClockPhoto()">↺ Retake</button>
+      <button class="btn btn-primary btn-sm flex-1" id="clock-capture-btn" onclick="captureClockPhoto()">📸 Take Photo</button>
+    </div>
+    <button class="btn btn-primary mt-16 btn-icon" id="clock-confirm-btn" style="display:none;" onclick="confirmClockAction()">✓ Confirm Clock <span id="clock-confirm-label">In</span></button>
+    <button class="btn btn-ghost mt-8" onclick="closeModal('modal-camera')">Cancel</button>
+  </div>
+</div>
+
+<!-- SEND MODAL -->
+<div class="modal-overlay" id="modal-send">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Send Money</div>
+    <div class="modal-sub">Transfer from your TiposIt wallet</div>
+    <div class="form-group">
+      <label class="form-label">Recipient (TiposIt ID or Email)</label>
+      <input class="form-input" id="send-recipient" placeholder="user@example.com or @username"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Amount</label>
+      <input class="form-input" id="send-amount" type="number" placeholder="$0.00" step="0.01"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Note (optional)</label>
+      <input class="form-input" id="send-note" placeholder="What's it for?"/>
+    </div>
+    <button class="btn btn-primary" onclick="doSend()">Send →</button>
+    <button class="btn btn-ghost mt-8" onclick="closeModal('modal-send')">Cancel</button>
+  </div>
+</div>
+
+<!-- ADD MONEY MODAL -->
+<div class="modal-overlay" id="modal-add-money">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Add Money</div>
+    <div class="modal-sub">Fund your TiposIt wallet</div>
+    <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
+      <div class="menu-item" onclick="selectAddMethod('bank')" style="margin:0;">
+        <div class="menu-icon">🏦</div>
+        <div class="menu-info"><div class="menu-label">Bank Transfer (ACH)</div><div class="menu-sub">1–2 business days · Free</div></div>
+        <div class="menu-arrow">›</div>
+      </div>
+      <div class="menu-item" onclick="selectAddMethod('debit')" style="margin:0;">
+        <div class="menu-icon">💳</div>
+        <div class="menu-info"><div class="menu-label">Debit Card</div><div class="menu-sub">Instant · 1.5% fee</div></div>
+        <div class="menu-arrow">›</div>
+      </div>
+      <div class="menu-item" style="margin:0; opacity:0.5;">
+        <div class="menu-icon">📱</div>
+        <div class="menu-info"><div class="menu-label">Apple Pay / Google Pay</div><div class="menu-sub">Coming Soon</div></div>
+        <span class="coming-soon-badge">Soon</span>
+      </div>
+    </div>
+    <button class="btn btn-ghost" onclick="closeModal('modal-add-money')">Cancel</button>
+  </div>
+</div>
+
+<!-- WITHDRAW MODAL -->
+<div class="modal-overlay" id="modal-withdraw">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Withdraw to Bank</div>
+    <div class="modal-sub">Transfer your wallet balance to your bank account</div>
+    <div class="form-group">
+      <label class="form-label">Amount</label>
+      <input class="form-input" id="withdraw-amount" type="number" placeholder="$0.00" step="0.01"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Destination</label>
+      <select class="form-input" id="withdraw-dest">
+        <option>Add a bank account first</option>
+      </select>
+    </div>
+    <div style="background:rgba(0,212,255,0.06); border-radius:var(--r); padding:12px 14px; font-size:0.78rem; color:var(--gray); margin-bottom:16px;">
+      Standard: 1–2 business days · Free<br/>Instant: Same-day · $2.99 flat fee
+    </div>
+    <button class="btn btn-primary" onclick="doWithdraw()">Withdraw →</button>
+    <button class="btn btn-ghost mt-8" onclick="closeModal('modal-withdraw')">Cancel</button>
+  </div>
+</div>
+
+<!-- LINK EMPLOYER MODAL -->
+<div class="modal-overlay" id="modal-link-employer">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Link Your Employer</div>
+    <div class="modal-sub">Enter the employer code provided by your HR department.</div>
+    <div class="form-group">
+      <label class="form-label">Employer Code</label>
+      <input class="form-input" id="link-emp-code" placeholder="e.g. ATLAS001" style="text-transform:uppercase;" oninput="lookupEmployerModal()"/>
+    </div>
+    <div id="link-emp-found" class="hidden" style="background:rgba(0,255,136,0.08); border:1px solid rgba(0,255,136,0.25); border-radius:var(--r); padding:14px 16px; margin-bottom:16px;">
+      <div style="font-size:0.72rem; color:var(--green); font-weight:700;">✓ EMPLOYER FOUND</div>
+      <div style="font-size:0.95rem; font-weight:700;" id="link-emp-name"></div>
+    </div>
+    <button class="btn btn-primary" onclick="doLinkEmployer()">Link Employer →</button>
+    <button class="btn btn-ghost mt-8" onclick="closeModal('modal-link-employer')">Cancel</button>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS MODAL -->
+<div class="modal-overlay" id="modal-notifs">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Notifications</div>
+    <div id="notif-list"></div>
+  </div>
+</div>
+
+<!-- SECURITY MODAL -->
+<div class="modal-overlay" id="modal-security">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Security Settings</div>
+    <div class="card" style="margin:0 0 16px;">
+      <div class="card-title">Two-Factor Authentication</div>
+      <div class="toggle-row" style="padding:0;">
+        <span style="font-size:0.85rem;">Enable 2FA</span>
+        <label class="toggle"><input type="checkbox" id="toggle-2fa" checked onchange="save2FASetting()"/><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Change Password</label>
+      <input class="form-input" id="sec-newpass" type="password" placeholder="New password"/>
+    </div>
+    <div class="form-group">
+      <input class="form-input" id="sec-newpass2" type="password" placeholder="Confirm new password"/>
+    </div>
+    <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
+    <button class="btn btn-ghost mt-8" onclick="closeModal('modal-security')">Close</button>
+  </div>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div class="modal-overlay" id="modal-edit-profile">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Edit Profile</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">First Name</label>
+        <input class="form-input" id="edit-first"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Last Name</label>
+        <input class="form-input" id="edit-last"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Phone</label>
+      <input class="form-input" id="edit-phone" type="tel"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Street Address</label>
+      <input class="form-input" id="edit-address" placeholder="123 Main St"/>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">City</label>
+        <input class="form-input" id="edit-city"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">State</label>
+        <input class="form-input" id="edit-state" placeholder="TX"/>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+    <button class="btn btn-ghost mt-8" onclick="closeModal('modal-edit-profile')">Cancel</button>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-overlay" id="modal-forgot">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Reset Password</div>
+    <div class="modal-sub">Enter your email address and we'll send a recovery link.</div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input class="form-input" id="forgot-email" type="email" placeholder="you@example.com"/>
+    </div>
+    <div class="alert alert-success" id="forgot-success">Reset link sent! Check your inbox.</div>
+    <button class="btn btn-primary" onclick="sendForgot()">Send Reset Link</button>
+    <button class="btn btn-ghost mt-8" onclick="closeModal('modal-forgot')">Cancel</button>
+  </div>
+</div>
+
+<!-- ICE CARD MODALS -->
+<div class="modal-overlay" id="modal-ice-white">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="background:linear-gradient(135deg,#E8F4FD,#C5DFF0);border-radius:var(--r);padding:20px;margin-bottom:16px;">
+      <div style="font-size:1.2rem;font-weight:900;color:#0A3A7C;">WHITE ICE</div>
+      <div style="font-size:0.75rem;color:rgba(10,42,85,0.6);">Entry Level · TiposIt ICE Card</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(0,212,255,0.06);"><span style="font-size:0.82rem;color:var(--gray);">Credit Limit</span><span style="font-size:0.82rem;font-weight:700;">$500 – $2,500</span></div>
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(0,212,255,0.06);"><span style="font-size:0.82rem;color:var(--gray);">Cash Back</span><span style="font-size:0.82rem;font-weight:700;color:var(--green);">1% All Purchases</span></div>
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(0,212,255,0.06);"><span style="font-size:0.82rem;color:var(--gray);">Required Score</span><span style="font-size:0.82rem;font-weight:700;">580+</span></div>
+      <div style="display:flex;justify-content:space-between;padding:10px 0;"><span style="font-size:0.82rem;color:var(--gray);">Annual Fee</span><span style="font-size:0.82rem;font-weight:700;color:var(--green);">$0 Free</span></div>
+    </div>
+    <span class="coming-soon-badge" style="margin-bottom:14px;display:inline-flex;">🔜 Available Q3 2026</span>
+    <button class="btn btn-primary" onclick="preApplyCard('White ICE')">Pre-Apply Now →</button>
+    <button class="btn btn-ghost mt-8" onclick="closeModal('modal-ice-white')">Close</button>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-ice-blue">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="background:linear-gradient(135deg,#0A2A6E,#1A5DB8);border-radius:var(--r);padding:20px;margin-bottom:16px;">
+      <div style="font-size:1.2rem;font-weight:900;color:var(--ice2);">BLUE ICE</div>
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">Mid Tier · TiposIt ICE Card</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(0,212,255,0.06);"><span style="font-size:0.82rem;color:var(--gray);">Credit Limit</span><span style="font-size:0.82rem;font-weight:700;">$2,500 – $10,000</span></div>
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(0,212,255,0.06);"><span style="font-size:0.82rem;color:var(--gray);">Cash Back</span><span style="font-size:0.82rem;font-weight:700;color:var(--green);">2% + 3x Dining</span></div>
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(0,212,255,0.06);"><span style="font-size:0.82rem;color:var(--gray);">Required Score</span><span style="font-size:0.82rem;font-weight:700;">660+</span></div>
+      <div style="display:flex;justify-content:space-between;padding:10px 0;"><span style="font-size:0.82rem;color:var(--gray);">Annual Fee</span><span style="font-size:0.82rem;font-weight:700;">$49/yr</span></div>
+    </div>
+    <span class="coming-soon-badge" style="margin-bottom:14px;display:inline-flex;">🔜 Available Q3 2026</span>
+    <button class="btn btn-primary" onclick="preApplyCard('Blue ICE')">Pre-Apply Now →</button>
+    <button class="btn btn-ghost mt-8" onclick="closeModal('modal-ice-blue')">Close</button>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-ice-black">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="background:linear-gradient(135deg,#0A0A0A,#1A1A1A);border-radius:var(--r);padding:20px;margin-bottom:16px;border:1px solid rgba(255,215,0,0.2);">
+      <div style="font-size:1.2rem;font-weight:900;color:var(--gold);">BLACK ICE</div>
+      <div style="font-size:0.75rem;color:rgba(255,215,0,0.5);">Premium · TiposIt ICE Card</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,215,0,0.08);"><span style="font-size:0.82rem;color:var(--gray);">Credit Limit</span><span style="font-size:0.82rem;font-weight:700;color:var(--gold);">$10,000 – $50,000</span></div>
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,215,0,0.08);"><span style="font-size:0.82rem;color:var(--gray);">Cash Back</span><span style="font-size:0.82rem;font-weight:700;color:var(--green);">3% + 5x Categories</span></div>
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,215,0,0.08);"><span style="font-size:0.82rem;color:var(--gray);">Required Score</span><span style="font-size:0.82rem;font-weight:700;color:var(--gold);">720+</span></div>
+      <div style="display:flex;justify-content:space-between;padding:10px 0;"><span style="font-size:0.82rem;color:var(--gray);">Annual Fee</span><span style="font-size:0.82rem;font-weight:700;color:var(--gold);">$149/yr</span></div>
+    </div>
+    <span class="coming-soon-badge" style="margin-bottom:14px;display:inline-flex;">🔜 Available Q3 2026</span>
+    <button class="btn btn-primary" onclick="preApplyCard('Black ICE')">Pre-Apply Now →</button>
+    <button class="btn btn-ghost mt-8" onclick="closeModal('modal-ice-black')">Close</button>
+  </div>
+</div>
+
+<!-- NOTIFICATION SETTINGS -->
+<div class="modal-overlay" id="modal-notif-settings">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Notification Settings</div>
+    <div class="card" style="margin:0 0 16px;">
+      <div class="toggle-row" style="padding:0 0 12px; border-bottom:1px solid rgba(0,212,255,0.06);"><span style="font-size:0.85rem;">Pay Day Reminders</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+      <div class="toggle-row" style="padding:12px 0; border-bottom:1px solid rgba(0,212,255,0.06);"><span style="font-size:0.85rem;">Clock In/Out Reminders</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+      <div class="toggle-row" style="padding:12px 0; border-bottom:1px solid rgba(0,212,255,0.06);"><span style="font-size:0.85rem;">Transaction Alerts</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+      <div class="toggle-row" style="padding:12px 0;"><span style="font-size:0.85rem;">Promotions & Updates</span><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></div>
+    </div>
+    <button class="btn btn-primary" onclick="closeModal('modal-notif-settings')">Save</button>
+  </div>
+</div>
+
+<!-- BANKING INFO -->
+<div class="modal-overlay" id="modal-banking-info">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Banking & Payouts</div>
+    <div class="modal-sub">Link a bank account to withdraw funds or receive your paycheck.</div>
+    <div class="menu-item" style="margin:0 0 16px; cursor:default;">
+      <div class="menu-icon">🏦</div>
+      <div class="menu-info"><div class="menu-label">No Bank Linked</div><div class="menu-sub">Add your bank via routing & account number</div></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Bank Name</label>
+      <input class="form-input" id="bank-name" placeholder="e.g. Chase, Wells Fargo"/>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Routing Number</label>
+        <input class="form-input" id="bank-routing" placeholder="9-digit routing" maxlength="9"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Account Number</label>
+        <input class="form-input" id="bank-acct" placeholder="Account #"/>
+      </div>
+    </div>
+    <div style="font-size:0.72rem; color:var(--gray); margin-bottom:16px;">🔒 Your banking info is encrypted and stored securely. TiposIt uses Plaid-compatible verification (coming Q3 2026). For now, manually verified by our team within 1 business day.</div>
+    <button class="btn btn-primary" onclick="saveBankInfo()">Submit for Verification</button>
+    <button class="btn btn-ghost mt-8" onclick="closeModal('modal-banking-info')">Cancel</button>
+  </div>
+</div>
+
+<!-- TIPFLIC ANALYTICS -->
+<div class="modal-overlay" id="modal-tipflic">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Tipflic — Your Earnings</div>
+    <div class="modal-sub">Powered by TiposIt's analytics subsidiary.</div>
+    <div class="stats-mini-row" style="margin:0 0 16px;">
+      <div class="stats-mini"><div class="stats-mini-val text-green" id="tipflic-total">$0.00</div><div class="stats-mini-label">Total Earned</div></div>
+      <div class="stats-mini"><div class="stats-mini-val text-ice" id="tipflic-hours">0h</div><div class="stats-mini-label">Total Hours</div></div>
+    </div>
+    <div class="stats-mini-row" style="margin:0 0 20px;">
+      <div class="stats-mini"><div class="stats-mini-val" id="tipflic-shifts">0</div><div class="stats-mini-label">Total Shifts</div></div>
+      <div class="stats-mini"><div class="stats-mini-val text-gold" id="tipflic-avg">$0.00</div><div class="stats-mini-label">Avg Per Shift</div></div>
+    </div>
+    <div style="background:rgba(184,138,255,0.08); border:1px solid rgba(184,138,255,0.2); border-radius:var(--r); padding:14px; margin-bottom:16px; font-size:0.78rem; color:var(--gray);">
+      📊 Full Tipflic analytics dashboard coming Q3 2026 — including spending insights, savings goals, and financial wellness score.
+    </div>
+    <button class="btn btn-ghost" onclick="closeModal('modal-tipflic')">Close</button>
+  </div>
+</div>
+
+<!-- HELP MODAL -->
+<div class="modal-overlay" id="modal-help">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Help & Support</div>
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+      <div class="menu-item" style="margin:0;" onclick="alert('Opening full FAQ at tiposit.com/#faq')"><div class="menu-icon">❓</div><div class="menu-info"><div class="menu-label">FAQ</div></div><div class="menu-arrow">›</div></div>
+      <div class="menu-item" style="margin:0;" onclick="alert('Email us: support@tiposit.com')"><div class="menu-icon">📧</div><div class="menu-info"><div class="menu-label">Email Support</div><div class="menu-sub">support@tiposit.com</div></div><div class="menu-arrow">›</div></div>
+      <div class="menu-item" style="margin:0;" onclick="showTutorial()"><div class="menu-icon">🎓</div><div class="menu-info"><div class="menu-label">App Tutorial</div><div class="menu-sub">Walkthrough of all features</div></div><div class="menu-arrow">›</div></div>
+      <div class="menu-item" style="margin:0; opacity:0.6;"><div class="menu-icon">💬</div><div class="menu-info"><div class="menu-label">Live Chat</div><div class="menu-sub">Coming Q3 2026</div></div><span class="coming-soon-badge">Soon</span></div>
+    </div>
+    <button class="btn btn-ghost" onclick="closeModal('modal-help')">Close</button>
+  </div>
+</div>
+
+<!-- TUTORIAL MODAL -->
+<div class="modal-overlay" id="modal-tutorial">
+  <div class="modal-sheet" style="max-height:90vh;">
+    <div class="modal-handle"></div>
+    <div class="modal-title">App Tutorial 🎓</div>
+    <div id="tutorial-steps"></div>
+    <div style="display:flex; gap:12px; margin-top:20px;">
+      <button class="btn btn-ghost" style="flex:1;" id="tut-prev-btn" onclick="tutPrev()">← Back</button>
+      <button class="btn btn-primary" style="flex:1;" id="tut-next-btn" onclick="tutNext()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast" style="position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;transform:translateX(-50%) translateY(20px);background:rgba(12,30,60,0.97);border:1px solid rgba(0,212,255,0.25);border-radius:50px;padding:12px 20px;font-size:0.82rem;font-weight:600;color:var(--white);z-index:500;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;"></div>
+
+<script>
+/* ══════════════════════════════════════════
+   STATE & CONSTANTS
+══════════════════════════════════════════ */
+var APP_STATE = {
+  user: null,
+  clocked_in: false,
+  clock_in_time: null,
+  camera_stream: null,
+  clock_photo: null,
+  selfie_data: null,
+  tfa_code: '',
+  tfa_pending_user: null,
+  signup_data: {},
+  current_tab: 'home',
+  tutorial_step: 0
+};
+
+var TUTORIAL_CONTENT = [
+  { icon:'🏠', title:'Home Dashboard', text:'Your home screen shows your wallet balance, accrued wages, and a quick-action toolbar. Tap any action to get started.' },
+  { icon:'🕐', title:'Clock In & Out', text:'Use the Clock tab to punch in and out of work. We take a quick selfie for verification. Your hours and earnings are tracked automatically.' },
+  { icon:'⚡', title:'Same-Day Pay', text:'After clocking in, your wages accrue in real time. Use the Pay tab to withdraw any amount you\'ve earned before payday — no cap, ever.' },
+  { icon:'👛', title:'Digital Wallet', text:'Your TiposIt Wallet holds your funds. Send money, add from a bank, or withdraw. Think of it as your financial home base.' },
+  { icon:'💳', title:'ICE Credit Cards', text:'Three card tiers — White, Blue, and Black ICE — launching Q3 2026. Pre-apply now to be first in line. Each card earns cash back on every purchase.' },
+  { icon:'👤', title:'Your Profile', text:'Manage your personal info, security settings, linked bank accounts, and employer connection all from the Profile tab.' }
+];
+
+var FAKE_EMPLOYERS = {
+  'ATLAS001': { name: 'Atlas Hospitality Group', plan: 'Enterprise Partner', industry: 'Hospitality' },
+  'SUNRISE01': { name: 'Sunrise Logistics LLC', plan: 'Pro Partner', industry: 'Logistics' },
+  'VERDE001': { name: 'Verde Staffing Co.', plan: 'Pro Partner', industry: 'Staffing' },
+  'LONESTAR1': { name: 'Lone Star Retail Inc.', plan: 'Starter Partner', industry: 'Retail' },
+  'GULF0001': { name: 'Gulf Coast Medical', plan: 'Enterprise Partner', industry: 'Healthcare' },
+  'DEMO0001': { name: 'TiposIt Demo Company', plan: 'Demo Account', industry: 'Demo' }
+};
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', function() {
+  startLiveClock();
+  // Check session
+  setTimeout(function() {
+    var session = sessionStorage.getItem('tiposit_session');
+    var user = getUser();
+    if (session === '1' && user) {
+      APP_STATE.user = user;
+      restoreClockState();
+      showScreen('screen-app');
+      refreshApp();
+    } else {
+      showScreen('screen-auth');
+    }
+  }, 1800);
+});
+
+/* ══════════════════════════════════════════
+   SCREEN / SECTION MANAGEMENT
+══════════════════════════════════════════ */
+function showScreen(id) {
+  var screens = document.querySelectorAll('.screen');
+  for (var i = 0; i < screens.length; i++) {
+    screens[i].classList.add('out');
+  }
+  var target = document.getElementById(id);
+  if (target) { target.classList.remove('out'); }
+}
+
+function showAuthSection(id) {
+  var sections = ['auth-login','auth-2fa','auth-signup'];
+  for (var i = 0; i < sections.length; i++) {
+    var el = document.getElementById(sections[i]);
+    if (el) { el.classList.add('hidden'); }
+  }
+  var target = document.getElementById(id);
+  if (target) { target.classList.remove('hidden'); }
+}
+
+function showSignup() {
+  showAuthSection('auth-signup');
+  showSignupStep(1);
+}
+
+function showSignupStep(step) {
+  for (var i = 1; i <= 5; i++) {
+    var el = document.getElementById('signup-step-' + i);
+    if (el) el.classList.add('hidden');
+  }
+  var target = document.getElementById('signup-step-' + step);
+  if (target) target.classList.remove('hidden');
+  var pct = (step / 5) * 100;
+  document.getElementById('signup-progress').style.width = pct + '%';
+  document.getElementById('signup-progress-label').textContent = 'Step ' + step + ' of 5';
+  if (step === 2) initSelfieCamera();
+}
+
+/* ══════════════════════════════════════════
+   AUTH — LOGIN
+══════════════════════════════════════════ */
+function doLogin() {
+  var email = document.getElementById('login-email').value.trim().toLowerCase();
+  var pass  = document.getElementById('login-pass').value;
+  var users = getAllUsers();
+  var found = null;
+  for (var k in users) {
+    if (users[k].email && users[k].email.toLowerCase() === email && users[k].password === simpleHash(pass)) {
+      found = users[k]; break;
+    }
+  }
+  if (!found) {
+    document.getElementById('login-err').style.display = 'block';
+    return;
+  }
+  document.getElementById('login-err').style.display = 'none';
+  APP_STATE.tfa_pending_user = found;
+  if (found.tfa_enabled) {
+    sendOTP(found.email);
+    showAuthSection('auth-2fa');
+  } else {
+    completeLogin(found);
+  }
+}
+
+function sendOTP(email) {
+  APP_STATE.tfa_code = '';
+  for (var i = 0; i < 6; i++) { APP_STATE.tfa_code += Math.floor(Math.random() * 10); }
+  var msg = document.getElementById('tfa-info-msg');
+  msg.style.display = 'block';
+  msg.textContent = '✓ Code sent to ' + email + ' — Demo: auto-filling in 3 seconds';
+  clearOTPDigits();
+  setTimeout(function() {
+    for (var j = 0; j < 6; j++) {
+      var el = document.getElementById('o' + j);
+      if (el) el.value = APP_STATE.tfa_code[j];
+    }
+    msg.textContent = '✓ Code auto-filled (demo mode). Tap Verify to sign in.';
+  }, 3000);
+}
+
+function doVerify2FA() {
+  var entered = '';
+  for (var i = 0; i < 6; i++) {
+    var el = document.getElementById('o' + i);
+    entered += el ? el.value : '';
+  }
+  if (entered === APP_STATE.tfa_code) {
+    document.getElementById('tfa-err').style.display = 'none';
+    completeLogin(APP_STATE.tfa_pending_user);
+  } else {
+    document.getElementById('tfa-err').style.display = 'block';
+  }
+}
+
+function resendOTP() {
+  if (APP_STATE.tfa_pending_user) sendOTP(APP_STATE.tfa_pending_user.email);
+}
+
+function clearOTPDigits() {
+  for (var i = 0; i < 6; i++) {
+    var el = document.getElementById('o' + i);
+    if (el) el.value = '';
+  }
+}
+
+function completeLogin(user) {
+  APP_STATE.user = user;
+  sessionStorage.setItem('tiposit_session', '1');
+  restoreClockState();
+  showScreen('screen-app');
+  refreshApp();
+}
+
+/* ══════════════════════════════════════════
+   AUTH — SIGNUP
+══════════════════════════════════════════ */
+function signupNext(step) {
+  if (step === 1) {
+    var first = document.getElementById('s1-first').value.trim();
+    var last  = document.getElementById('s1-last').value.trim();
+    var email = document.getElementById('s1-email').value.trim();
+    var phone = document.getElementById('s1-phone').value.trim();
+    var dob   = document.getElementById('s1-dob').value;
+    if (!first || !last || !email || !phone || !dob) {
+      document.getElementById('s1-err').style.display = 'block'; return;
+    }
+    document.getElementById('s1-err').style.display = 'none';
+    APP_STATE.signup_data.firstName = first;
+    APP_STATE.signup_data.lastName  = last;
+    APP_STATE.signup_data.email     = email.toLowerCase();
+    APP_STATE.signup_data.phone     = phone;
+    APP_STATE.signup_data.dob       = dob;
+    showSignupStep(2);
+  } else if (step === 2) {
+    showSignupStep(3);
+  } else if (step === 3) {
+    var title = document.getElementById('s3-title').value.trim();
+    var rate  = parseFloat(document.getElementById('s3-rate').value);
+    if (!title || isNaN(rate) || rate <= 0) {
+      document.getElementById('s3-err').style.display = 'block'; return;
+    }
+    document.getElementById('s3-err').style.display = 'none';
+    APP_STATE.signup_data.jobTitle   = title;
+    APP_STATE.signup_data.hourlyRate = rate;
+    var code = document.getElementById('s3-code').value.trim().toUpperCase();
+    APP_STATE.signup_data.employerCode = code;
+    APP_STATE.signup_data.employerName = FAKE_EMPLOYERS[code] ? FAKE_EMPLOYERS[code].name : null;
+    showSignupStep(4);
+  } else if (step === 4) {
+    var pass  = document.getElementById('s4-pass').value;
+    var pass2 = document.getElementById('s4-pass2').value;
+    if (pass.length < 8) { document.getElementById('s4-err').textContent = 'Password must be at least 8 characters.'; document.getElementById('s4-err').style.display = 'block'; return; }
+    if (pass !== pass2)  { document.getElementById('s4-err').textContent = 'Passwords do not match.'; document.getElementById('s4-err').style.display = 'block'; return; }
+    document.getElementById('s4-err').style.display = 'none';
+    APP_STATE.signup_data.password    = simpleHash(pass);
+    APP_STATE.signup_data.tfa_method  = document.getElementById('s4-2fa').value;
+    APP_STATE.signup_data.tfa_enabled = (APP_STATE.signup_data.tfa_method !== 'none');
+    createAccount();
+  }
+}
+
+function skipSelfie() { APP_STATE.signup_data.photo = null; stopCamera(); showSignupStep(3); }
+function skipEmployer() { APP_STATE.signup_data.employerCode = null; APP_STATE.signup_data.employerName = null; showSignupStep(4); }
+function signupBack() {
+  for (var i = 5; i >= 1; i--) {
+    var el = document.getElementById('signup-step-' + i);
+    if (el && !el.classList.contains('hidden')) {
+      if (i === 1) { showAuthSection('auth-login'); } else { showSignupStep(i - 1); }
+      return;
+    }
+  }
+}
+
+function createAccount() {
+  var d = APP_STATE.signup_data;
+  var id = 'usr_' + Date.now();
+  var lastFour = Math.floor(1000 + Math.random() * 9000).toString();
+  var user = {
+    id: id,
+    firstName:    d.firstName,
+    lastName:     d.lastName,
+    email:        d.email,
+    phone:        d.phone,
+    dob:          d.dob,
+    photo:        APP_STATE.selfie_data || null,
+    jobTitle:     d.jobTitle || '',
+    hourlyRate:   d.hourlyRate || 15,
+    employerCode: d.employerCode || null,
+    employerName: d.employerName || null,
+    password:     d.password,
+    tfa_enabled:  d.tfa_enabled,
+    tfa_method:   d.tfa_method,
+    walletBalance: 0,
+    cardLastFour:  lastFour,
+    address: '', city: '', state: '',
+    bankLinked: false,
+    notifications: [],
+    cardPreApply: null,
+    createdAt: new Date().toISOString()
+  };
+  saveUser(user);
+  APP_STATE.user = user;
+  sessionStorage.setItem('tiposit_session', '1');
+
+  // Welcome step
+  document.getElementById('welcome-title').textContent = 'Welcome, ' + user.firstName + '! 🎉';
+  showSignupStep(5);
+}
+
+function launchApp() {
+  stopCamera();
+  showScreen('screen-app');
+  refreshApp();
+  addNotification('🎉 Welcome to TiposIt! Your account is ready.');
+}
+
+/* ══════════════════════════════════════════
+   CAMERA — SELFIE
+══════════════════════════════════════════ */
+function initSelfieCamera() {
+  var video = document.getElementById('selfie-video');
+  var container = document.getElementById('selfie-container');
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    document.getElementById('camera-err').style.display = 'block'; return;
+  }
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 400, height: 400 } })
+    .then(function(stream) {
+      APP_STATE.camera_stream = stream;
+      video.srcObject = stream;
+    })
+    .catch(function() {
+      document.getElementById('camera-err').style.display = 'block';
+    });
+}
+
+function captureSelfie() {
+  var video  = document.getElementById('selfie-video');
+  var canvas = document.getElementById('selfie-canvas');
+  var preview = document.getElementById('selfie-preview');
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+  var data = canvas.toDataURL('image/jpeg', 0.7);
+  APP_STATE.selfie_data = data;
+  preview.src = data;
+  preview.style.display = 'block';
+  video.style.display = 'none';
+  document.getElementById('selfie-capture-btn').style.display = 'none';
+  document.getElementById('selfie-retake-btn').style.display = 'inline-flex';
+  stopCamera();
+}
+
+function retakeSelfie() {
+  document.getElementById('selfie-preview').style.display = 'none';
+  document.getElementById('selfie-video').style.display = 'block';
+  document.getElementById('selfie-capture-btn').style.display = 'inline-flex';
+  document.getElementById('selfie-retake-btn').style.display = 'none';
+  APP_STATE.selfie_data = null;
+  initSelfieCamera();
+}
+
+/* ══════════════════════════════════════════
+   CAMERA — CLOCK IN/OUT
+══════════════════════════════════════════ */
+var clockActionPending = null;
+
+function handleClockAction() {
+  clockActionPending = APP_STATE.clocked_in ? 'out' : 'in';
+  var titleEl = document.getElementById('camera-modal-title');
+  var subEl   = document.getElementById('camera-modal-sub');
+  var labelEl = document.getElementById('clock-confirm-label');
+  titleEl.textContent = clockActionPending === 'in' ? 'Clock In Verification' : 'Clock Out Verification';
+  subEl.textContent   = clockActionPending === 'in' ? 'Take a selfie to clock in.' : 'Take a selfie to clock out.';
+  labelEl.textContent = clockActionPending === 'in' ? 'In' : 'Out';
+  document.getElementById('clock-confirm-btn').style.display = 'none';
+  document.getElementById('clock-preview').style.display = 'none';
+  document.getElementById('clock-preview').src = '';
+  document.getElementById('clock-capture-btn').style.display = 'inline-flex';
+  document.getElementById('clock-retake-btn').style.display = 'none';
+  showModal('modal-camera');
+  startClockCamera();
+}
+
+function startClockCamera() {
+  var video = document.getElementById('clock-video');
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    // No camera — confirm directly
+    document.getElementById('clock-capture-btn').style.display = 'none';
+    document.getElementById('clock-confirm-btn').style.display = 'block';
+    APP_STATE.clock_photo = null;
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+    .then(function(stream) {
+      APP_STATE.camera_stream = stream;
+      video.srcObject = stream;
+      video.style.display = 'block';
+    })
+    .catch(function() {
+      document.getElementById('clock-capture-btn').style.display = 'none';
+      document.getElementById('clock-confirm-btn').style.display = 'block';
+      APP_STATE.clock_photo = null;
+    });
+}
+
+function captureClockPhoto() {
+  var video   = document.getElementById('clock-video');
+  var canvas  = document.getElementById('clock-canvas');
+  var preview = document.getElementById('clock-preview');
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+  var data = canvas.toDataURL('image/jpeg', 0.6);
+  APP_STATE.clock_photo = data;
+  preview.src = data;
+  preview.style.display = 'block';
+  video.style.display = 'none';
+  document.getElementById('clock-capture-btn').style.display = 'none';
+  document.getElementById('clock-retake-btn').style.display = 'inline-flex';
+  document.getElementById('clock-confirm-btn').style.display = 'block';
+  stopCamera();
+}
+
+function retakeClockPhoto() {
+  document.getElementById('clock-preview').style.display = 'none';
+  document.getElementById('clock-video').style.display = 'block';
+  document.getElementById('clock-capture-btn').style.display = 'inline-flex';
+  document.getElementById('clock-retake-btn').style.display = 'none';
+  document.getElementById('clock-confirm-btn').style.display = 'none';
+  APP_STATE.clock_photo = null;
+  startClockCamera();
+}
+
+function confirmClockAction() {
+  stopCamera();
+  closeModal('modal-camera');
+  if (clockActionPending === 'in') {
+    performClockIn();
+  } else {
+    performClockOut();
+  }
+}
+
+function performClockIn() {
+  var now = new Date();
+  APP_STATE.clocked_in   = true;
+  APP_STATE.clock_in_time = now.getTime();
+  var record = { type: 'in', time: now.toISOString(), photo: APP_STATE.clock_photo };
+  addClockRecord(record);
+  saveClockState();
+  updateClockUI();
+  showToast('✓ Clocked In — ' + formatTime(now));
+  addNotification('🟢 You clocked in at ' + formatTime(now));
+  updateHomeStats();
+}
+
+function performClockOut() {
+  var now      = new Date();
+  var inTime   = APP_STATE.clock_in_time;
+  var elapsed  = now.getTime() - inTime;
+  var hours    = elapsed / (1000 * 60 * 60);
+  var rate     = APP_STATE.user ? (APP_STATE.user.hourlyRate || 15) : 15;
+  var earned   = Math.round(hours * rate * 100) / 100;
+  // Add to wallet
+  APP_STATE.user.walletBalance = Math.round((APP_STATE.user.walletBalance + earned) * 100) / 100;
+  saveUser(APP_STATE.user);
+  var record = { type: 'out', time: now.toISOString(), photo: APP_STATE.clock_photo, hoursWorked: Math.round(hours * 100) / 100, earned: earned };
+  addClockRecord(record);
+  // Add transaction
+  addTransaction({ type:'credit', icon:'🕐', name:'Wage Deposit', note: formatHours(hours) + ' @ $' + rate + '/hr', amount: earned, date: now.toISOString() });
+  APP_STATE.clocked_in    = false;
+  APP_STATE.clock_in_time = null;
+  APP_STATE.clock_photo   = null;
+  saveClockState();
+  updateClockUI();
+  showToast('✓ Clocked Out — Earned $' + earned.toFixed(2));
+  addNotification('🔴 You clocked out at ' + formatTime(now) + ' and earned $' + earned.toFixed(2));
+  updateHomeStats();
+  refreshWallet();
+}
+
+function restoreClockState() {
+  var st = localStorage.getItem('tiposit_clock_state');
+  if (st) {
+    var parsed = JSON.parse(st);
+    if (parsed && parsed.clocked_in) {
+      APP_STATE.clocked_in    = true;
+      APP_STATE.clock_in_time = parsed.clock_in_time;
+    }
+  }
+}
+
+function saveClockState() {
+  localStorage.setItem('tiposit_clock_state', JSON.stringify({ clocked_in: APP_STATE.clocked_in, clock_in_time: APP_STATE.clock_in_time }));
+}
+
+function updateClockUI() {
+  var btn    = document.getElementById('clock-main-btn');
+  var badge  = document.getElementById('clock-status-badge');
+  var label  = document.getElementById('clock-btn-label');
+  var timer  = document.getElementById('shift-timer-display');
+  if (APP_STATE.clocked_in) {
+    btn.classList.remove('clock-in-btn'); btn.classList.add('clock-out-btn');
+    btn.querySelector('.clock-btn-icon').textContent = '■';
+    label.textContent = 'CLOCK OUT';
+    badge.className = 'clock-status in';
+    document.getElementById('clock-status-text').textContent = 'Clocked In';
+    timer.style.display = 'block';
+  } else {
+    btn.classList.remove('clock-out-btn'); btn.classList.add('clock-in-btn');
+    btn.querySelector('.clock-btn-icon').textContent = '▶';
+    label.textContent = 'CLOCK IN';
+    badge.className = 'clock-status out';
+    document.getElementById('clock-status-text').textContent = 'Clocked Out';
+    timer.style.display = 'none';
+  }
+  renderShiftHistory();
+}
+
+function stopCamera() {
+  if (APP_STATE.camera_stream) {
+    var tracks = APP_STATE.camera_stream.getTracks();
+    for (var i = 0; i < tracks.length; i++) { tracks[i].stop(); }
+    APP_STATE.camera_stream = null;
+  }
+}
+
+/* ══════════════════════════════════════════
+   LIVE CLOCK & SHIFT TIMER
+══════════════════════════════════════════ */
+function startLiveClock() {
+  function tick() {
+    var now = new Date();
+    var h = now.getHours(); var m = now.getMinutes(); var s = now.getSeconds();
+    var ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    var el = document.getElementById('live-clock');
+    if (el) el.textContent = pad(h) + ':' + pad(m) + ':' + pad(s) + ' ' + ampm;
+    var de = document.getElementById('live-date');
+    if (de) de.textContent = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    // Shift elapsed
+    if (APP_STATE.clocked_in && APP_STATE.clock_in_time) {
+      var elapsed = now.getTime() - APP_STATE.clock_in_time;
+      var elH = Math.floor(elapsed / 3600000);
+      var elM = Math.floor((elapsed % 3600000) / 60000);
+      var se = document.getElementById('shift-elapsed');
+      if (se) se.textContent = elH + 'h ' + pad(elM) + 'm';
+      // Live accrual
+      var rate = APP_STATE.user ? (APP_STATE.user.hourlyRate || 15) : 15;
+      var accrued = (elapsed / 3600000) * rate;
+      var pa = document.getElementById('pay-accrued-amount');
+      if (pa) pa.textContent = '$' + accrued.toFixed(2);
+      var ha = document.getElementById('home-accrued-display');
+      if (ha) ha.textContent = '$' + accrued.toFixed(2) + ' accrued today';
+      updatePaySlider();
+    }
+    // Greeting
+    var gr = document.getElementById('home-greeting');
+    if (gr) {
+      var hr = now.getHours();
+      gr.textContent = hr < 12 ? 'Good morning,' : hr < 17 ? 'Good afternoon,' : 'Good evening,';
+    }
+  }
+  tick(); setInterval(tick, 1000);
+}
+
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+/* ══════════════════════════════════════════
+   APP NAVIGATION
+══════════════════════════════════════════ */
+function switchTab(tab) {
+  var tabs = ['home','clock','wallet','pay','cards'];
+  for (var i = 0; i < tabs.length; i++) {
+    var tp = document.getElementById('tab-' + tabs[i]);
+    var nb = document.getElementById('nav-' + tabs[i]);
+    if (tp) tp.classList.remove('active');
+    if (nb) nb.classList.remove('active');
+  }
+  var target = document.getElementById('tab-' + tab);
+  var navTarget = document.getElementById('nav-' + tab);
+  if (target) target.classList.add('active');
+  if (navTarget) navTarget.classList.add('active');
+  APP_STATE.current_tab = tab;
+  if (tab === 'home') { updateHomeStats(); }
+  if (tab === 'clock') { updateClockUI(); }
+  if (tab === 'wallet') { refreshWallet(); }
+  if (tab === 'pay') { refreshPay(); }
+  // Profile tab is handled separately via nav icon
+  var profileNav = document.querySelector('[onclick="switchTab(\'profile\')"]');
+  // handle profile tab from menu
+}
+
+/* ══════════════════════════════════════════
+   REFRESH / RENDER FUNCTIONS
+══════════════════════════════════════════ */
+function refreshApp() {
+  if (!APP_STATE.user) return;
+  var u = APP_STATE.user;
+  // Header
+  var initials = (u.firstName||'?')[0] + (u.lastName||'?')[0];
+  var hdr = document.getElementById('header-avatar');
+  if (u.photo) {
+    hdr.outerHTML = '<img class="avatar-sm" id="header-avatar" src="'+u.photo+'" onclick="switchTab(\'profile\')" alt="avatar"/>';
+  } else {
+    hdr.textContent = initials;
+  }
+  // Home
+  document.getElementById('home-name').textContent = u.firstName + ' ' + u.lastName;
+  updateHomeStats();
+  // Wallet card
+  document.getElementById('wallet-card-name').textContent = u.firstName + ' ' + u.lastName;
+  document.getElementById('wallet-card-last').textContent = u.cardLastFour;
+  refreshWallet();
+  // Profile
+  document.getElementById('profile-full-name').textContent = u.firstName + ' ' + u.lastName;
+  document.getElementById('profile-email-display').textContent = u.email;
+  var initAvatar = document.getElementById('profile-initials-avatar');
+  if (initAvatar) initAvatar.textContent = initials;
+  if (u.employerName) {
+    document.getElementById('profile-employer-badge').textContent = '🏢 ' + u.employerName;
+    document.getElementById('profile-employer-badge').style.display = 'inline-flex';
+    document.getElementById('menu-employer-sub').textContent = u.employerName;
+    document.getElementById('employer-card-name').textContent = u.employerName;
+    document.getElementById('employer-card-sub').textContent = u.jobTitle || 'Employee';
+    document.getElementById('employer-link-btn').textContent = 'View Details';
+  }
+  // Edit profile pre-fill
+  document.getElementById('edit-first').value   = u.firstName || '';
+  document.getElementById('edit-last').value    = u.lastName  || '';
+  document.getElementById('edit-phone').value   = u.phone     || '';
+  document.getElementById('edit-address').value = u.address   || '';
+  document.getElementById('edit-city').value    = u.city      || '';
+  document.getElementById('edit-state').value   = u.state     || '';
+  // Clock
+  updateClockUI();
+  // Pay
+  refreshPay();
+  // Notifications
+  renderNotifications();
+  // Tipflic stats
+  refreshTipflic();
+}
+
+function updateHomeStats() {
+  if (!APP_STATE.user) return;
+  var u = APP_STATE.user;
+  var bal = u.walletBalance || 0;
+  document.getElementById('home-balance-int').textContent = Math.floor(bal).toLocaleString();
+  document.getElementById('home-balance-dec').textContent = (bal % 1).toFixed(2).slice(2);
+  document.getElementById('wallet-balance-disp').textContent = bal.toFixed(2);
+  // Week stats
+  var records = getClockRecords();
+  var weekStart = new Date(); weekStart.setDate(weekStart.getDate() - weekStart.getDay()); weekStart.setHours(0,0,0,0);
+  var weekEarned = 0; var weekHours = 0;
+  for (var i = 0; i < records.length; i++) {
+    if (records[i].type === 'out' && new Date(records[i].time) >= weekStart) {
+      weekEarned += records[i].earned || 0;
+      weekHours  += records[i].hoursWorked || 0;
+    }
+  }
+  document.getElementById('stat-earned').textContent = '$' + weekEarned.toFixed(2);
+  document.getElementById('stat-hours').textContent  = formatHours(weekHours);
+  document.getElementById('week-earn-display').textContent = 'This week: $' + weekEarned.toFixed(2);
+  // Recent txns on home
+  renderHomeTxns();
+}
+
+function refreshWallet() {
+  if (!APP_STATE.user) return;
+  document.getElementById('wallet-balance-disp').textContent = (APP_STATE.user.walletBalance||0).toFixed(2);
+  renderWalletTxns();
+}
+
+function refreshPay() {
+  if (!APP_STATE.user) return;
+  if (APP_STATE.clocked_in && APP_STATE.clock_in_time) {
+    var elapsed = Date.now() - APP_STATE.clock_in_time;
+    var rate = APP_STATE.user.hourlyRate || 15;
+    var accrued = (elapsed / 3600000) * rate;
+    document.getElementById('pay-accrued-amount').textContent = '$' + accrued.toFixed(2);
+    document.getElementById('pay-accrued-sub').textContent = formatHours(elapsed/3600000) + ' worked @ $' + rate + '/hr';
+    document.getElementById('pay-slider').max = Math.floor(accrued * 100);
+    document.getElementById('pay-slider').value = Math.floor(accrued * 50);
+    document.getElementById('pay-max').textContent = '$' + accrued.toFixed(2);
+  } else {
+    document.getElementById('pay-accrued-sub').textContent = 'Clock in to start accruing wages';
+    document.getElementById('pay-slider').max = 0;
+    document.getElementById('pay-slider').value = 0;
+    document.getElementById('pay-max').textContent = '$0.00';
+  }
+  updatePaySlider();
+}
+
+function updatePaySlider() {
+  var slider = document.getElementById('pay-slider');
+  var val = parseInt(slider.value) / 100;
+  var fee = Math.max(0.99, val * 0.015);
+  document.getElementById('pay-withdraw-display').textContent = '$' + val.toFixed(2);
+  document.getElementById('pay-fee').textContent = '$' + fee.toFixed(2);
+}
+
+function renderHomeTxns() {
+  var txns = getTransactions().slice(-5).reverse();
+  var list = document.getElementById('home-txn-list');
+  var empty = document.getElementById('home-empty');
+  if (!list) return;
+  if (txns.length === 0) { list.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  list.innerHTML = txns.map(function(t) { return renderTxnItem(t); }).join('');
+}
+
+function renderWalletTxns() {
+  var txns = getTransactions().reverse();
+  var list = document.getElementById('wallet-txn-list');
+  var empty = document.getElementById('wallet-empty');
+  if (!list) return;
+  if (txns.length === 0) { list.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  list.innerHTML = txns.map(function(t) { return renderTxnItem(t); }).join('');
+}
+
+function renderTxnItem(t) {
+  var clr = t.type === 'credit' ? 'green' : 'red';
+  var sign = t.type === 'credit' ? '+' : '-';
+  var color = t.type === 'credit' ? 'var(--green)' : 'var(--red)';
+  return '<div class="txn-item"><div class="txn-icon '+clr+'">'+t.icon+'</div><div class="txn-info"><div class="txn-name">'+t.name+'</div><div class="txn-date">'+(t.note||'')+' · '+formatDate(t.date)+'</div></div><div class="txn-amount" style="color:'+color+';">'+sign+'$'+t.amount.toFixed(2)+'</div></div>';
+}
+
+function renderShiftHistory() {
+  var records = getClockRecords().reverse();
+  var list = document.getElementById('shift-history-list');
+  var empty = document.getElementById('shift-empty');
+  if (!list) return;
+  var shifts = [];
+  var current_in = null;
+  // Pair in/out records into shifts
+  for (var i = records.length - 1; i >= 0; i--) {
+    if (records[i].type === 'in') { current_in = records[i]; }
+    else if (records[i].type === 'out' && current_in) {
+      shifts.unshift({ in: current_in, out: records[i] });
+      current_in = null;
+    }
+  }
+  // Current open shift
+  if (APP_STATE.clocked_in && current_in) {
+    shifts.unshift({ in: current_in, out: null });
+  }
+  if (shifts.length === 0) { list.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  var html = '';
+  for (var j = 0; j < Math.min(shifts.length, 10); j++) {
+    var s = shifts[j];
+    var photo = s.out ? (s.out.photo || s.in.photo) : s.in.photo;
+    var photoHTML = photo ? '<img class="shift-photo" src="'+photo+'" alt=""/>' : '<div class="shift-photo-placeholder">🕐</div>';
+    var status = s.out ? formatHours(s.out.hoursWorked||0) + ' · $' + (s.out.earned||0).toFixed(2) : '<span style="color:var(--green);">In Progress</span>';
+    var earnHTML = s.out ? '<div class="shift-earn">+$'+(s.out.earned||0).toFixed(2)+'</div>' : '<div class="shift-earn" style="color:var(--ice);">Active</div>';
+    html += '<div class="shift-list-item">'+photoHTML+'<div class="shift-info"><div class="shift-type">'+(s.out ? 'Shift Completed' : 'Current Shift')+'</div><div class="shift-time">'+formatDateTime(s.in.time)+(s.out?' → '+formatTime(new Date(s.out.time)):' → Now')+'</div></div>'+earnHTML+'</div>';
+  }
+  list.innerHTML = html;
+}
+
+function refreshTipflic() {
+  var records = getClockRecords();
+  var total = 0; var totalH = 0; var shifts = 0;
+  for (var i = 0; i < records.length; i++) {
+    if (records[i].type === 'out') { total += records[i].earned||0; totalH += records[i].hoursWorked||0; shifts++; }
+  }
+  var te = document.getElementById('tipflic-total'); if (te) te.textContent = '$'+total.toFixed(2);
+  var th = document.getElementById('tipflic-hours'); if (th) th.textContent = formatHours(totalH);
+  var ts = document.getElementById('tipflic-shifts'); if (ts) ts.textContent = shifts;
+  var ta = document.getElementById('tipflic-avg'); if (ta) ta.textContent = '$'+(shifts>0?(total/shifts).toFixed(2):'0.00');
+}
+
+/* ══════════════════════════════════════════
+   EMPLOYER LOOKUP
+══════════════════════════════════════════ */
+function lookupEmployer() {
+  var code = document.getElementById('s3-code').value.trim().toUpperCase();
+  var emp  = FAKE_EMPLOYERS[code];
+  var found = document.getElementById('employer-found');
+  if (emp) {
+    found.classList.remove('hidden');
+    document.getElementById('employer-found-name').textContent = emp.name;
+    document.getElementById('employer-found-plan').textContent = emp.plan + ' · ' + emp.industry;
+  } else {
+    found.classList.add('hidden');
+  }
+}
+
+function lookupEmployerModal() {
+  var code = document.getElementById('link-emp-code').value.trim().toUpperCase();
+  var emp  = FAKE_EMPLOYERS[code];
+  var found = document.getElementById('link-emp-found');
+  if (emp) {
+    found.classList.remove('hidden');
+    document.getElementById('link-emp-name').textContent = emp.name;
+  } else {
+    found.classList.add('hidden');
+  }
+}
+
+function doLinkEmployer() {
+  var code = document.getElementById('link-emp-code').value.trim().toUpperCase();
+  var emp  = FAKE_EMPLOYERS[code];
+  if (!emp) { showToast('❌ Employer code not found'); return; }
+  APP_STATE.user.employerCode = code;
+  APP_STATE.user.employerName = emp.name;
+  saveUser(APP_STATE.user);
+  closeModal('modal-link-employer');
+  showToast('✓ Linked to ' + emp.name);
+  refreshApp();
+}
+
+/* ══════════════════════════════════════════
+   WALLET ACTIONS
+══════════════════════════════════════════ */
+function doSend() {
+  var recipient = document.getElementById('send-recipient').value.trim();
+  var amount    = parseFloat(document.getElementById('send-amount').value);
+  var note      = document.getElementById('send-note').value.trim();
+  if (!recipient || isNaN(amount) || amount <= 0) { showToast('❌ Please fill in recipient and amount'); return; }
+  if (amount > APP_STATE.user.walletBalance) { showToast('❌ Insufficient balance'); return; }
+  APP_STATE.user.walletBalance = Math.round((APP_STATE.user.walletBalance - amount) * 100) / 100;
+  saveUser(APP_STATE.user);
+  addTransaction({ type:'debit', icon:'📤', name:'Sent to ' + recipient, note: note, amount: amount, date: new Date().toISOString() });
+  closeModal('modal-send');
+  showToast('✓ $' + amount.toFixed(2) + ' sent to ' + recipient);
+  refreshApp();
+}
+
+function selectAddMethod(method) {
+  closeModal('modal-add-money');
+  if (method === 'bank') {
+    showToast('🏦 ACH transfer initiated — funds arrive in 1-2 business days');
+    addTransaction({ type:'credit', icon:'🏦', name:'Bank Transfer (ACH)', note:'Pending 1-2 days', amount: 0, date: new Date().toISOString() });
+  } else if (method === 'debit') {
+    var amt = parseFloat(prompt('Enter amount to add via debit card ($):') || '0');
+    if (amt > 0) {
+      APP_STATE.user.walletBalance = Math.round((APP_STATE.user.walletBalance + amt) * 100) / 100;
+      saveUser(APP_STATE.user);
+      addTransaction({ type:'credit', icon:'💳', name:'Debit Card Deposit', note:'Instant', amount: amt, date: new Date().toISOString() });
+      showToast('✓ $' + amt.toFixed(2) + ' added to wallet');
+      refreshApp();
+    }
+  }
+}
+
+function doWithdraw() {
+  var amount = parseFloat(document.getElementById('withdraw-amount').value);
+  if (isNaN(amount) || amount <= 0) { showToast('❌ Enter a valid amount'); return; }
+  if (amount > APP_STATE.user.walletBalance) { showToast('❌ Insufficient balance'); return; }
+  APP_STATE.user.walletBalance = Math.round((APP_STATE.user.walletBalance - amount) * 100) / 100;
+  saveUser(APP_STATE.user);
+  addTransaction({ type:'debit', icon:'🏦', name:'Bank Withdrawal', note:'Standard ACH', amount: amount, date: new Date().toISOString() });
+  closeModal('modal-withdraw');
+  showToast('✓ $' + amount.toFixed(2) + ' withdrawal initiated');
+  refreshApp();
+}
+
+function requestPay() {
+  var val = parseInt(document.getElementById('pay-slider').value) / 100;
+  if (val <= 0) { showToast('❌ No wages accrued yet. Clock in first!'); return; }
+  var fee = Math.max(0.99, val * 0.015);
+  var net = val - fee;
+  APP_STATE.user.walletBalance = Math.round((APP_STATE.user.walletBalance + net) * 100) / 100;
+  // Reset accrual (partial early access)
+  APP_STATE.clock_in_time = Date.now(); // Reset so new accrual starts fresh
+  saveUser(APP_STATE.user);
+  addTransaction({ type:'credit', icon:'⚡', name:'Same-Day Pay', note:'Fee: $'+fee.toFixed(2), amount: net, date: new Date().toISOString() });
+  showToast('✓ $' + net.toFixed(2) + ' deposited to wallet!');
+  refreshApp();
+}
+
+/* ══════════════════════════════════════════
+   PROFILE ACTIONS
+══════════════════════════════════════════ */
+function saveProfile() {
+  APP_STATE.user.firstName = document.getElementById('edit-first').value.trim() || APP_STATE.user.firstName;
+  APP_STATE.user.lastName  = document.getElementById('edit-last').value.trim()  || APP_STATE.user.lastName;
+  APP_STATE.user.phone     = document.getElementById('edit-phone').value.trim();
+  APP_STATE.user.address   = document.getElementById('edit-address').value.trim();
+  APP_STATE.user.city      = document.getElementById('edit-city').value.trim();
+  APP_STATE.user.state     = document.getElementById('edit-state').value.trim();
+  saveUser(APP_STATE.user);
+  closeModal('modal-edit-profile');
+  showToast('✓ Profile updated');
+  refreshApp();
+}
+
+function changePassword() {
+  var p1 = document.getElementById('sec-newpass').value;
+  var p2 = document.getElementById('sec-newpass2').value;
+  if (p1.length < 8) { showToast('❌ Password must be 8+ characters'); return; }
+  if (p1 !== p2)     { showToast('❌ Passwords do not match'); return; }
+  APP_STATE.user.password = simpleHash(p1);
+  saveUser(APP_STATE.user);
+  closeModal('modal-security');
+  showToast('✓ Password updated');
+}
+
+function save2FASetting() {
+  APP_STATE.user.tfa_enabled = document.getElementById('toggle-2fa').checked;
+  saveUser(APP_STATE.user);
+  showToast(APP_STATE.user.tfa_enabled ? '✓ 2FA enabled' : '2FA disabled');
+}
+
+function saveBankInfo() {
+  var name = document.getElementById('bank-name').value.trim();
+  var routing = document.getElementById('bank-routing').value.trim();
+  var acct = document.getElementById('bank-acct').value.trim();
+  if (!name || !routing || !acct) { showToast('❌ Please fill in all bank fields'); return; }
+  APP_STATE.user.bankLinked = true;
+  APP_STATE.user.bankName = name;
+  saveUser(APP_STATE.user);
+  closeModal('modal-banking-info');
+  showToast('✓ Bank submitted for verification');
+}
+
+function sendForgot() {
+  var email = document.getElementById('forgot-email').value.trim();
+  if (!email) { showToast('❌ Enter your email'); return; }
+  document.getElementById('forgot-success').style.display = 'block';
+  showToast('📧 Reset link sent to ' + email);
+}
+
+function preApplyCard(tier) {
+  APP_STATE.user.cardPreApply = tier;
+  saveUser(APP_STATE.user);
+  closeModal('modal-ice-' + tier.split(' ')[0].toLowerCase());
+  showToast('✓ Pre-applied for ' + tier + '! We\'ll notify you at launch.');
+  addNotification('💳 You pre-applied for the ' + tier + ' card. We\'ll email you when it launches.');
+}
+
+function preRegisterCard() { preApplyCard('White ICE'); }
+function preRegisterBNPL() { APP_STATE.user.bnplPreRegister = true; saveUser(APP_STATE.user); showToast('✓ You\'re on the BNPL waitlist!'); }
+
+/* ══════════════════════════════════════════
+   NOTIFICATIONS
+══════════════════════════════════════════ */
+function addNotification(msg) {
+  if (!APP_STATE.user) return;
+  if (!APP_STATE.user.notifications) APP_STATE.user.notifications = [];
+  APP_STATE.user.notifications.unshift({ msg: msg, time: new Date().toISOString(), read: false });
+  if (APP_STATE.user.notifications.length > 30) APP_STATE.user.notifications = APP_STATE.user.notifications.slice(0, 30);
+  saveUser(APP_STATE.user);
+  renderNotifications();
+  var dot = document.getElementById('notif-dot');
+  if (dot) dot.style.display = 'block';
+}
+
+function renderNotifications() {
+  var notifs = APP_STATE.user && APP_STATE.user.notifications ? APP_STATE.user.notifications : [];
+  var list = document.getElementById('notif-list');
+  if (!list) return;
+  if (notifs.length === 0) { list.innerHTML = '<div class="empty-state"><div class="empty-icon">🔔</div><div class="empty-title">No notifications</div></div>'; return; }
+  list.innerHTML = notifs.slice(0, 15).map(function(n) {
+    return '<div style="padding:14px 0;border-bottom:1px solid rgba(0,212,255,0.05);font-size:0.85rem;">'+n.msg+'<div class="text-xs text-gray mt-8">'+formatDate(n.time)+'</div></div>';
+  }).join('');
+  // Mark all read
+  var dot = document.getElementById('notif-dot'); if (dot) dot.style.display = 'none';
+}
+
+/* ══════════════════════════════════════════
+   TUTORIAL
+══════════════════════════════════════════ */
+function showTutorial() {
+  closeModal('modal-help');
+  APP_STATE.tutorial_step = 0;
+  renderTutorialStep();
+  showModal('modal-tutorial');
+}
+
+function renderTutorialStep() {
+  var s = TUTORIAL_CONTENT[APP_STATE.tutorial_step];
+  var total = TUTORIAL_CONTENT.length;
+  var html = '<div style="text-align:center; padding:20px 0;">';
+  html += '<div style="font-size:3.5rem; margin-bottom:16px;">'+s.icon+'</div>';
+  html += '<div style="font-size:1.1rem; font-weight:800; margin-bottom:10px;">'+s.title+'</div>';
+  html += '<div style="font-size:0.85rem; color:var(--gray); line-height:1.7;">'+s.text+'</div>';
+  html += '</div>';
+  html += '<div style="text-align:center; font-size:0.72rem; color:var(--gray); margin-top:12px;">'+(APP_STATE.tutorial_step+1)+' / '+total+'</div>';
+  document.getElementById('tutorial-steps').innerHTML = html;
+  document.getElementById('tut-prev-btn').style.visibility = APP_STATE.tutorial_step === 0 ? 'hidden' : 'visible';
+  document.getElementById('tut-next-btn').textContent = APP_STATE.tutorial_step === total - 1 ? 'Done ✓' : 'Next →';
+}
+
+function tutNext() {
+  if (APP_STATE.tutorial_step < TUTORIAL_CONTENT.length - 1) { APP_STATE.tutorial_step++; renderTutorialStep(); }
+  else { closeModal('modal-tutorial'); }
+}
+function tutPrev() { if (APP_STATE.tutorial_step > 0) { APP_STATE.tutorial_step--; renderTutorialStep(); } }
+
+/* ══════════════════════════════════════════
+   MODAL SYSTEM
+══════════════════════════════════════════ */
+function showModal(id) {
+  var el = document.getElementById(id);
+  if (el) { el.classList.add('open'); document.body.style.overflow = 'hidden'; }
+}
+function closeModal(id) {
+  var el = document.getElementById(id);
+  if (el) { el.classList.remove('open'); document.body.style.overflow = ''; }
+}
+// Close modals on overlay tap
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('modal-overlay')) {
+    e.target.classList.remove('open');
+    document.body.style.overflow = '';
+    stopCamera();
+  }
+});
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+var toastTimer = null;
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 3000);
+}
+
+/* ══════════════════════════════════════════
+   OTP DIGIT INPUT
+══════════════════════════════════════════ */
+function otpNext(el, nextIdx) {
+  if (el.value && nextIdx !== null) { var n = document.getElementById('o' + nextIdx); if (n) n.focus(); }
+}
+function otpBack(e, el, prevIdx) {
+  if (e.key === 'Backspace' && !el.value && prevIdx !== null) { var p = document.getElementById('o' + prevIdx); if (p) p.focus(); }
+}
+
+/* ══════════════════════════════════════════
+   PASSWORD STRENGTH
+══════════════════════════════════════════ */
+function checkPasswordStrength() {
+  var p = document.getElementById('s4-pass').value;
+  var score = 0;
+  if (p.length >= 8) score++;
+  if (p.length >= 12) score++;
+  if (/[A-Z]/.test(p)) score++;
+  if (/[0-9]/.test(p)) score++;
+  if (/[^A-Za-z0-9]/.test(p)) score++;
+  var labels = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Excellent'];
+  var colors = ['', '#FF4D6D', '#FFD700', '#7DE8FF', '#00FF88', '#00FF88'];
+  var bar = document.getElementById('pass-strength-bar');
+  var lbl = document.getElementById('pass-strength-label');
+  bar.style.width = (score * 20) + '%';
+  bar.style.background = colors[score] || colors[1];
+  lbl.textContent = labels[score] || '';
+}
+
+/* ══════════════════════════════════════════
+   LOGOUT
+══════════════════════════════════════════ */
+function doLogout() {
+  sessionStorage.removeItem('tiposit_session');
+  APP_STATE.user = null;
+  APP_STATE.clocked_in = false;
+  APP_STATE.clock_in_time = null;
+  stopCamera();
+  showScreen('screen-auth');
+  showAuthSection('auth-login');
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-pass').value = '';
+}
+
+/* ══════════════════════════════════════════
+   STORAGE HELPERS
+══════════════════════════════════════════ */
+function saveUser(user) {
+  var users = getAllUsers();
+  users[user.id] = user;
+  localStorage.setItem('tiposit_users', JSON.stringify(users));
+}
+
+function getUser() {
+  var users = getAllUsers();
+  for (var k in users) { return users[k]; } // Return first user
+  return null;
+}
+
+function getAllUsers() {
+  var raw = localStorage.getItem('tiposit_users');
+  return raw ? JSON.parse(raw) : {};
+}
+
+function addClockRecord(record) {
+  var records = getClockRecords();
+  records.push(record);
+  localStorage.setItem('tiposit_clock', JSON.stringify(records));
+}
+
+function getClockRecords() {
+  var raw = localStorage.getItem('tiposit_clock');
+  return raw ? JSON.parse(raw) : [];
+}
+
+function addTransaction(txn) {
+  var txns = getTransactions();
+  txns.push(txn);
+  localStorage.setItem('tiposit_txns', JSON.stringify(txns));
+}
+
+function getTransactions() {
+  var raw = localStorage.getItem('tiposit_txns');
+  return raw ? JSON.parse(raw) : [];
+}
+
+/* ══════════════════════════════════════════
+   UTILITIES
+══════════════════════════════════════════ */
+function simpleHash(str) {
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    var c = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + c;
+    hash = hash & hash;
+  }
+  return hash.toString(36);
+}
+
+function formatTime(date) {
+  if (typeof date === 'string') date = new Date(date);
+  var h = date.getHours(); var m = date.getMinutes();
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return h + ':' + pad(m) + ' ' + ampm;
+}
+
+function formatDate(isoStr) {
+  var d = new Date(isoStr);
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric' }) + ' · ' + formatTime(d);
+}
+
+function formatDateTime(isoStr) {
+  var d = new Date(isoStr);
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric' }) + ' ' + formatTime(d);
+}
+
+function formatHours(h) {
+  var hours = Math.floor(h);
+  var mins  = Math.round((h - hours) * 60);
+  return hours + 'h ' + pad(mins) + 'm';
+}
+</script>
+</body>
+</html>

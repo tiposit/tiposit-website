@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TiposIt — Employer Partner Portal</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --navy:   #050E1F;
+      --navy2:  #0C1E3C;
+      --navy3:  #122848;
+      --ice:    #00D4FF;
+      --ice2:   #7DE8FF;
+      --white:  #FFFFFF;
+      --gray:   #8BA5C0;
+      --gray2:  #4A6580;
+      --gold:   #FFD700;
+      --green:  #00FF88;
+      --red:    #FF4D6D;
+      --purple: #B88AFF;
+      --sidebar-w: 240px;
+      --hdr-h: 64px;
+      --r: 14px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: -apple-system, 'Segoe UI', system-ui, sans-serif; background: var(--navy); color: var(--white); overflow-x: hidden; }
+    a { text-decoration: none; color: inherit; }
+    input, button, select, textarea, label { font-family: inherit; }
+    img { max-width: 100%; }
+    .hidden { display: none !important; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.2); border-radius: 2px; }
+
+    /* ══════════════════════════════════════
+       AUTH OVERLAY
+    ══════════════════════════════════════ */
+    #auth-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .auth-card {
+      background: var(--navy2);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 24px;
+      padding: 40px 36px;
+      width: 100%; max-width: 480px;
+    }
+    .auth-logo { font-size: 1.8rem; font-weight: 900; color: var(--ice); margin-bottom: 4px; }
+    .auth-logo span { color: var(--white); }
+    .auth-portal-tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 28px; }
+    .auth-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; }
+    .auth-sub { font-size: 0.84rem; color: var(--gray); margin-bottom: 28px; line-height: 1.6; }
+
+    /* Signup Progress */
+    .progress-wrap { margin-bottom: 28px; }
+    .progress-steps { display: flex; gap: 6px; }
+    .progress-step { flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.08); transition: background 0.3s; }
+    .progress-step.done { background: var(--ice); }
+    .progress-step.active { background: var(--ice2); }
+    .progress-label { font-size: 0.7rem; color: var(--gray); margin-top: 6px; }
+
+    /* Form */
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--gray); display: block; margin-bottom: 7px; }
+    .form-input {
+      width: 100%; padding: 13px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(0,212,255,0.15);
+      border-radius: var(--r); color: var(--white);
+      font-size: 0.9rem; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: var(--ice); }
+    .form-input::placeholder { color: var(--gray2); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-hint { font-size: 0.71rem; color: var(--gray); margin-top: 5px; }
+    .form-error { font-size: 0.75rem; color: var(--red); margin-top: 5px; display: none; }
+
+    /* Buttons */
+    .btn { display: block; width: 100%; padding: 14px; border: none; border-radius: var(--r); font-size: 0.92rem; font-weight: 700; cursor: pointer; text-align: center; transition: opacity 0.15s, transform 0.12s; }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: linear-gradient(135deg, var(--ice), #00A8E8); color: var(--navy); }
+    .btn-secondary { background: rgba(0,212,255,0.1); border: 1.5px solid rgba(0,212,255,0.3); color: var(--ice); }
+    .btn-ghost { background: transparent; border: 1.5px solid rgba(255,255,255,0.15); color: var(--white); }
+    .btn-danger { background: rgba(255,77,109,0.1); border: 1.5px solid rgba(255,77,109,0.3); color: var(--red); }
+    .btn-sm { padding: 9px 20px; font-size: 0.8rem; width: auto; display: inline-block; border-radius: 10px; }
+    .mt-12 { margin-top: 12px; }
+    .mt-16 { margin-top: 16px; }
+    .mt-20 { margin-top: 20px; }
+
+    /* Logo upload */
+    .logo-upload-area {
+      border: 2px dashed rgba(0,212,255,0.25);
+      border-radius: var(--r); padding: 32px;
+      text-align: center; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .logo-upload-area:hover { border-color: var(--ice); background: rgba(0,212,255,0.04); }
+    .logo-upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .logo-upload-icon { font-size: 2.5rem; margin-bottom: 8px; }
+    .logo-upload-text { font-size: 0.82rem; color: var(--gray); }
+    .logo-preview { width: 80px; height: 80px; border-radius: 16px; object-fit: cover; margin: 0 auto 8px; display: none; border: 2px solid var(--ice); }
+
+    /* Plan cards */
+    .plan-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .plan-card {
+      border: 2px solid rgba(0,212,255,0.1);
+      border-radius: var(--r); padding: 18px;
+      cursor: pointer; transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .plan-card.selected { border-color: var(--ice); background: rgba(0,212,255,0.06); }
+    .plan-card.recommended { border-color: var(--gold); }
+    .plan-tag { font-size: 0.62rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--gold); color: var(--navy); padding: 2px 8px; border-radius: 50px; white-space: nowrap; }
+    .plan-name { font-size: 0.88rem; font-weight: 800; margin-bottom: 4px; }
+    .plan-price { font-size: 1.4rem; font-weight: 900; color: var(--ice); }
+    .plan-period { font-size: 0.68rem; color: var(--gray); }
+    .plan-desc { font-size: 0.72rem; color: var(--gray); margin-top: 8px; line-height: 1.5; }
+    .plan-check { font-size: 0.68rem; color: var(--green); margin-top: 8px; }
+
+    /* OTP */
+    .otp-row { display: flex; gap: 8px; justify-content: center; margin: 16px 0; }
+    .otp-digit { width: 44px; height: 54px; background: rgba(255,255,255,0.05); border: 1.5px solid rgba(0,212,255,0.2); border-radius: 10px; color: var(--white); font-size: 1.4rem; font-weight: 700; text-align: center; outline: none; }
+    .otp-digit:focus { border-color: var(--ice); }
+
+    /* Alert */
+    .alert { padding: 11px 14px; border-radius: var(--r); font-size: 0.8rem; margin-bottom: 14px; }
+    .alert-info { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2); color: var(--ice2); }
+    .alert-success { background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.25); color: var(--green); display: none; }
+    .alert-warn { background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.25); color: var(--gold); display: none; }
+
+    /* ══════════════════════════════════════
+       DASHBOARD LAYOUT
+    ══════════════════════════════════════ */
+    #dashboard { display: none; min-height: 100vh; }
+
+    /* Sidebar */
+    #sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w);
+      background: var(--navy2); border-right: 1px solid rgba(0,212,255,0.08);
+      display: flex; flex-direction: column; z-index: 100; overflow-y: auto;
+    }
+    .sidebar-brand { padding: 22px 20px 18px; border-bottom: 1px solid rgba(0,212,255,0.08); }
+    .sidebar-brand-logo { font-size: 1.2rem; font-weight: 900; color: var(--ice); }
+    .sidebar-brand-logo span { color: var(--white); }
+    .sidebar-brand-tag { font-size: 0.62rem; color: var(--gray); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+    .sidebar-company { padding: 16px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(0,212,255,0.08); }
+    .sidebar-company-logo { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(0,212,255,0.2); }
+    .sidebar-company-logo-placeholder { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--ice), var(--ice2)); color: var(--navy); font-size: 1rem; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sidebar-company-name { font-size: 0.82rem; font-weight: 700; }
+    .sidebar-company-plan { font-size: 0.68rem; color: var(--gray); margin-top: 2px; }
+    .sidebar-section-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gray2); padding: 18px 20px 6px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; cursor: pointer; font-size: 0.84rem; color: var(--gray); transition: color 0.15s, background 0.15s; border-left: 3px solid transparent; white-space: nowrap; }
+    .nav-item:hover { color: var(--white); background: rgba(0,212,255,0.04); }
+    .nav-item.active { color: var(--ice); background: rgba(0,212,255,0.07); border-left-color: var(--ice); font-weight: 600; }
+    .nav-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+    .nav-badge { margin-left: auto; background: var(--red); color: #fff; font-size: 0.6rem; font-weight: 800; padding: 2px 6px; border-radius: 50px; }
+    .sidebar-footer { margin-top: auto; padding: 16px 20px; border-top: 1px solid rgba(0,212,255,0.08); }
+    .sidebar-user-name { font-size: 0.8rem; font-weight: 700; }
+    .sidebar-user-email { font-size: 0.7rem; color: var(--gray); }
+    .btn-logout { width: 100%; margin-top: 10px; padding: 8px; background: transparent; border: 1px solid rgba(255,77,109,0.3); color: var(--red); border-radius: 8px; font-size: 0.75rem; cursor: pointer; }
+
+    /* Main */
+    #main { margin-left: var(--sidebar-w); min-height: 100vh; display: flex; flex-direction: column; }
+    .topbar { height: var(--hdr-h); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; border-bottom: 1px solid rgba(0,212,255,0.08); position: sticky; top: 0; background: rgba(5,14,31,0.97); backdrop-filter: blur(12px); z-index: 50; }
+    .topbar-title { font-size: 1.1rem; font-weight: 800; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .status-badge { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--green); }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+    .topbar-clock { font-size: 0.8rem; color: var(--gray); }
+    .topbar-action-btn { padding: 8px 16px; background: linear-gradient(135deg,var(--ice),#00A8E8); color: var(--navy); border: none; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+
+    .page-content { padding: 28px; flex: 1; display: none; }
+    .page-content.active { display: block; }
+
+    /* ── STAT CARDS ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 24px; }
+    @media(max-width:1200px){ .stats-grid{ grid-template-columns: repeat(2,1fr); } }
+    .stat-card { background: var(--navy2); border: 1px solid rgba(0,212,255,0.08); border-radius: var(--r); padding: 20px 22px; }
+    .stat-card-label { font-size: 0.68rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: 600; }
+    .stat-card-val { font-size: 1.7rem; font-weight: 900; line-height: 1; margin-bottom: 6px; }
+    .stat-card-trend { font-size: 0.72rem; font-weight: 600; }
+    .trend-up { color: var(--green); }
+    .trend-down { color: var(--red); }
+    .trend-flat { color: var(--gray); }
+
+    /* ── PANELS ── */
+    .panel { background: var(--navy2); border: 1px solid rgba(0,212,255,0.08); border-radius: var(--r); padding: 22px; }
+    .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .panel-title { font-size: 0.88rem; font-weight: 700; }
+    .panel-sub { font-size: 0.72rem; color: var(--gray); margin-top: 2px; }
+    .panel-action { font-size: 0.75rem; color: var(--ice); cursor: pointer; }
+    .chart-row { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-bottom: 22px; }
+    @media(max-width:1100px){ .chart-row{ grid-template-columns:1fr; } }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 22px; }
+    @media(max-width:900px){ .two-col{ grid-template-columns:1fr; } }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    th { text-align: left; padding: 10px 14px; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); border-bottom: 1px solid rgba(0,212,255,0.08); font-weight: 700; white-space: nowrap; }
+    td { padding: 13px 14px; border-bottom: 1px solid rgba(0,212,255,0.04); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(0,212,255,0.02); }
+
+    /* ── BADGE ── */
+    .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 50px; font-size: 0.68rem; font-weight: 700; white-space: nowrap; }
+    .badge-green { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+    .badge-blue  { background: rgba(0,212,255,0.1); color: var(--ice);   border: 1px solid rgba(0,212,255,0.2); }
+    .badge-gold  { background: rgba(255,215,0,0.1);  color: var(--gold);  border: 1px solid rgba(255,215,0,0.2); }
+    .badge-red   { background: rgba(255,77,109,0.1); color: var(--red);   border: 1px solid rgba(255,77,109,0.2); }
+    .badge-gray  { background: rgba(139,165,192,0.1);color: var(--gray);  border: 1px solid rgba(139,165,192,0.2); }
+    .badge-purple{ background: rgba(184,138,255,0.1);color: var(--purple);border: 1px solid rgba(184,138,255,0.2); }
+
+    /* ── EMPLOYEE CARD (grid view) ── */
+    .employee-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+    .employee-card { background: var(--navy3); border: 1px solid rgba(0,212,255,0.06); border-radius: var(--r); padding: 18px; text-align: center; cursor: pointer; transition: border-color 0.2s; }
+    .employee-card:hover { border-color: rgba(0,212,255,0.2); }
+    .emp-avatar { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--ice), var(--ice2)); color: var(--navy); font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+    .emp-name { font-size: 0.88rem; font-weight: 700; }
+    .emp-role { font-size: 0.72rem; color: var(--gray); margin-top: 3px; }
+    .emp-status { margin-top: 10px; }
+
+    /* ── ADD EMPLOYEE FORM ── */
+    .add-emp-form { background: var(--navy3); border: 1px solid rgba(0,212,255,0.1); border-radius: var(--r); padding: 20px; margin-bottom: 20px; }
+    .add-emp-form-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 16px; }
+
+    /* ── REVENUE SHARE ── */
+    .rev-share-bar { background: rgba(255,255,255,0.06); border-radius: 8px; height: 12px; overflow: hidden; margin: 10px 0; }
+    .rev-share-fill { height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--green), #00C870); transition: width 0.8s ease; }
+
+    /* ── SETTINGS ── */
+    .settings-section { background: var(--navy2); border: 1px solid rgba(0,212,255,0.08); border-radius: var(--r); padding: 22px; margin-bottom: 18px; }
+    .settings-section-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 16px; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(0,212,255,0.05); font-size: 0.84rem; }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-label { font-size: 0.84rem; }
+    .toggle-sub { font-size: 0.7rem; color: var(--gray); margin-top: 2px; }
+    .toggle { position: relative; width: 42px; height: 23px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-slider { position: absolute; inset: 0; background: rgba(255,255,255,0.1); border-radius: 23px; cursor: pointer; transition: background 0.3s; }
+    .toggle-slider::before { content:''; position: absolute; width: 17px; height: 17px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.3s; }
+    .toggle input:checked + .toggle-slider { background: var(--ice); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(19px); }
+
+    /* ── MODAL ── */
+    .modal-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 20px; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: var(--navy2); border: 1px solid rgba(0,212,255,0.2); border-radius: 20px; padding: 28px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+    .modal-title { font-size: 1.05rem; font-weight: 800; margin-bottom: 6px; }
+    .modal-sub { font-size: 0.82rem; color: var(--gray); margin-bottom: 22px; }
+    .modal-close { float: right; background: none; border: none; color: var(--gray); font-size: 1.2rem; cursor: pointer; margin-top: -4px; }
+
+    /* ── COMING SOON ── */
+    .coming-soon { display: inline-flex; align-items: center; gap: 5px; background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.2); color: var(--gold); font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 50px; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { text-align: center; padding: 48px 20px; }
+    .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .empty-sub { font-size: 0.82rem; color: var(--gray); }
+
+    /* ── TOAST ── */
+    #toast { position: fixed; bottom: 24px; right: 24px; background: rgba(12,30,60,0.97); border: 1px solid rgba(0,212,255,0.25); border-radius: 12px; padding: 13px 20px; font-size: 0.82rem; font-weight: 600; z-index: 9999; opacity: 0; transform: translateY(12px); transition: all 0.3s; pointer-events: none; max-width: 320px; }
+
+    /* Responsive collapse sidebar */
+    @media(max-width:768px) {
+      #sidebar { display: none; }
+      #main { margin-left: 0; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     AUTH OVERLAY
+══════════════════════════════════════════ -->
+<div id="auth-overlay">
+
+  <!-- LOGIN -->
+  <div class="auth-card" id="auth-login">
+    <div class="auth-logo">Tipos<span>It</span></div>
+    <div class="auth-portal-tag">Employer Partner Portal</div>
+    <div class="auth-title">Sign In</div>
+    <div class="auth-sub">Access your company dashboard, employee management, and revenue analytics.</div>
+    <div class="alert alert-warn" id="login-err-msg" style="display:none;"></div>
+    <div class="form-group">
+      <label class="form-label">Work Email</label>
+      <input class="form-input" id="login-email" type="email" placeholder="admin@yourcompany.com" autocomplete="email"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input class="form-input" id="login-pass" type="password" placeholder="Your password" autocomplete="current-password"/>
+    </div>
+    <div style="text-align:right; margin-bottom:20px;"><span style="font-size:0.8rem;color:var(--ice);cursor:pointer;" onclick="showSection('auth-forgot')">Forgot password?</span></div>
+    <button class="btn btn-primary" onclick="doLogin()">Sign In →</button>
+    <p style="text-align:center;font-size:0.82rem;color:var(--gray);margin-top:18px;">New partner? <span style="color:var(--ice);cursor:pointer;" onclick="showSection('auth-signup-1')">Create Account →</span></p>
+    <p style="text-align:center;font-size:0.75rem;color:var(--gray);margin-top:10px;">Are you an employee? <a href="/app" style="color:var(--gold);">Employee App →</a></p>
+  </div>
+
+  <!-- 2FA -->
+  <div class="auth-card hidden" id="auth-2fa">
+    <div class="auth-logo">Tipos<span>It</span></div>
+    <div class="auth-portal-tag">Employer Partner Portal</div>
+    <div class="auth-title">Two-Factor Auth 🔐</div>
+    <div class="auth-sub">Enter the 6-digit code sent to your email.</div>
+    <div class="alert alert-info" id="tfa-info" style="display:none;"></div>
+    <div class="otp-row">
+      <input class="otp-digit" id="o0" maxlength="1" inputmode="numeric" oninput="otpNext(this,1)" onkeydown="otpBack(event,this,null)"/>
+      <input class="otp-digit" id="o1" maxlength="1" inputmode="numeric" oninput="otpNext(this,2)" onkeydown="otpBack(event,this,0)"/>
+      <input class="otp-digit" id="o2" maxlength="1" inputmode="numeric" oninput="otpNext(this,3)" onkeydown="otpBack(event,this,1)"/>
+      <input class="otp-digit" id="o3" maxlength="1" inputmode="numeric" oninput="otpNext(this,4)" onkeydown="otpBack(event,this,2)"/>
+      <input class="otp-digit" id="o4" maxlength="1" inputmode="numeric" oninput="otpNext(this,5)" onkeydown="otpBack(event,this,3)"/>
+      <input class="otp-digit" id="o5" maxlength="1" inputmode="numeric" oninput="otpNext(this,null)" onkeydown="otpBack(event,this,4)"/>
+    </div>
+    <div class="form-error" id="tfa-err" style="display:none;text-align:center;">Incorrect code. Try again.</div>
+    <button class="btn btn-primary" onclick="doVerify2FA()">Verify & Enter →</button>
+    <p style="text-align:center;font-size:0.8rem;color:var(--gray);margin-top:14px;"><span style="color:var(--ice);cursor:pointer;" onclick="resendOTP()">Resend code</span> &nbsp;·&nbsp; <span style="color:var(--gray);cursor:pointer;" onclick="showSection('auth-login')">Back</span></p>
+  </div>
+
+  <!-- SIGNUP STEP 1: Account Info -->
+  <div class="auth-card hidden" id="auth-signup-1">
+    <div class="auth-logo">Tipos<span>It</span></div>
+    <div class="auth-portal-tag">Create Partner Account</div>
+    <div class="progress-wrap">
+      <div class="progress-steps">
+        <div class="progress-step active" id="ps1"></div>
+        <div class="progress-step" id="ps2"></div>
+        <div class="progress-step" id="ps3"></div>
+        <div class="progress-step" id="ps4"></div>
+        <div class="progress-step" id="ps5"></div>
+      </div>
+      <div class="progress-label">Step 1 of 5 — Account Info</div>
+    </div>
+    <div class="auth-title">Let's Set Up Your Account</div>
+    <div class="auth-sub">Create the admin credentials for your company's TiposIt partner account.</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="s1-first" placeholder="Jane" autocomplete="given-name"/></div>
+      <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="s1-last" placeholder="Doe" autocomplete="family-name"/></div>
+    </div>
+    <div class="form-group"><label class="form-label">Work Email</label><input class="form-input" id="s1-email" type="email" placeholder="admin@company.com"/></div>
+    <div class="form-group"><label class="form-label">Mobile Number</label><input class="form-input" id="s1-phone" type="tel" placeholder="(555) 000-0000"/></div>
+    <div class="form-group"><label class="form-label">Job Title</label><input class="form-input" id="s1-title" placeholder="HR Director, CEO, etc."/></div>
+    <div class="form-error" id="s1-err">Please fill in all fields.</div>
+    <button class="btn btn-primary mt-16" onclick="signupNext(1)">Continue →</button>
+    <p style="text-align:center;font-size:0.82rem;color:var(--gray);margin-top:14px;">Already have an account? <span style="color:var(--ice);cursor:pointer;" onclick="showSection('auth-login')">Sign In</span></p>
+  </div>
+
+  <!-- SIGNUP STEP 2: Company Profile -->
+  <div class="auth-card hidden" id="auth-signup-2">
+    <div class="auth-logo">Tipos<span>It</span></div>
+    <div class="auth-portal-tag">Create Partner Account</div>
+    <div class="progress-wrap">
+      <div class="progress-steps">
+        <div class="progress-step done" id="ps1b"></div>
+        <div class="progress-step active" id="ps2b"></div>
+        <div class="progress-step" id="ps3b"></div>
+        <div class="progress-step" id="ps4b"></div>
+        <div class="progress-step" id="ps5b"></div>
+      </div>
+      <div class="progress-label">Step 2 of 5 — Company Profile</div>
+    </div>
+    <div class="auth-title">Your Company</div>
+    <div class="auth-sub">Tell us about your business. This info appears on your employee portal.</div>
+
+    <div class="form-group">
+      <label class="form-label">Company Logo</label>
+      <div class="logo-upload-area" id="logo-upload-area">
+        <input type="file" id="logo-file-input" accept="image/*" onchange="handleLogoUpload(this)"/>
+        <img id="logo-preview" class="logo-preview" alt="Logo preview"/>
+        <div class="logo-upload-icon" id="logo-upload-icon">🏢</div>
+        <div class="logo-upload-text" id="logo-upload-text">Click to upload your company logo<br/><span style="font-size:0.68rem;">PNG, JPG or SVG — max 2MB</span></div>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Company Name</label><input class="form-input" id="s2-company" placeholder="Acme Corporation"/></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Industry</label>
+        <select class="form-input" id="s2-industry">
+          <option value="">Select industry</option>
+          <option>Hospitality & Food Service</option>
+          <option>Healthcare</option>
+          <option>Retail</option>
+          <option>Logistics & Transportation</option>
+          <option>Staffing & Temp Work</option>
+          <option>Construction</option>
+          <option>Security Services</option>
+          <option>Education</option>
+          <option>Manufacturing</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Company Size</label>
+        <select class="form-input" id="s2-size">
+          <option value="">Employees</option>
+          <option>1–25</option>
+          <option>26–100</option>
+          <option>101–500</option>
+          <option>501–1,000</option>
+          <option>1,000+</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Business Address</label><input class="form-input" id="s2-address" placeholder="123 Main St, Austin, TX 78701"/></div>
+    <div class="form-group"><label class="form-label">Website (optional)</label><input class="form-input" id="s2-website" placeholder="https://yourcompany.com" type="url"/></div>
+    <div class="form-group"><label class="form-label">Tax ID / EIN (optional)</label><input class="form-input" id="s2-ein" placeholder="XX-XXXXXXX"/></div>
+    <div class="form-error" id="s2-err">Please enter company name, industry, and size.</div>
+    <div style="display:flex;gap:12px;margin-top:16px;">
+      <button class="btn btn-ghost" style="width:auto;flex:1;" onclick="showSection('auth-signup-1')">← Back</button>
+      <button class="btn btn-primary" style="flex:2;" onclick="signupNext(2)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- SIGNUP STEP 3: Choose Plan -->
+  <div class="auth-card hidden" id="auth-signup-3">
+    <div class="auth-logo">Tipos<span>It</span></div>
+    <div class="auth-portal-tag">Create Partner Account</div>
+    <div class="progress-wrap">
+      <div class="progress-steps">
+        <div class="progress-step done"></div><div class="progress-step done"></div>
+        <div class="progress-step active"></div><div class="progress-step"></div><div class="progress-step"></div>
+      </div>
+      <div class="progress-label">Step 3 of 5 — Choose Your Plan</div>
+    </div>
+    <div class="auth-title">Choose a Plan</div>
+    <div class="auth-sub">All plans include a 30-day free trial. No credit card required to start.</div>
+    <div class="plan-grid">
+      <div class="plan-card" id="plan-starter" onclick="selectPlan('starter')">
+        <div class="plan-name">Starter</div>
+        <div><span class="plan-price">$99</span><span class="plan-period">/mo</span></div>
+        <div class="plan-desc">Up to 50 employees. Perfect for small teams getting started.</div>
+        <div class="plan-check">✓ Same-Day Pay<br/>✓ Digital Wallet<br/>✓ Basic Reports</div>
+      </div>
+      <div class="plan-card recommended" id="plan-pro" onclick="selectPlan('pro')">
+        <div class="plan-tag">Most Popular</div>
+        <div class="plan-name">Pro</div>
+        <div><span class="plan-price">$299</span><span class="plan-period">/mo</span></div>
+        <div class="plan-desc">Up to 250 employees. Full feature suite with analytics.</div>
+        <div class="plan-check">✓ Everything in Starter<br/>✓ Tipflic Analytics<br/>✓ Priority Support</div>
+      </div>
+      <div class="plan-card" id="plan-enterprise" onclick="selectPlan('enterprise')">
+        <div class="plan-name">Enterprise</div>
+        <div><span class="plan-price" style="font-size:1.1rem;color:var(--gold);">Custom</span></div>
+        <div class="plan-desc">Unlimited employees. Dedicated manager and custom contracts.</div>
+        <div class="plan-check">✓ Everything in Pro<br/>✓ Dedicated Manager<br/>✓ Custom Rev Share</div>
+      </div>
+    </div>
+    <div class="form-error" id="s3-err">Please select a plan.</div>
+    <div style="display:flex;gap:12px;margin-top:4px;">
+      <button class="btn btn-ghost" style="flex:1;" onclick="showSection('auth-signup-2')">← Back</button>
+      <button class="btn btn-primary" style="flex:2;" onclick="signupNext(3)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- SIGNUP STEP 4: Password + 2FA -->
+  <div class="auth-card hidden" id="auth-signup-4">
+    <div class="auth-logo">Tipos<span>It</span></div>
+    <div class="auth-portal-tag">Create Partner Account</div>
+    <div class="progress-wrap">
+      <div class="progress-steps">
+        <div class="progress-step done"></div><div class="progress-step done"></div>
+        <div class="progress-step done"></div><div class="progress-step active"></div><div class="progress-step"></div>
+      </div>
+      <div class="progress-label">Step 4 of 5 — Security</div>
+    </div>
+    <div class="auth-title">Secure Your Account 🔒</div>
+    <div class="auth-sub">Create a strong password and set up two-factor authentication to protect your company data.</div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input class="form-input" id="s4-pass" type="password" placeholder="Minimum 8 characters" oninput="checkPassStrength()"/>
+      <div style="height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin-top:8px;overflow:hidden;">
+        <div id="pass-bar" style="height:100%;width:0%;border-radius:2px;transition:all 0.3s;"></div>
+      </div>
+      <div id="pass-label" class="form-hint"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Confirm Password</label>
+      <input class="form-input" id="s4-pass2" type="password" placeholder="Repeat password"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Two-Factor Method</label>
+      <select class="form-input" id="s4-2fa">
+        <option value="email">📧 Email OTP (Recommended)</option>
+        <option value="sms">📱 SMS Code</option>
+        <option value="none">Skip 2FA</option>
+      </select>
+    </div>
+    <div class="form-error" id="s4-err">Please check your password fields.</div>
+    <div style="display:flex;gap:12px;margin-top:16px;">
+      <button class="btn btn-ghost" style="flex:1;" onclick="showSection('auth-signup-3')">← Back</button>
+      <button class="btn btn-primary" style="flex:2;" onclick="signupNext(4)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- SIGNUP STEP 5: Welcome -->
+  <div class="auth-card hidden" id="auth-signup-5">
+    <div style="text-align:center;padding:20px 0;">
+      <div style="font-size:4rem;margin-bottom:16px;">🎉</div>
+      <div style="font-size:1.5rem;font-weight:900;margin-bottom:8px;" id="welcome-company-name">Welcome aboard!</div>
+      <div style="font-size:0.85rem;color:var(--gray);line-height:1.7;margin-bottom:24px;" id="welcome-msg">Your partner account is ready. You can now add employees, configure same-day pay, and start generating revenue share.</div>
+      <div style="background:var(--navy3);border:1px solid rgba(0,212,255,0.1);border-radius:var(--r);padding:18px;text-align:left;margin-bottom:20px;">
+        <div style="font-size:0.75rem;color:var(--gray);font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Your Employer Code</div>
+        <div style="font-size:1.8rem;font-weight:900;color:var(--ice);letter-spacing:4px;" id="welcome-emp-code">----</div>
+        <div style="font-size:0.72rem;color:var(--gray);margin-top:6px;">Share this with your employees — they enter it in the TiposIt app to link their account to your company.</div>
+      </div>
+      <button class="btn btn-primary" onclick="launchDashboard()">Enter Partner Dashboard →</button>
+    </div>
+  </div>
+
+  <!-- FORGOT PASSWORD -->
+  <div class="auth-card hidden" id="auth-forgot">
+    <div class="auth-logo">Tipos<span>It</span></div>
+    <div class="auth-portal-tag">Employer Partner Portal</div>
+    <div class="auth-title">Reset Password</div>
+    <div class="auth-sub">Enter your work email and we'll send a reset link.</div>
+    <div class="form-group"><label class="form-label">Work Email</label><input class="form-input" id="forgot-email" type="email" placeholder="admin@company.com"/></div>
+    <div class="alert alert-success" id="forgot-ok">Reset link sent — check your inbox.</div>
+    <button class="btn btn-primary" onclick="doForgot()">Send Reset Link</button>
+    <p style="text-align:center;font-size:0.8rem;color:var(--gray);margin-top:14px;"><span style="color:var(--ice);cursor:pointer;" onclick="showSection('auth-login')">← Back to Login</span></p>
+  </div>
+
+</div><!-- /auth-overlay -->
+
+<!-- ══════════════════════════════════════════
+     DASHBOARD
+══════════════════════════════════════════ -->
+<div id="dashboard">
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-logo">Tipos<span>It</span></div>
+      <div class="sidebar-brand-tag">Partner Portal</div>
+    </div>
+    <div class="sidebar-company" id="sidebar-company">
+      <div class="sidebar-company-logo-placeholder" id="sidebar-logo-placeholder">T</div>
+      <div>
+        <div class="sidebar-company-name" id="sidebar-company-name">Your Company</div>
+        <div class="sidebar-company-plan" id="sidebar-company-plan">Starter Plan</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section-label">Main</div>
+    <div class="nav-item active" onclick="go('overview')"><span class="nav-icon">📊</span> Overview</div>
+    <div class="nav-item" onclick="go('employees')"><span class="nav-icon">👥</span> Employees <span class="nav-badge" id="nav-emp-count">0</span></div>
+    <div class="nav-item" onclick="go('payroll')"><span class="nav-icon">💸</span> Payroll & EWA</div>
+    <div class="nav-item" onclick="go('revshare')"><span class="nav-icon">📈</span> Revenue Share</div>
+    <div class="sidebar-section-label">Account</div>
+    <div class="nav-item" onclick="go('subscription')"><span class="nav-icon">💳</span> Subscription</div>
+    <div class="nav-item" onclick="go('company')"><span class="nav-icon">🏢</span> Company Profile</div>
+    <div class="nav-item" onclick="go('analytics')"><span class="nav-icon">🔬</span> Analytics</div>
+    <div class="nav-item" onclick="go('settings')"><span class="nav-icon">⚙️</span> Settings</div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user-name" id="sidebar-user-name">Loading…</div>
+      <div class="sidebar-user-email" id="sidebar-user-email"></div>
+      <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- MAIN AREA -->
+  <div id="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Overview</div>
+      <div class="topbar-right">
+        <div class="status-badge"><span class="status-dot"></span> Live</div>
+        <div class="topbar-clock" id="topbar-clock"></div>
+        <button class="topbar-action-btn" onclick="openModal('modal-add-employee')">+ Add Employee</button>
+      </div>
+    </div>
+
+    <!-- ── OVERVIEW ── -->
+    <div class="page-content active" id="page-overview">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-card-label">Total Employees</div><div class="stat-card-val text-ice" id="stat-employees">0</div><div class="stat-card-trend trend-up" id="stat-emp-trend">Enroll your first employee</div></div>
+        <div class="stat-card"><div class="stat-card-label">Active This Week</div><div class="stat-card-val" id="stat-active">0</div><div class="stat-card-trend trend-flat">Clock-ins this week</div></div>
+        <div class="stat-card"><div class="stat-card-label">Revenue Share (MTD)</div><div class="stat-card-val text-green" id="stat-revshare">$0.00</div><div class="stat-card-trend trend-up" id="stat-rev-trend">20–33% of EWA fees</div></div>
+        <div class="stat-card"><div class="stat-card-label">EWA Requests (MTD)</div><div class="stat-card-val" id="stat-ewa">0</div><div class="stat-card-trend trend-flat">Same-day pay pulls</div></div>
+      </div>
+
+      <div class="chart-row">
+        <div class="panel">
+          <div class="panel-header">
+            <div><div class="panel-title">Employee Adoption</div><div class="panel-sub">Signups and active users over time</div></div>
+          </div>
+          <canvas id="chart-adoption" height="90"></canvas>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div><div class="panel-title">EWA Usage Split</div></div></div>
+          <canvas id="chart-ewa-split" height="180"></canvas>
+        </div>
+      </div>
+
+      <!-- Employer Code Banner -->
+      <div class="panel" style="margin-bottom:22px;background:linear-gradient(135deg,rgba(0,212,255,0.07),rgba(0,212,255,0.03));">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+          <div>
+            <div style="font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:6px;">Your Employer Code — Share With Employees</div>
+            <div style="font-size:2rem;font-weight:900;color:var(--ice);letter-spacing:6px;" id="overview-emp-code">----</div>
+            <div style="font-size:0.75rem;color:var(--gray);margin-top:6px;">Employees enter this code in the TiposIt app to link to your company.</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="copyEmpCode()">📋 Copy Code</button>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Recent Activity</div></div>
+        <div id="activity-feed">
+          <div class="empty-state" style="padding:24px 0;">
+            <div class="empty-icon" style="font-size:2rem;">📋</div>
+            <div class="empty-sub">No activity yet. Add employees to get started.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── EMPLOYEES ── -->
+    <div class="page-content" id="page-employees">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div style="font-size:0.82rem;color:var(--gray);">Manage your enrolled workforce</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <input class="form-input" id="emp-search" placeholder="🔍 Search employees…" oninput="filterEmployees()" style="width:220px;padding:9px 14px;"/>
+          <button class="btn btn-primary btn-sm" onclick="openModal('modal-add-employee')">+ Add Employee</button>
+          <button class="btn btn-secondary btn-sm" onclick="openModal('modal-bulk-invite')">📧 Bulk Invite</button>
+        </div>
+      </div>
+
+      <!-- Employee Table -->
+      <div class="panel">
+        <div class="table-wrap">
+          <table id="emp-table">
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Job Title</th>
+                <th>Rate</th>
+                <th>EWA Used (MTD)</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="emp-tbody"></tbody>
+          </table>
+        </div>
+        <div id="emp-empty" class="empty-state hidden">
+          <div class="empty-icon">👥</div>
+          <div class="empty-title">No employees yet</div>
+          <div class="empty-sub">Add your first employee or send bulk invitations to get started.</div>
+          <button class="btn btn-primary btn-sm mt-12" onclick="openModal('modal-add-employee')">Add First Employee</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAYROLL & EWA ── -->
+    <div class="page-content" id="page-payroll">
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="stat-card"><div class="stat-card-label">Total EWA Pulled (MTD)</div><div class="stat-card-val text-ice" id="pay-total-ewa">$0</div><div class="stat-card-trend trend-flat">Across all employees</div></div>
+        <div class="stat-card"><div class="stat-card-label">Avg Pull Per Employee</div><div class="stat-card-val" id="pay-avg-pull">$0</div><div class="stat-card-trend trend-flat"></div></div>
+        <div class="stat-card"><div class="stat-card-label">Total Hours (MTD)</div><div class="stat-card-val text-green" id="pay-hours">0h</div><div class="stat-card-trend trend-flat">Tracked via clock-in</div></div>
+      </div>
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">Pay Period Overview</div></div>
+          <canvas id="chart-pay" height="130"></canvas>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">EWA Approval Queue</div></div>
+          <div id="ewa-queue">
+            <div class="empty-state" style="padding:24px 0;">
+              <div class="empty-sub">EWA requests from employees will appear here for review.</div>
+              <span class="coming-soon" style="margin-top:10px;">Auto-approved in Beta</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">EWA Transaction Log</div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Employee</th><th>Date</th><th>Amount</th><th>Fee</th><th>Your Share</th><th>Status</th></tr></thead>
+            <tbody id="ewa-log-body">
+              <tr><td colspan="6" style="text-align:center;color:var(--gray);padding:24px;">No EWA transactions yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── REVENUE SHARE ── -->
+    <div class="page-content" id="page-revshare">
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="stat-card"><div class="stat-card-label">Total Earned (All Time)</div><div class="stat-card-val text-green" id="rev-total">$0.00</div><div class="stat-card-trend trend-up">From employee EWA fees</div></div>
+        <div class="stat-card"><div class="stat-card-label">This Month</div><div class="stat-card-val text-ice" id="rev-month">$0.00</div><div class="stat-card-trend" id="rev-month-trend">—</div></div>
+        <div class="stat-card"><div class="stat-card-label">Your Rev Share Rate</div><div class="stat-card-val text-gold" id="rev-rate">20%</div><div class="stat-card-trend trend-flat">Upgrades with plan tier</div></div>
+      </div>
+
+      <div class="panel" style="margin-bottom:22px;">
+        <div class="panel-header"><div class="panel-title">How Revenue Share Works</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;">
+          <div style="text-align:center;padding:16px;">
+            <div style="font-size:2rem;margin-bottom:8px;">💸</div>
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:4px;">Employee Pulls Wages</div>
+            <div style="font-size:0.75rem;color:var(--gray);">Employee requests same-day access to earned wages. TiposIt charges a small fee (1.5–3%).</div>
+          </div>
+          <div style="text-align:center;padding:16px;">
+            <div style="font-size:2rem;margin-bottom:8px;">➗</div>
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:4px;">Fee Is Split</div>
+            <div style="font-size:0.75rem;color:var(--gray);">TiposIt keeps 67–80% to cover operations. Your company earns 20–33% just for being a partner.</div>
+          </div>
+          <div style="text-align:center;padding:16px;">
+            <div style="font-size:2rem;margin-bottom:8px;">🏦</div>
+            <div style="font-size:0.85rem;font-weight:700;margin-bottom:4px;">Monthly Deposit</div>
+            <div style="font-size:0.75rem;color:var(--gray);">Your accumulated share is deposited to your linked bank account at the end of each month.</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <div style="font-size:0.75rem;color:var(--gray);margin-bottom:6px;font-weight:600;">YOUR CURRENT RATE — <span id="rev-plan-label">Starter: 20%</span></div>
+          <div class="rev-share-bar"><div class="rev-share-fill" id="rev-share-bar-fill" style="width:20%;"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--gray);margin-top:4px;"><span>Starter 20%</span><span>Pro 27%</span><span>Enterprise 33%</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Revenue Share History</div></div>
+        <div id="revshare-history">
+          <div class="empty-state" style="padding:24px 0;">
+            <div class="empty-sub">Revenue share payments will appear here once employees start using EWA.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SUBSCRIPTION ── -->
+    <div class="page-content" id="page-subscription">
+      <div class="two-col" style="grid-template-columns:1fr 2fr;">
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">Current Plan</div></div>
+          <div style="text-align:center;padding:10px 0 20px;">
+            <div style="font-size:0.75rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Active Plan</div>
+            <div style="font-size:1.8rem;font-weight:900;color:var(--ice);" id="sub-plan-name">Starter</div>
+            <div style="font-size:1.4rem;font-weight:800;margin-top:4px;" id="sub-plan-price">$99<span style="font-size:0.75rem;color:var(--gray);">/mo</span></div>
+            <div style="font-size:0.72rem;color:var(--gray);margin-top:8px;">Next billing: <span id="sub-next-billing">—</span></div>
+          </div>
+          <button class="btn btn-secondary btn-sm" style="width:100%;" onclick="go('subscription-upgrade')">Upgrade Plan →</button>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">Plan Comparison</div></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Feature</th><th>Starter</th><th>Pro</th><th>Enterprise</th></tr></thead>
+              <tbody>
+                <tr><td>Max Employees</td><td>50</td><td>250</td><td>Unlimited</td></tr>
+                <tr><td>Same-Day Pay</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Digital Wallet</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Revenue Share</td><td>20%</td><td>27%</td><td>33%</td></tr>
+                <tr><td>Tipflic Analytics</td><td>Basic</td><td>Full</td><td>Full + API</td></tr>
+                <tr><td>ICE Cards</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>BNPL</td><td>—</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Dedicated Manager</td><td>—</td><td>—</td><td>✅</td></tr>
+                <tr><td>SLA Support</td><td>Email</td><td>Priority</td><td>24/7</td></tr>
+                <tr><td>Price</td><td style="color:var(--ice);font-weight:700;">$99/mo</td><td style="color:var(--ice);font-weight:700;">$299/mo</td><td style="color:var(--gold);font-weight:700;">Custom</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Billing History</div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th><th>Invoice</th></tr></thead>
+            <tbody id="billing-tbody">
+              <tr><td colspan="5" style="text-align:center;color:var(--gray);padding:20px;">No billing history yet. Your 30-day free trial is active.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── COMPANY PROFILE ── -->
+    <div class="page-content" id="page-company">
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">Company Identity</div></div>
+          <div style="text-align:center;margin-bottom:20px;">
+            <div id="company-logo-display" style="width:80px;height:80px;border-radius:18px;background:linear-gradient(135deg,var(--ice),var(--ice2));color:var(--navy);font-size:1.8rem;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"></div>
+            <div style="font-size:1rem;font-weight:800;" id="co-display-name">Your Company</div>
+            <div style="font-size:0.75rem;color:var(--gray);" id="co-display-industry">Industry</div>
+          </div>
+          <div class="logo-upload-area" style="padding:16px;margin-bottom:16px;">
+            <input type="file" accept="image/*" onchange="updateCompanyLogo(this)"/>
+            <div style="font-size:0.8rem;color:var(--gray);">📷 Click to update logo</div>
+          </div>
+          <div class="form-group"><label class="form-label">Company Name</label><input class="form-input" id="co-name"/></div>
+          <div class="form-group"><label class="form-label">Industry</label><input class="form-input" id="co-industry"/></div>
+          <div class="form-group"><label class="form-label">Website</label><input class="form-input" id="co-website" type="url"/></div>
+          <button class="btn btn-primary" onclick="saveCompanyProfile()">Save Profile</button>
+        </div>
+        <div>
+          <div class="panel" style="margin-bottom:18px;">
+            <div class="panel-header"><div class="panel-title">Contact & Address</div></div>
+            <div class="form-group"><label class="form-label">Business Address</label><input class="form-input" id="co-address"/></div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">City</label><input class="form-input" id="co-city"/></div>
+              <div class="form-group"><label class="form-label">State</label><input class="form-input" id="co-state" placeholder="TX"/></div>
+            </div>
+            <div class="form-group"><label class="form-label">Primary Contact Phone</label><input class="form-input" id="co-phone" type="tel"/></div>
+            <button class="btn btn-secondary" onclick="saveCompanyContact()">Save Contact Info</button>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Employer Code</div></div>
+            <div style="font-size:2rem;font-weight:900;color:var(--ice);letter-spacing:6px;text-align:center;padding:16px 0;" id="co-emp-code">----</div>
+            <div style="font-size:0.72rem;color:var(--gray);text-align:center;margin-bottom:14px;">Share this code with your employees. They use it to link their TiposIt account to your company.</div>
+            <button class="btn btn-secondary btn-sm" style="width:100%;" onclick="copyEmpCode()">📋 Copy Code</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ANALYTICS ── -->
+    <div class="page-content" id="page-analytics">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-card-label">Adoption Rate</div><div class="stat-card-val text-green" id="an-adoption">0%</div><div class="stat-card-trend">% enrolled vs headcount</div></div>
+        <div class="stat-card"><div class="stat-card-label">EWA Utilization</div><div class="stat-card-val text-ice" id="an-util">0%</div><div class="stat-card-trend">% using same-day pay</div></div>
+        <div class="stat-card"><div class="stat-card-label">Retention Lift</div><div class="stat-card-val text-purple" id="an-retention">+0%</div><div class="stat-card-trend">vs national average</div></div>
+        <div class="stat-card"><div class="stat-card-label">Avg Tenure</div><div class="stat-card-val" id="an-tenure">0 mo</div><div class="stat-card-trend">Since TiposIt launch</div></div>
+      </div>
+      <div class="chart-row">
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">EWA Volume Trend</div></div>
+          <canvas id="chart-analytics-main" height="100"></canvas>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">Employee Wellness Score</div><span class="coming-soon">Tipflic</span></div>
+          <canvas id="chart-wellness" height="180"></canvas>
+        </div>
+      </div>
+      <div class="panel" style="background:rgba(184,138,255,0.05);border-color:rgba(184,138,255,0.15);">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+          <div>
+            <div style="font-size:0.92rem;font-weight:700;margin-bottom:4px;">🔬 Full Tipflic Analytics Dashboard</div>
+            <div style="font-size:0.78rem;color:var(--gray);">Deep workforce intelligence: financial wellness scores, spending insights, savings goals, attrition risk prediction, and payroll optimization. Coming Q3 2026.</div>
+          </div>
+          <span class="coming-soon">Q3 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SETTINGS ── -->
+    <div class="page-content" id="page-settings">
+      <div class="two-col">
+        <div>
+          <div class="settings-section">
+            <div class="settings-section-title">Admin Account</div>
+            <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="set-name"/></div>
+            <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="set-email" type="email"/></div>
+            <div class="form-group"><label class="form-label">New Password</label><input class="form-input" id="set-pass" type="password" placeholder="Leave blank to keep current"/></div>
+            <button class="btn btn-primary btn-sm" onclick="saveAdminSettings()">Save Changes</button>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-title">Two-Factor Authentication</div>
+            <div class="toggle-row"><div><div class="toggle-label">2FA on Login</div><div class="toggle-sub">Require verification code each login</div></div><label class="toggle"><input type="checkbox" id="tog-2fa" checked onchange="saveTFASetting()"/><span class="toggle-slider"></span></label></div>
+            <div class="toggle-row"><div><div class="toggle-label">Email OTP</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+          </div>
+        </div>
+        <div>
+          <div class="settings-section">
+            <div class="settings-section-title">Notifications</div>
+            <div class="toggle-row"><div><div class="toggle-label">New Employee Signups</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+            <div class="toggle-row"><div><div class="toggle-label">EWA Request Alerts</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+            <div class="toggle-row"><div><div class="toggle-label">Monthly Rev Share Statement</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+            <div class="toggle-row"><div><div class="toggle-label">Product Updates</div></div><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></div>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-title">EWA Settings</div>
+            <div class="form-group"><label class="form-label">Max EWA % Per Request</label><select class="form-input" id="set-ewa-max"><option>50%</option><option selected>75%</option><option>100%</option></select><div class="form-hint">Maximum % of earned wages employee can pull at once.</div></div>
+            <div class="form-group"><label class="form-label">Approval Mode</label><select class="form-input" id="set-approval"><option selected>Auto-Approve All</option><option>Manual Review</option><option>Auto-Approve Under $200</option></select></div>
+            <button class="btn btn-secondary btn-sm" onclick="saveEWASettings()">Save EWA Settings</button>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-title">Danger Zone</div>
+            <button class="btn btn-danger btn-sm" onclick="confirmDeleteAccount()">Delete Partner Account</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /dashboard -->
+
+<!-- ══════════════════════════════════════
+     MODALS
+══════════════════════════════════════ -->
+
+<!-- ADD EMPLOYEE -->
+<div class="modal-overlay" id="modal-add-employee">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-add-employee')">✕</button>
+    <div class="modal-title">Add Employee</div>
+    <div class="modal-sub">Add a new employee to your TiposIt account. They'll receive an email invitation.</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="emp-first" placeholder="Jane"/></div>
+      <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="emp-last" placeholder="Doe"/></div>
+    </div>
+    <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" id="emp-email" type="email" placeholder="jane@example.com"/></div>
+    <div class="form-group"><label class="form-label">Job Title</label><input class="form-input" id="emp-title" placeholder="Server, Associate, Manager…"/></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Hourly Rate ($)</label><input class="form-input" id="emp-rate" type="number" placeholder="18.50" step="0.25"/></div>
+      <div class="form-group"><label class="form-label">Department</label><input class="form-input" id="emp-dept" placeholder="Front of House"/></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">EWA Access</label>
+      <select class="form-input" id="emp-ewa">
+        <option value="full">Full Access (Recommended)</option>
+        <option value="limited">Limited (75% max per pull)</option>
+        <option value="none">No EWA Access</option>
+      </select>
+    </div>
+    <div class="form-error" id="emp-err" style="display:none;">Please fill in name, email, and hourly rate.</div>
+    <button class="btn btn-primary mt-16" onclick="addEmployee()">Add Employee →</button>
+    <button class="btn btn-ghost mt-12" onclick="closeModal('modal-add-employee')">Cancel</button>
+  </div>
+</div>
+
+<!-- BULK INVITE -->
+<div class="modal-overlay" id="modal-bulk-invite">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-bulk-invite')">✕</button>
+    <div class="modal-title">Bulk Employee Invite</div>
+    <div class="modal-sub">Paste a list of employee email addresses, one per line, to send them all an invitation to join TiposIt.</div>
+    <div class="form-group">
+      <label class="form-label">Email Addresses (one per line)</label>
+      <textarea class="form-input" id="bulk-emails" rows="6" placeholder="jane@company.com&#10;john@company.com&#10;alex@company.com" style="resize:vertical;"></textarea>
+    </div>
+    <div class="alert alert-info">📧 Employees will receive an email with your employer code and a link to download the TiposIt app.</div>
+    <button class="btn btn-primary mt-16" onclick="sendBulkInvite()">Send Invitations →</button>
+    <button class="btn btn-ghost mt-12" onclick="closeModal('modal-bulk-invite')">Cancel</button>
+  </div>
+</div>
+
+<!-- EMPLOYEE DETAIL -->
+<div class="modal-overlay" id="modal-emp-detail">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-emp-detail')">✕</button>
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--ice),var(--ice2));color:var(--navy);font-size:1.4rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;" id="modal-emp-initials"></div>
+      <div style="font-size:1.1rem;font-weight:800;" id="modal-emp-name"></div>
+      <div style="font-size:0.78rem;color:var(--gray);" id="modal-emp-role"></div>
+    </div>
+    <div id="modal-emp-stats" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;"></div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="editEmployee()">Edit</button>
+      <button class="btn btn-danger btn-sm" style="flex:1;" onclick="removeEmployee()">Remove</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+var STATE = {
+  employer: null,
+  tfa_code: '',
+  tfa_pending: null,
+  selected_plan: null,
+  signup_data: {},
+  logo_data: null,
+  selected_emp_id: null,
+  charts_inited: false
+};
+
+var PLAN_CONFIG = {
+  starter:    { name:'Starter',    price:'$99/mo',  rev:0.20, maxEmp:50,   label:'Starter: 20%' },
+  pro:        { name:'Pro',        price:'$299/mo', rev:0.27, maxEmp:250,  label:'Pro: 27%' },
+  enterprise: { name:'Enterprise', price:'Custom',  rev:0.33, maxEmp:9999, label:'Enterprise: 33%' }
+};
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', function() {
+  startClock();
+  var session = sessionStorage.getItem('tiposit_emp_session');
+  var employer = getEmployer();
+  if (session === '1' && employer) {
+    STATE.employer = employer;
+    showDashboard();
+  }
+});
+
+/* ══════════════════════════════════════
+   AUTH SECTION MANAGEMENT
+══════════════════════════════════════ */
+function showSection(id) {
+  var sections = ['auth-login','auth-2fa','auth-signup-1','auth-signup-2','auth-signup-3','auth-signup-4','auth-signup-5','auth-forgot'];
+  for (var i = 0; i < sections.length; i++) {
+    var el = document.getElementById(sections[i]);
+    if (el) el.classList.add('hidden');
+  }
+  var t = document.getElementById(id);
+  if (t) t.classList.remove('hidden');
+}
+
+/* ══════════════════════════════════════
+   LOGIN
+══════════════════════════════════════ */
+function doLogin() {
+  var email = document.getElementById('login-email').value.trim().toLowerCase();
+  var pass  = document.getElementById('login-pass').value;
+  var err   = document.getElementById('login-err-msg');
+  var emp   = getEmployer();
+  if (!emp || emp.email !== email || emp.password !== simpleHash(pass)) {
+    err.textContent = 'Incorrect email or password. Try again.';
+    err.style.display = 'block'; return;
+  }
+  err.style.display = 'none';
+  STATE.tfa_pending = emp;
+  if (emp.tfa_enabled) { send2FA(emp.email); showSection('auth-2fa'); }
+  else { completeLogin(emp); }
+}
+
+function send2FA(email) {
+  STATE.tfa_code = '';
+  for (var i = 0; i < 6; i++) STATE.tfa_code += Math.floor(Math.random()*10);
+  clearOTP();
+  var info = document.getElementById('tfa-info');
+  info.textContent = '✓ Code sent to ' + email + ' — Demo: auto-filling in 3s';
+  info.style.display = 'block';
+  setTimeout(function() {
+    for (var j = 0; j < 6; j++) { var d = document.getElementById('o'+j); if(d) d.value = STATE.tfa_code[j]; }
+    info.textContent = '✓ Code auto-filled (demo mode). Click Verify to enter.';
+  }, 3000);
+}
+
+function doVerify2FA() {
+  var entered = '';
+  for (var i = 0; i < 6; i++) { var d = document.getElementById('o'+i); entered += d ? d.value : ''; }
+  if (entered === STATE.tfa_code) {
+    document.getElementById('tfa-err').style.display = 'none';
+    completeLogin(STATE.tfa_pending);
+  } else {
+    document.getElementById('tfa-err').style.display = 'block';
+  }
+}
+
+function resendOTP() { if (STATE.tfa_pending) send2FA(STATE.tfa_pending.email); }
+
+function completeLogin(emp) {
+  STATE.employer = emp;
+  sessionStorage.setItem('tiposit_emp_session', '1');
+  showDashboard();
+}
+
+function clearOTP() { for (var i=0;i<6;i++){var d=document.getElementById('o'+i);if(d)d.value='';} }
+
+/* ══════════════════════════════════════
+   SIGNUP
+══════════════════════════════════════ */
+function signupNext(step) {
+  if (step === 1) {
+    var first = v('s1-first'), last = v('s1-last'), email = v('s1-email'), phone = v('s1-phone'), title = v('s1-title');
+    if (!first||!last||!email||!phone||!title) { show('s1-err'); return; }
+    hide('s1-err');
+    STATE.signup_data = { firstName:first, lastName:last, email:email.toLowerCase(), phone:phone, title:title };
+    showSection('auth-signup-2');
+  } else if (step === 2) {
+    var company = v('s2-company'), industry = v('s2-industry'), size = v('s2-size');
+    if (!company||!industry||!size) { show('s2-err'); return; }
+    hide('s2-err');
+    Object.assign(STATE.signup_data, { company:company, industry:industry, size:size, address:v('s2-address'), website:v('s2-website'), ein:v('s2-ein'), logo:STATE.logo_data });
+    showSection('auth-signup-3');
+  } else if (step === 3) {
+    if (!STATE.selected_plan) { show('s3-err'); return; }
+    hide('s3-err');
+    STATE.signup_data.plan = STATE.selected_plan;
+    showSection('auth-signup-4');
+  } else if (step === 4) {
+    var pass = v('s4-pass'), pass2 = v('s4-pass2');
+    if (pass.length < 8) { document.getElementById('s4-err').textContent='Password must be 8+ characters.'; show('s4-err'); return; }
+    if (pass !== pass2) { document.getElementById('s4-err').textContent='Passwords do not match.'; show('s4-err'); return; }
+    hide('s4-err');
+    STATE.signup_data.password = simpleHash(pass);
+    STATE.signup_data.tfa_method = v('s4-2fa');
+    STATE.signup_data.tfa_enabled = (v('s4-2fa') !== 'none');
+    createEmployerAccount();
+  }
+}
+
+function createEmployerAccount() {
+  var d = STATE.signup_data;
+  var code = generateEmpCode(d.company);
+  var employer = {
+    id: 'emp_' + Date.now(),
+    firstName:  d.firstName,
+    lastName:   d.lastName,
+    email:      d.email,
+    phone:      d.phone,
+    title:      d.title,
+    company:    d.company,
+    industry:   d.industry,
+    size:       d.size,
+    address:    d.address || '',
+    website:    d.website || '',
+    ein:        d.ein || '',
+    logo:       d.logo || null,
+    plan:       d.plan,
+    password:   d.password,
+    tfa_enabled:d.tfa_enabled,
+    tfa_method: d.tfa_method,
+    empCode:    code,
+    employees:  [],
+    revShareEarned: 0,
+    createdAt:  new Date().toISOString()
+  };
+  saveEmployer(employer);
+  STATE.employer = employer;
+  sessionStorage.setItem('tiposit_emp_session', '1');
+
+  // Welcome step
+  document.getElementById('welcome-company-name').textContent = 'Welcome, ' + d.company + '!';
+  document.getElementById('welcome-emp-code').textContent = code;
+  showSection('auth-signup-5');
+}
+
+function selectPlan(plan) {
+  STATE.selected_plan = plan;
+  ['starter','pro','enterprise'].forEach(function(p) {
+    document.getElementById('plan-'+p).classList.toggle('selected', p === plan);
+  });
+}
+
+/* ══════════════════════════════════════
+   LOGO UPLOAD
+══════════════════════════════════════ */
+function handleLogoUpload(input) {
+  if (!input.files || !input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    STATE.logo_data = e.target.result;
+    var preview = document.getElementById('logo-preview');
+    preview.src = e.target.result;
+    preview.style.display = 'block';
+    document.getElementById('logo-upload-icon').style.display = 'none';
+    document.getElementById('logo-upload-text').textContent = 'Logo uploaded ✓';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function updateCompanyLogo(input) {
+  if (!input.files || !input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    STATE.employer.logo = e.target.result;
+    saveEmployer(STATE.employer);
+    refreshCompanyPage();
+    refreshSidebar();
+    showToast('✓ Company logo updated');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+/* ══════════════════════════════════════
+   LAUNCH DASHBOARD
+══════════════════════════════════════ */
+function launchDashboard() {
+  showDashboard();
+}
+
+function showDashboard() {
+  document.getElementById('auth-overlay').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  refreshAll();
+  initCharts();
+}
+
+/* ══════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════ */
+function go(page) {
+  var pages = document.querySelectorAll('.page-content');
+  for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+  var target = document.getElementById('page-' + page);
+  if (target) target.classList.add('active');
+
+  var navItems = document.querySelectorAll('.nav-item');
+  for (var j = 0; j < navItems.length; j++) navItems[j].classList.remove('active');
+  event.currentTarget.classList.add('active');
+
+  var titles = {
+    overview:'Overview', employees:'Employees', payroll:'Payroll & EWA',
+    revshare:'Revenue Share', subscription:'Subscription', company:'Company Profile',
+    analytics:'Analytics', settings:'Settings'
+  };
+  document.getElementById('topbar-title').textContent = titles[page] || page;
+  if (page === 'company') refreshCompanyPage();
+  if (page === 'settings') refreshSettingsPage();
+  if (page === 'analytics') refreshAnalytics();
+}
+
+/* ══════════════════════════════════════
+   REFRESH FUNCTIONS
+══════════════════════════════════════ */
+function refreshAll() {
+  if (!STATE.employer) return;
+  refreshSidebar();
+  refreshOverview();
+  renderEmployeeTable();
+  refreshRevShare();
+  refreshSubscription();
+  refreshCompanyPage();
+  refreshSettingsPage();
+}
+
+function refreshSidebar() {
+  var e = STATE.employer;
+  document.getElementById('sidebar-company-name').textContent = e.company || 'Your Company';
+  var plan = PLAN_CONFIG[e.plan] || PLAN_CONFIG.starter;
+  document.getElementById('sidebar-company-plan').textContent = plan.name + ' Plan';
+  document.getElementById('sidebar-user-name').textContent = e.firstName + ' ' + e.lastName;
+  document.getElementById('sidebar-user-email').textContent = e.email;
+  var empCount = (e.employees || []).length;
+  document.getElementById('nav-emp-count').textContent = empCount;
+
+  // Logo
+  var logoEl = document.getElementById('sidebar-logo-placeholder');
+  if (e.logo) {
+    logoEl.outerHTML = '<img id="sidebar-logo-placeholder" class="sidebar-company-logo" src="'+e.logo+'" alt="logo"/>';
+  } else {
+    logoEl.textContent = (e.company||'T')[0].toUpperCase();
+  }
+}
+
+function refreshOverview() {
+  var e = STATE.employer;
+  var emps = e.employees || [];
+  document.getElementById('stat-employees').textContent = emps.length;
+  document.getElementById('stat-emp-trend').textContent = emps.length > 0 ? '↑ ' + emps.length + ' enrolled' : 'Enroll your first employee';
+  document.getElementById('stat-active').textContent = Math.min(emps.length, Math.ceil(emps.length * 0.72));
+  document.getElementById('stat-revshare').textContent = '$' + (e.revShareEarned || 0).toFixed(2);
+  document.getElementById('stat-ewa').textContent = emps.length * 3;
+  document.getElementById('overview-emp-code').textContent = e.empCode || '----';
+
+  // Activity feed
+  var feed = document.getElementById('activity-feed');
+  if (emps.length === 0) {
+    feed.innerHTML = '<div class="empty-state" style="padding:24px 0;"><div class="empty-sub">No activity yet. Add employees to get started.</div></div>';
+  } else {
+    var html = emps.slice(-5).reverse().map(function(emp) {
+      return '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(0,212,255,0.05);">' +
+        '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--ice),var(--ice2));color:var(--navy);font-weight:800;font-size:0.82rem;display:flex;align-items:center;justify-content:center;">' + emp.firstName[0]+emp.lastName[0] + '</div>' +
+        '<div style="flex:1;"><div style="font-size:0.85rem;font-weight:600;">'+emp.firstName+' '+emp.lastName+' joined</div><div style="font-size:0.72rem;color:var(--gray);">'+formatDate(emp.addedAt)+'</div></div>' +
+        '<span class="badge badge-green">New</span></div>';
+    }).join('');
+    feed.innerHTML = html;
+  }
+}
+
+function renderEmployeeTable() {
+  var e = STATE.employer;
+  var emps = e.employees || [];
+  var search = (document.getElementById('emp-search')||{}).value || '';
+  var filtered = emps.filter(function(emp) {
+    return !search || (emp.firstName+' '+emp.lastName+' '+emp.jobTitle).toLowerCase().includes(search.toLowerCase());
+  });
+  var tbody = document.getElementById('emp-tbody');
+  var empty = document.getElementById('emp-empty');
+  if (filtered.length === 0) {
+    tbody.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  tbody.innerHTML = filtered.map(function(emp) {
+    var initials = emp.firstName[0]+emp.lastName[0];
+    var ewaUsed = (emp.hourlyRate * 2.3).toFixed(2);
+    return '<tr onclick="showEmpDetail(\''+emp.id+'\')" style="cursor:pointer;">' +
+      '<td><div style="display:flex;align-items:center;gap:10px;"><div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--ice),var(--ice2));color:var(--navy);font-weight:800;font-size:0.75rem;display:flex;align-items:center;justify-content:center;">'+initials+'</div><div><div style="font-weight:600;font-size:0.85rem;">'+emp.firstName+' '+emp.lastName+'</div><div style="font-size:0.7rem;color:var(--gray);">'+emp.email+'</div></div></div></td>' +
+      '<td>'+emp.jobTitle+'</td>' +
+      '<td>$'+parseFloat(emp.hourlyRate).toFixed(2)+'/hr</td>' +
+      '<td style="color:var(--ice);">$'+ewaUsed+'</td>' +
+      '<td><span class="badge badge-green">Active</span></td>' +
+      '<td><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();showEmpDetail(\''+emp.id+'\')">View</button></td>' +
+      '</tr>';
+  }).join('');
+}
+
+function filterEmployees() { renderEmployeeTable(); }
+
+function addEmployee() {
+  var first = v('emp-first'), last = v('emp-last'), email = v('emp-email'), title = v('emp-title'), rate = v('emp-rate');
+  if (!first||!last||!email||!rate) { show('emp-err'); return; }
+  hide('emp-err');
+  var emp = {
+    id: 'e_'+Date.now(),
+    firstName: first, lastName: last, email: email.toLowerCase(),
+    jobTitle: title, department: v('emp-dept'),
+    hourlyRate: parseFloat(rate) || 15,
+    ewaAccess: v('emp-ewa') || 'full',
+    status: 'active',
+    addedAt: new Date().toISOString()
+  };
+  if (!STATE.employer.employees) STATE.employer.employees = [];
+  STATE.employer.employees.push(emp);
+  saveEmployer(STATE.employer);
+  closeModal('modal-add-employee');
+  ['emp-first','emp-last','emp-email','emp-title','emp-dept','emp-rate'].forEach(function(id) { var el=document.getElementById(id); if(el)el.value=''; });
+  showToast('✓ ' + first + ' ' + last + ' added successfully');
+  refreshAll();
+  addActivity('👤 ' + first + ' ' + last + ' was added as an employee.');
+}
+
+function showEmpDetail(id) {
+  var e = STATE.employer;
+  var emp = (e.employees||[]).find(function(x){return x.id===id;});
+  if (!emp) return;
+  STATE.selected_emp_id = id;
+  document.getElementById('modal-emp-initials').textContent = emp.firstName[0]+emp.lastName[0];
+  document.getElementById('modal-emp-name').textContent = emp.firstName+' '+emp.lastName;
+  document.getElementById('modal-emp-role').textContent = emp.jobTitle + ' · ' + emp.email;
+  document.getElementById('modal-emp-stats').innerHTML =
+    '<div class="stat-card" style="margin:0;"><div class="stat-card-label">Hourly Rate</div><div class="stat-card-val text-ice" style="font-size:1.2rem;">$'+parseFloat(emp.hourlyRate).toFixed(2)+'</div></div>' +
+    '<div class="stat-card" style="margin:0;"><div class="stat-card-label">EWA Access</div><div class="stat-card-val" style="font-size:1rem;">'+(emp.ewaAccess||'full')+'</div></div>';
+  openModal('modal-emp-detail');
+}
+
+function removeEmployee() {
+  var id = STATE.selected_emp_id;
+  STATE.employer.employees = (STATE.employer.employees||[]).filter(function(e){return e.id!==id;});
+  saveEmployer(STATE.employer);
+  closeModal('modal-emp-detail');
+  showToast('Employee removed');
+  refreshAll();
+}
+
+function editEmployee() {
+  closeModal('modal-emp-detail');
+  openModal('modal-add-employee');
+}
+
+function sendBulkInvite() {
+  var emails = document.getElementById('bulk-emails').value.trim();
+  if (!emails) { showToast('❌ Please enter at least one email'); return; }
+  var count = emails.split('\n').filter(function(e){return e.trim();}).length;
+  closeModal('modal-bulk-invite');
+  showToast('✓ Invitations sent to ' + count + ' email address' + (count!==1?'es':''));
+}
+
+function copyEmpCode() {
+  var code = STATE.employer ? STATE.employer.empCode : '';
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code).then(function() { showToast('📋 Employer code copied: ' + code); });
+  } else {
+    showToast('Your employer code: ' + code);
+  }
+}
+
+function refreshRevShare() {
+  var e = STATE.employer;
+  var plan = PLAN_CONFIG[e.plan] || PLAN_CONFIG.starter;
+  document.getElementById('rev-total').textContent = '$' + (e.revShareEarned||0).toFixed(2);
+  document.getElementById('rev-month').textContent = '$' + (e.revShareEarned||0).toFixed(2);
+  document.getElementById('rev-rate').textContent = (plan.rev*100) + '%';
+  document.getElementById('rev-plan-label').textContent = plan.label;
+  document.getElementById('rev-share-bar-fill').style.width = (plan.rev * 100 / 0.33 * 100) + '%';
+}
+
+function refreshSubscription() {
+  var e = STATE.employer;
+  var plan = PLAN_CONFIG[e.plan] || PLAN_CONFIG.starter;
+  document.getElementById('sub-plan-name').textContent = plan.name;
+  document.getElementById('sub-plan-price').innerHTML = plan.price + (e.plan!=='enterprise' ? '<span style="font-size:0.75rem;color:var(--gray);"></span>' : '');
+  var next = new Date(); next.setMonth(next.getMonth()+1);
+  document.getElementById('sub-next-billing').textContent = next.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+}
+
+function refreshCompanyPage() {
+  if (!STATE.employer) return;
+  var e = STATE.employer;
+  document.getElementById('co-display-name').textContent = e.company;
+  document.getElementById('co-display-industry').textContent = e.industry;
+  document.getElementById('co-emp-code').textContent = e.empCode;
+  document.getElementById('co-name').value = e.company || '';
+  document.getElementById('co-industry').value = e.industry || '';
+  document.getElementById('co-website').value = e.website || '';
+  document.getElementById('co-address').value = e.address || '';
+  document.getElementById('co-phone').value = e.phone || '';
+  var logoEl = document.getElementById('company-logo-display');
+  if (e.logo) {
+    logoEl.style.background = 'none';
+    logoEl.innerHTML = '<img src="'+e.logo+'" style="width:100%;height:100%;border-radius:18px;object-fit:cover;"/>';
+  } else {
+    logoEl.textContent = (e.company||'T')[0].toUpperCase();
+  }
+}
+
+function saveCompanyProfile() {
+  STATE.employer.company  = v('co-name') || STATE.employer.company;
+  STATE.employer.industry = v('co-industry') || STATE.employer.industry;
+  STATE.employer.website  = v('co-website');
+  saveEmployer(STATE.employer);
+  refreshSidebar(); refreshCompanyPage();
+  showToast('✓ Company profile saved');
+}
+
+function saveCompanyContact() {
+  STATE.employer.address = v('co-address');
+  STATE.employer.city    = v('co-city');
+  STATE.employer.state   = v('co-state');
+  STATE.employer.phone   = v('co-phone');
+  saveEmployer(STATE.employer);
+  showToast('✓ Contact info saved');
+}
+
+function refreshSettingsPage() {
+  if (!STATE.employer) return;
+  var e = STATE.employer;
+  document.getElementById('set-name').value  = e.firstName + ' ' + e.lastName;
+  document.getElementById('set-email').value = e.email;
+  var tog = document.getElementById('tog-2fa');
+  if (tog) tog.checked = !!e.tfa_enabled;
+}
+
+function saveAdminSettings() {
+  STATE.employer.tfa_enabled = document.getElementById('tog-2fa').checked;
+  var newPass = v('set-pass');
+  if (newPass) { if (newPass.length < 8) { showToast('❌ Password must be 8+ characters'); return; } STATE.employer.password = simpleHash(newPass); }
+  saveEmployer(STATE.employer);
+  showToast('✓ Settings saved');
+}
+
+function saveTFASetting() {
+  STATE.employer.tfa_enabled = document.getElementById('tog-2fa').checked;
+  saveEmployer(STATE.employer);
+  showToast(STATE.employer.tfa_enabled ? '✓ 2FA enabled' : '2FA disabled');
+}
+
+function saveEWASettings() { showToast('✓ EWA settings saved'); }
+
+function refreshAnalytics() {
+  var e = STATE.employer;
+  var emps = (e.employees||[]).length;
+  document.getElementById('an-adoption').textContent = emps > 0 ? '100%' : '0%';
+  document.getElementById('an-util').textContent = emps > 0 ? '68%' : '0%';
+  document.getElementById('an-retention').textContent = emps > 0 ? '+3.2%' : '+0%';
+  document.getElementById('an-tenure').textContent = emps > 0 ? '4 mo' : '0 mo';
+}
+
+function confirmDeleteAccount() {
+  if (confirm('Are you sure? This will permanently delete your partner account and all data.')) {
+    localStorage.removeItem('tiposit_employer');
+    sessionStorage.removeItem('tiposit_emp_session');
+    location.reload();
+  }
+}
+
+/* ══════════════════════════════════════
+   FORGOT PASSWORD
+══════════════════════════════════════ */
+function doForgot() {
+  var email = v('forgot-email');
+  if (!email) { showToast('❌ Enter your email'); return; }
+  document.getElementById('forgot-ok').style.display = 'block';
+  showToast('📧 Reset link sent to ' + email);
+}
+
+/* ══════════════════════════════════════
+   CHARTS
+══════════════════════════════════════ */
+function initCharts() {
+  if (STATE.charts_inited) return;
+  STATE.charts_inited = true;
+
+  // Adoption line chart
+  var ctx1 = document.getElementById('chart-adoption');
+  if (ctx1) {
+    new Chart(ctx1, {
+      type: 'line',
+      data: {
+        labels: ['Week 1','Week 2','Week 3','Week 4','Week 5','Week 6'],
+        datasets: [{
+          label: 'Employees',
+          data: [0,0,0,0,0,(STATE.employer.employees||[]).length],
+          borderColor: '#00D4FF', backgroundColor: 'rgba(0,212,255,0.08)',
+          borderWidth: 2, pointRadius: 3, tension: 0.4, fill: true
+        }]
+      },
+      options: { responsive:true, plugins:{legend:{display:false}}, scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8BA5C0',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8BA5C0',font:{size:10},stepSize:1}}}}
+    });
+  }
+
+  // EWA doughnut
+  var ctx2 = document.getElementById('chart-ewa-split');
+  if (ctx2) {
+    new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+        labels: ['EWA Used','Available'],
+        datasets: [{ data: [68, 32], backgroundColor: ['#00D4FF','rgba(255,255,255,0.08)'], borderWidth: 0 }]
+      },
+      options: { responsive:true, cutout:'65%', plugins:{legend:{position:'bottom',labels:{color:'#8BA5C0',font:{size:10}}}} }
+    });
+  }
+
+  // Payroll bar
+  var ctx3 = document.getElementById('chart-pay');
+  if (ctx3) {
+    new Chart(ctx3, {
+      type: 'bar',
+      data: {
+        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        datasets: [{ label:'Hours', data:[32,38,41,36,44,18,12], backgroundColor:'rgba(0,212,255,0.6)', borderRadius:4 }]
+      },
+      options: { responsive:true, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false},ticks:{color:'#8BA5C0',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8BA5C0',font:{size:10}}}}}
+    });
+  }
+
+  // Analytics main
+  var ctx4 = document.getElementById('chart-analytics-main');
+  if (ctx4) {
+    new Chart(ctx4, {
+      type: 'line',
+      data: {
+        labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+        datasets: [{
+          label: 'EWA Volume ($)',
+          data: [0,0,0,0,0,0],
+          borderColor: '#00FF88', backgroundColor: 'rgba(0,255,136,0.08)',
+          borderWidth: 2, fill: true, tension: 0.4
+        }]
+      },
+      options: { responsive:true, plugins:{legend:{display:false}}, scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8BA5C0',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8BA5C0',font:{size:10}}}}}
+    });
+  }
+
+  // Wellness doughnut
+  var ctx5 = document.getElementById('chart-wellness');
+  if (ctx5) {
+    new Chart(ctx5, {
+      type: 'doughnut',
+      data: {
+        labels: ['On Track','At Risk','Struggling'],
+        datasets: [{ data: [74, 18, 8], backgroundColor: ['#00FF88','#FFD700','#FF4D6D'], borderWidth: 0 }]
+      },
+      options: { responsive:true, cutout:'60%', plugins:{legend:{position:'bottom',labels:{color:'#8BA5C0',font:{size:10}}}} }
+    });
+  }
+}
+
+/* ══════════════════════════════════════
+   MODAL SYSTEM
+══════════════════════════════════════ */
+function openModal(id) { var el=document.getElementById(id); if(el)el.classList.add('open'); }
+function closeModal(id) { var el=document.getElementById(id); if(el)el.classList.remove('open'); }
+document.addEventListener('click', function(e) { if(e.target.classList.contains('modal-overlay')){ e.target.classList.remove('open'); } });
+
+/* ══════════════════════════════════════
+   LOGOUT
+══════════════════════════════════════ */
+function doLogout() {
+  sessionStorage.removeItem('tiposit_emp_session');
+  STATE.employer = null;
+  document.getElementById('auth-overlay').style.display = 'flex';
+  document.getElementById('dashboard').style.display = 'none';
+  showSection('auth-login');
+}
+
+/* ══════════════════════════════════════
+   CLOCK
+══════════════════════════════════════ */
+function startClock() {
+  function tick() {
+    var d = new Date(); var h=d.getHours(); var m=d.getMinutes(); var s=d.getSeconds();
+    var ampm=h>=12?'PM':'AM'; h=h%12||12;
+    var el=document.getElementById('topbar-clock'); if(el)el.textContent=pad(h)+':'+pad(m)+':'+pad(s)+' '+ampm;
+  }
+  tick(); setInterval(tick, 1000);
+}
+function pad(n){return n<10?'0'+n:''+n;}
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+var toastTimer = null;
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.style.opacity='1'; t.style.transform='translateY(0)';
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateY(12px)'; }, 3200);
+}
+
+/* ══════════════════════════════════════
+   OTP HELPERS
+══════════════════════════════════════ */
+function otpNext(el, nextIdx) { if(el.value&&nextIdx!==null){var n=document.getElementById('o'+nextIdx);if(n)n.focus();} }
+function otpBack(e, el, prevIdx) { if(e.key==='Backspace'&&!el.value&&prevIdx!==null){var p=document.getElementById('o'+prevIdx);if(p)p.focus();} }
+
+/* ══════════════════════════════════════
+   STORAGE
+══════════════════════════════════════ */
+function saveEmployer(emp) { localStorage.setItem('tiposit_employer', JSON.stringify(emp)); }
+function getEmployer() { var r=localStorage.getItem('tiposit_employer'); return r?JSON.parse(r):null; }
+
+/* ══════════════════════════════════════
+   UTILITY
+══════════════════════════════════════ */
+function v(id) { var el=document.getElementById(id); return el?(el.value||'').trim():''; }
+function show(id) { var el=document.getElementById(id); if(el)el.style.display='block'; }
+function hide(id) { var el=document.getElementById(id); if(el)el.style.display='none'; }
+
+function simpleHash(str) {
+  var hash=0;
+  for(var i=0;i<str.length;i++){var c=str.charCodeAt(i);hash=((hash<<5)-hash)+c;hash=hash&hash;}
+  return hash.toString(36);
+}
+
+function generateEmpCode(company) {
+  var base = (company||'TIPOSIT').replace(/[^A-Z0-9]/gi,'').toUpperCase().slice(0,6);
+  while(base.length < 4) base += '0';
+  return base.slice(0,6) + Math.floor(100+Math.random()*900);
+}
+
+function formatDate(isoStr) {
+  var d=new Date(isoStr);
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+
+function addActivity(msg) {
+  if (!STATE.employer) return;
+  if (!STATE.employer.activities) STATE.employer.activities = [];
+  STATE.employer.activities.unshift({ msg:msg, time:new Date().toISOString() });
+  saveEmployer(STATE.employer);
+}
+
+function checkPassStrength() {
+  var p=v('s4-pass'); var score=0;
+  if(p.length>=8)score++;if(p.length>=12)score++;
+  if(/[A-Z]/.test(p))score++;if(/[0-9]/.test(p))score++;if(/[^A-Za-z0-9]/.test(p))score++;
+  var labels=['','Weak','Fair','Good','Strong','Excellent'];
+  var colors=['','#FF4D6D','#FFD700','#7DE8FF','#00FF88','#00FF88'];
+  var bar=document.getElementById('pass-bar'); var lbl=document.getElementById('pass-label');
+  if(bar){bar.style.width=(score*20)+'%';bar.style.background=colors[score]||colors[1];}
+  if(lbl)lbl.textContent=labels[score]||'';
+}
+</script>
+</body>
+</html>
