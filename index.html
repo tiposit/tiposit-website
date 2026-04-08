@@ -169,7 +169,7 @@
       border: 1px solid rgba(0,212,255,0.25);
       border-radius: 50px;
       padding: 8px 18px;
-      margin-bottom: 28px;
+      margin-bottom: 0;
     }
     .hero-badge-dot {
       width: 8px; height: 8px;
@@ -193,10 +193,9 @@
     .hero-sub {
       font-size: 1.15rem;
       color: var(--gray);
+      margin-left: auto; margin-right: auto;
       margin-bottom: 16px;
       max-width: 540px;
-      margin-left: auto;
-      margin-right: auto;
     }
     .hero-tagline {
       font-family: 'Poppins', sans-serif;
@@ -384,21 +383,18 @@
       padding: 100px 0;
       background: var(--navy2);
     }
-    .card-iceberg-svg {
-      position: absolute;
-      bottom: -10px; right: -20px;
-      width: 160px;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.18;
-      mix-blend-mode: soft-light;
-    }
-    .ice-card > *:not(.card-iceberg-svg) { position: relative; z-index: 1; }
     .cards-grid {
       display: grid; grid-template-columns: repeat(3, 1fr);
       gap: 28px; margin-top: 20px;
     }
+    .card-iceberg-svg {
+      position: absolute; bottom: -10px; right: -20px;
+      width: 160px; pointer-events: none; z-index: 0;
+      opacity: 0.18; mix-blend-mode: soft-light;
+    }
+    .ice-card > *:not(.card-iceberg-svg) { position: relative; z-index: 1; }
     .ice-card {
+      position: relative; overflow: hidden;
       border-radius: var(--card-radius);
       padding: 32px 28px;
       position: relative;
@@ -762,38 +758,32 @@
       display: flex; justify-content: space-between; align-items: center;
       padding: 22px 24px; text-align: left;
     }
-    .faq-trigger h4 {
-      font-family: 'Poppins', sans-serif; font-size: 0.95rem;
-      font-weight: 600; color: var(--white); margin: 0;
-    }
+    .faq-trigger-text { font-family: 'Poppins', sans-serif; font-size: 0.92rem; font-weight: 600; color: var(--white); }
     .faq-icon {
       width: 28px; height: 28px; border-radius: 50%;
       background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2);
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; margin-left: 16px;
-      color: var(--ice); font-size: 1.1rem; font-weight: 300;
+      flex-shrink: 0; margin-left: 16px; color: var(--ice); font-size: 1.1rem;
       transition: transform 0.3s, background 0.3s;
     }
-    .faq-item.open .faq-icon {
-      transform: rotate(45deg);
-      background: rgba(0,212,255,0.2);
-    }
-    .faq-body {
-      max-height: 0; overflow: hidden;
-      transition: max-height 0.4s ease, padding 0.3s ease;
-      padding: 0 24px;
-    }
-    .faq-body p { font-size: 0.85rem; color: var(--gray); line-height: 1.75; padding-bottom: 22px; margin: 0; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: rgba(0,212,255,0.2); }
+    .faq-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; padding: 0 24px; }
     .faq-item.open .faq-body { max-height: 300px; }
+    .faq-body p { font-size: 0.83rem; color: var(--gray); line-height: 1.7; padding-bottom: 20px; }
     .faq-show-more {
-      display: block; margin: 24px auto 0;
-      background: none; border: 1px solid rgba(0,212,255,0.2);
-      color: var(--ice); font-size: 0.85rem; font-weight: 600;
-      padding: 12px 32px; border-radius: 50px; cursor: pointer;
-      transition: background 0.3s, border-color 0.3s;
-      font-family: 'Poppins', sans-serif;
+      display: block; margin: 24px auto 0; background: none;
+      border: 1px solid rgba(0,212,255,0.2); color: var(--ice);
+      font-size: 0.85rem; font-weight: 600; padding: 12px 32px;
+      border-radius: 50px; cursor: pointer;
     }
-    .faq-show-more:hover { background: rgba(0,212,255,0.08); border-color: rgba(0,212,255,0.4); }
+    .faq-item-old {
+      background: var(--navy2);
+      border: 1px solid rgba(0,212,255,0.08);
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .faq-item h4 { font-family: 'Poppins', sans-serif; font-size: 0.92rem; font-weight: 600; margin-bottom: 8px; color: var(--white); }
+    .faq-item p { font-size: 0.83rem; color: var(--gray); line-height: 1.7; }
 
     /* ─── FOOTER ─── */
     footer {
@@ -834,7 +824,7 @@
       .clock-features { grid-template-columns: 1fr 1fr; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
       .stats-grid { grid-template-columns: 1fr 1fr; }
-      .faq-accordion { max-width: 100%; }
+      .faq-accordion { margin: 32px 0 0; }
       .nav-links { display: none; }
     }
     @media (max-width: 580px) {
@@ -1091,15 +1081,12 @@
       <div>
         <div class="ice-card white-ice">
           <svg class="card-iceberg-svg" viewBox="0 0 200 330" xmlns="http://www.w3.org/2000/svg">
-            <!-- above water: 5 angular facets -->
-            <polygon points="100,6 28,130 66,68"         fill="#0A1628" opacity="0.30"/>
-            <polygon points="100,6 66,68 28,130 74,130"  fill="#0A1628" opacity="0.65"/>
-            <polygon points="100,6 66,68 100,98 136,72"  fill="#0A1628" opacity="0.95"/>
-            <polygon points="100,6 136,72 100,98 126,130" fill="#0A1628" opacity="0.55"/>
+            <polygon points="100,6 28,130 66,68"          fill="#0A1628" opacity="0.30"/>
+            <polygon points="100,6 66,68 28,130 74,130"   fill="#0A1628" opacity="0.65"/>
+            <polygon points="100,6 66,68 100,98 136,72"   fill="#0A1628" opacity="0.95"/>
+            <polygon points="100,6 136,72 100,98 126,130"  fill="#0A1628" opacity="0.55"/>
             <polygon points="100,6 136,72 126,130 172,130" fill="#0A1628" opacity="0.30"/>
-            <!-- waterline -->
             <line x1="0" y1="130" x2="200" y2="130" stroke="#0A1628" stroke-width="1.2" opacity="0.45"/>
-            <!-- below water: 4 angular facets, tapered to tip -->
             <polygon points="28,130 74,130 85,320 68,320 40,215" fill="#0A1628" opacity="0.38"/>
             <polygon points="74,130 126,130 112,320 85,320"       fill="#0A1628" opacity="0.52"/>
             <polygon points="126,130 172,130 148,212 112,320"     fill="#0A1628" opacity="0.28"/>
@@ -1130,19 +1117,16 @@
       <div>
         <div class="ice-card blue-ice">
           <svg class="card-iceberg-svg" viewBox="0 0 200 330" xmlns="http://www.w3.org/2000/svg">
-            <!-- above water: 5 angular facets -->
-            <polygon points="100,6 28,130 66,68"          fill="white" opacity="0.25"/>
-            <polygon points="100,6 66,68 28,130 74,130"   fill="white" opacity="0.55"/>
-            <polygon points="100,6 66,68 100,98 136,72"   fill="white" opacity="0.90"/>
-            <polygon points="100,6 136,72 100,98 126,130" fill="white" opacity="0.50"/>
-            <polygon points="100,6 136,72 126,130 172,130" fill="white" opacity="0.25"/>
-            <!-- waterline -->
-            <line x1="0" y1="130" x2="200" y2="130" stroke="white" stroke-width="1.2" opacity="0.40"/>
-            <!-- below water: 4 angular facets -->
-            <polygon points="28,130 74,130 85,320 68,320 40,215" fill="white" opacity="0.32"/>
-            <polygon points="74,130 126,130 112,320 85,320"       fill="white" opacity="0.45"/>
-            <polygon points="126,130 172,130 148,212 112,320"     fill="white" opacity="0.22"/>
-            <polygon points="172,130 148,212 112,320"             fill="white" opacity="0.12"/>
+            <polygon points="100,6 28,130 66,68"          fill="white" opacity="0.30"/>
+            <polygon points="100,6 66,68 28,130 74,130"   fill="white" opacity="0.65"/>
+            <polygon points="100,6 66,68 100,98 136,72"   fill="white" opacity="0.95"/>
+            <polygon points="100,6 136,72 100,98 126,130"  fill="white" opacity="0.55"/>
+            <polygon points="100,6 136,72 126,130 172,130" fill="white" opacity="0.30"/>
+            <line x1="0" y1="130" x2="200" y2="130" stroke="white" stroke-width="1.2" opacity="0.45"/>
+            <polygon points="28,130 74,130 85,320 68,320 40,215" fill="white" opacity="0.38"/>
+            <polygon points="74,130 126,130 112,320 85,320"       fill="white" opacity="0.52"/>
+            <polygon points="126,130 172,130 148,212 112,320"     fill="white" opacity="0.28"/>
+            <polygon points="172,130 148,212 112,320"             fill="white" opacity="0.15"/>
           </svg>
           <div class="card-tier-label" style="color:var(--ice2);">Mid Tier</div>
           <div class="card-logo">TiposIt</div>
@@ -1167,19 +1151,16 @@
       <div>
         <div class="ice-card black-ice">
           <svg class="card-iceberg-svg" viewBox="0 0 200 330" xmlns="http://www.w3.org/2000/svg">
-            <!-- above water: 5 angular facets -->
-            <polygon points="100,6 28,130 66,68"          fill="#FFD700" opacity="0.22"/>
-            <polygon points="100,6 66,68 28,130 74,130"   fill="#FFD700" opacity="0.50"/>
-            <polygon points="100,6 66,68 100,98 136,72"   fill="#FFD700" opacity="0.88"/>
-            <polygon points="100,6 136,72 100,98 126,130" fill="#FFD700" opacity="0.45"/>
-            <polygon points="100,6 136,72 126,130 172,130" fill="#FFD700" opacity="0.22"/>
-            <!-- waterline -->
-            <line x1="0" y1="130" x2="200" y2="130" stroke="#FFD700" stroke-width="1.2" opacity="0.38"/>
-            <!-- below water: 4 angular facets -->
-            <polygon points="28,130 74,130 85,320 68,320 40,215" fill="#FFD700" opacity="0.28"/>
-            <polygon points="74,130 126,130 112,320 85,320"       fill="#FFD700" opacity="0.40"/>
-            <polygon points="126,130 172,130 148,212 112,320"     fill="#FFD700" opacity="0.20"/>
-            <polygon points="172,130 148,212 112,320"             fill="#FFD700" opacity="0.10"/>
+            <polygon points="100,6 28,130 66,68"          fill="#FFD700" opacity="0.30"/>
+            <polygon points="100,6 66,68 28,130 74,130"   fill="#FFD700" opacity="0.65"/>
+            <polygon points="100,6 66,68 100,98 136,72"   fill="#FFD700" opacity="0.95"/>
+            <polygon points="100,6 136,72 100,98 126,130"  fill="#FFD700" opacity="0.55"/>
+            <polygon points="100,6 136,72 126,130 172,130" fill="#FFD700" opacity="0.30"/>
+            <line x1="0" y1="130" x2="200" y2="130" stroke="#FFD700" stroke-width="1.2" opacity="0.45"/>
+            <polygon points="28,130 74,130 85,320 68,320 40,215" fill="#FFD700" opacity="0.38"/>
+            <polygon points="74,130 126,130 112,320 85,320"       fill="#FFD700" opacity="0.52"/>
+            <polygon points="126,130 172,130 148,212 112,320"     fill="#FFD700" opacity="0.28"/>
+            <polygon points="172,130 148,212 112,320"             fill="#FFD700" opacity="0.15"/>
           </svg>
           <div class="card-tier-label">Premium</div>
           <div class="card-logo">TiposIt</div>
@@ -1528,14 +1509,14 @@
   }
 
   function toggleFaq(btn) {
-    const item = btn.closest('.faq-item');
+    var item = btn.closest('.faq-item');
     item.classList.toggle('open');
   }
 
   function toggleFaqExtra() {
-    const extra = document.getElementById('faq-extra');
-    const btn = document.getElementById('faq-toggle-btn');
-    const isHidden = extra.style.display === 'none';
+    var extra = document.getElementById('faq-extra');
+    var btn = document.getElementById('faq-toggle-btn');
+    var isHidden = extra.style.display === 'none';
     extra.style.display = isHidden ? 'block' : 'none';
     btn.textContent = isHidden ? 'Show Less ↑' : 'Show More Questions ↓';
   }
@@ -1547,71 +1528,69 @@
     <div class="section-label">FAQ</div>
     <h2 class="section-title">Got Questions? <span class="ice-gradient">We've Got Answers.</span></h2>
     <div class="faq-accordion">
-
-      <!-- Visible by default -->
+      <!-- Always visible (first 2) -->
       <div class="faq-item open">
         <button class="faq-trigger" onclick="toggleFaq(this)">
-          <h4>Is TiposIt FDIC insured?</h4>
+          <span class="faq-trigger-text">Is TiposIt FDIC insured?</span>
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-body"><p>Yes. TiposIt digital wallets are FDIC-insured up to $250,000 through our partner banking institution. Your money is protected.</p></div>
       </div>
-
-      <div class="faq-item open">
+      <div class="faq-item">
         <button class="faq-trigger" onclick="toggleFaq(this)">
-          <h4>How is same-day pay different from competitors?</h4>
+          <span class="faq-trigger-text">How is same-day pay different from competitors?</span>
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-body"><p>Every major competitor caps same-day pay at 50% of wages or limits access to a certain number of days per week. TiposIt has no cap — if you worked it, you can access it, every day.</p></div>
       </div>
 
-      <!-- Hidden until "Show More" clicked -->
+      <!-- Hidden extra items -->
       <div id="faq-extra" style="display:none;">
         <div class="faq-item">
           <button class="faq-trigger" onclick="toggleFaq(this)">
-            <h4>How does the revenue share work for our company?</h4>
+            <span class="faq-trigger-text">How does the revenue share work for our company?</span>
             <span class="faq-icon">+</span>
           </button>
           <div class="faq-body"><p>When your employees use same-day pay or transfers, TiposIt collects a small fee. At month end, we deposit 20–33% of those fees directly into your company TiposIt account. You earn just for offering the benefit.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" onclick="toggleFaq(this)">
-            <h4>What does it cost to get started?</h4>
+            <span class="faq-trigger-text">What does it cost to get started?</span>
             <span class="faq-icon">+</span>
           </button>
           <div class="faq-body"><p>Pre-order pricing starts at $99/month for up to 50 employees. There are no per-employee per-month setup fees. The platform fee is flat.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" onclick="toggleFaq(this)">
-            <h4>How long does it take to onboard?</h4>
+            <span class="faq-trigger-text">How long does it take to onboard?</span>
             <span class="faq-icon">+</span>
           </button>
           <div class="faq-body"><p>Most companies are fully onboarded within 48–72 hours. We provide a dedicated onboarding specialist and HR-ready training materials.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" onclick="toggleFaq(this)">
-            <h4>Does TiposIt replace our existing payroll system?</h4>
+            <span class="faq-trigger-text">Does TiposIt replace our existing payroll system?</span>
             <span class="faq-icon">+</span>
           </button>
           <div class="faq-body"><p>TiposIt can be used as a standalone payroll and salary management platform or as an enhancement layer on top of existing systems. We offer integrations with major HR software.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" onclick="toggleFaq(this)">
-            <h4>What is Tipflic?</h4>
+            <span class="faq-trigger-text">What is Tipflic?</span>
             <span class="faq-icon">+</span>
           </button>
           <div class="faq-body"><p>Tipflic is TiposIt's analytics subsidiary — a workforce intelligence platform that gives HR and finance teams real-time visibility into payroll trends, employee financial wellness, and cost optimization.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" onclick="toggleFaq(this)">
-            <h4>How do ICE Credit Cards work?</h4>
+            <span class="faq-trigger-text">How do ICE Credit Cards work?</span>
             <span class="faq-icon">+</span>
           </button>
           <div class="faq-body"><p>TiposIt ICE Cards are offered to enrolled employees based on credit score, salary, and savings habits. Three tiers: White ICE (entry), Blue ICE (mid), and Black ICE (premium), with increasing limits and rewards.</p></div>
         </div>
       </div>
 
-      <button class="faq-show-more" id="faq-toggle-btn" onclick="toggleFaqExtra()">Show More Questions ↓</button>
+      <button id="faq-toggle-btn" class="faq-show-more" onclick="toggleFaqExtra()">Show More Questions ↓</button>
     </div>
   </div>
 </section>
