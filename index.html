@@ -3,40 +3,83 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TiposIt – This Is Just The Tip Of The Iceberg</title>
+  <title>TiposIt – Get Paid the Day You Earn It</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
+    /* ══════════════════════════════════════════════════════════
+       TIPOSIT — BRIGHT HORIZON DESIGN SYSTEM
+       Research basis:
+       · Blue → trust, stability (50ms first impression rule)
+       · Teal/Green → growth, money, positive outcomes, relief
+       · White/light → clarity, breathing room, reduces friction
+       · Dark navy reserved for contrast/premium sections only
+       · Rounded corners → approachable, human, safe
+    ══════════════════════════════════════════════════════════ */
     :root {
-      --navy:    #050E1F;
-      --navy2:   #0C1E3C;
-      --navy3:   #122848;
-      --ice:     #00D4FF;
-      --ice2:    #7DE8FF;
-      --ice3:    #C0F4FF;
-      --white:   #FFFFFF;
-      --offwhite:#E8F4FC;
-      --gray:    #8BA5C0;
-      --gold:    #FFD700;
-      --card-radius: 18px;
+      /* Background scale */
+      --bg:        #F6FAFE;
+      --bg2:       #EDF5FF;
+      --bg3:       #E4F7F1;
+
+      /* Brand navy — for text and contrast sections only */
+      --navy:      #0F2747;
+      --navy2:     #1A3A68;
+      --navy3:     #0A1E38;
+
+      /* Primary action — teal/emerald (trust + growth) */
+      --teal:      #00B894;
+      --teal2:     #00D4A8;
+      --teal3:     #80E8CC;
+      --teal-bg:   #E0FBF4;
+      --teal-mid:  #C2F5E9;
+
+      /* Secondary — ice blue (brand identity, kept as accent) */
+      --ice:       #0099CC;
+      --ice2:      #33B5E0;
+      --ice3:      #A8DFF5;
+      --ice-bg:    #E0F5FF;
+
+      /* Premium — gold (ICE cards, awards) */
+      --gold:      #FFB400;
+      --gold2:     #FFD166;
+
+      /* Neutral */
+      --white:     #FFFFFF;
+      --offwhite:  #F0F6FC;
+      --gray:      #5A7898;
+      --gray2:     #8AAFC8;
+      --gray3:     #C8DCF0;
+      --text:      #1A2E46;
+      --text2:     #3D5A7A;
+
+      /* Feedback */
+      --green:     #00C896;
+      --amber:     #FF9F45;
+
+      --card-radius: 20px;
+      --nav-h: 70px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html { scroll-behavior: smooth; }
+
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--navy);
-      color: var(--white);
+      background: var(--bg);
+      color: var(--text);
       overflow-x: hidden;
       line-height: 1.6;
     }
 
     /* ─── UTILITY ─── */
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .container { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+
     .btn-primary {
       display: inline-block;
-      background: linear-gradient(135deg, var(--ice), #00A8E8);
-      color: var(--navy);
+      background: linear-gradient(135deg, var(--teal), #009B7C);
+      color: var(--white);
       font-family: 'Poppins', sans-serif;
       font-weight: 700;
       font-size: 1rem;
@@ -46,790 +89,1575 @@
       cursor: pointer;
       text-decoration: none;
       transition: transform 0.2s, box-shadow 0.2s;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 16px rgba(0,184,148,0.3);
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,212,255,0.35); }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0,184,148,0.4);
+    }
+
     .btn-outline {
       display: inline-block;
       background: transparent;
-      color: var(--ice);
+      color: var(--teal);
       font-family: 'Poppins', sans-serif;
       font-weight: 600;
       font-size: 0.95rem;
-      padding: 12px 28px;
+      padding: 13px 30px;
       border-radius: 50px;
-      border: 2px solid var(--ice);
+      border: 2px solid var(--teal);
       cursor: pointer;
       text-decoration: none;
-      transition: background 0.2s, color 0.2s;
+      transition: all 0.2s;
     }
-    .btn-outline:hover { background: var(--ice); color: var(--navy); }
+    .btn-outline:hover { background: var(--teal); color: var(--white); }
+
+    .btn-outline-navy {
+      display: inline-block;
+      background: transparent;
+      color: var(--white);
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 13px 30px;
+      border-radius: 50px;
+      border: 2px solid rgba(255,255,255,0.4);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-outline-navy:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.7); }
+
     .section-label {
       font-family: 'Poppins', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 600;
+      font-size: 0.75rem;
+      font-weight: 700;
       letter-spacing: 3px;
       text-transform: uppercase;
-      color: var(--ice);
+      color: var(--teal);
       margin-bottom: 12px;
     }
+
     .section-title {
       font-family: 'Poppins', sans-serif;
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
       font-weight: 700;
       line-height: 1.2;
-      margin-bottom: 16px;
+      color: var(--navy);
+      margin-bottom: 18px;
     }
+
     .section-sub {
       font-size: 1.05rem;
       color: var(--gray);
       max-width: 600px;
-      margin-bottom: 48px;
+      margin-bottom: 52px;
+      line-height: 1.75;
     }
-    .ice-gradient { background: linear-gradient(135deg, var(--ice), var(--ice2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .tag {
-      display: inline-block;
-      background: rgba(0,212,255,0.12);
-      color: var(--ice);
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 50px;
-      border: 1px solid rgba(0,212,255,0.3);
+
+    .teal-gradient {
+      background: linear-gradient(135deg, var(--teal), var(--ice));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .ice-gradient {
+      background: linear-gradient(135deg, var(--teal2), var(--ice));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     /* ─── NAVIGATION ─── */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      padding: 18px 0;
-      background: rgba(5,14,31,0.92);
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.97);
       backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(0,212,255,0.1);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,184,148,0.12);
+      box-shadow: 0 2px 20px rgba(15,39,71,0.06);
+      height: var(--nav-h);
     }
+
     .nav-inner {
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--nav-h);
+      gap: 20px;
     }
+
     .logo {
-      display: flex; align-items: center; gap: 10px; text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
     }
+
     .logo-mark {
-      width: 42px; height: 42px;
-      background: linear-gradient(135deg, var(--ice), #0088AA);
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--teal), var(--ice));
       border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-family: 'Poppins', sans-serif;
       font-weight: 900;
-      font-size: 1.2rem;
-      color: var(--navy);
+      font-size: 1.1rem;
+      color: var(--white);
+      box-shadow: 0 4px 12px rgba(0,184,148,0.3);
     }
+
     .logo-text {
       font-family: 'Poppins', sans-serif;
       font-weight: 700;
-      font-size: 1.4rem;
-      color: var(--white);
+      font-size: 1.25rem;
+      color: var(--navy);
       letter-spacing: -0.5px;
     }
-    .logo-text span { color: var(--ice); }
-    .nav-links {
-      display: flex; gap: 32px; list-style: none;
-    }
+    .logo-text span { color: var(--teal); }
+
+    .nav-links { list-style: none; display: flex; gap: 28px; }
     .nav-links a {
-      color: var(--gray); font-size: 0.9rem; text-decoration: none;
-      transition: color 0.2s; font-weight: 500;
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      white-space: nowrap;
     }
-    .nav-links a:hover { color: var(--white); }
-    .nav-cta { display: flex; gap: 12px; align-items: center; }
+    .nav-links a:hover { color: var(--teal); }
+
+    .nav-cta { display: flex; gap: 10px; align-items: center; }
 
     /* ─── HERO ─── */
     .hero {
       min-height: 100vh;
-      display: flex; align-items: center;
-      padding: 120px 0 80px;
+      padding-top: calc(var(--nav-h) + 60px);
+      padding-bottom: 80px;
+      background: var(--white);
       position: relative;
       overflow: hidden;
     }
-    .hero-bg {
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,255,0.08) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 40% at 80% 60%, rgba(0,168,232,0.06) 0%, transparent 60%),
-        linear-gradient(180deg, #050E1F 0%, #0A1A35 100%);
-    }
-    .hero-iceberg {
-      position: absolute; right: -80px; top: 50%; transform: translateY(-50%);
-      width: 680px; opacity: 0.07;
+
+    /* Warm sunrise gradient — top-right quadrant */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -10%;
+      right: -5%;
+      width: 65%;
+      height: 110%;
+      background: radial-gradient(ellipse at 75% 30%, rgba(0,212,168,0.10) 0%, rgba(0,153,204,0.07) 45%, transparent 70%);
       pointer-events: none;
     }
-    .hero-content { position: relative; z-index: 2; max-width: 680px; margin: 0 auto; text-align: center; }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(0,212,255,0.1);
-      border: 1px solid rgba(0,212,255,0.25);
-      border-radius: 50px;
-      padding: 8px 18px;
-      margin-bottom: 0;
+
+    /* Subtle bottom wave */
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--teal), var(--ice), var(--teal2));
     }
-    .hero-badge-dot {
-      width: 8px; height: 8px;
-      background: #00FF88;
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--teal-bg);
+      border: 1px solid var(--teal-mid);
+      border-radius: 50px;
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--teal);
+      margin-bottom: 24px;
+      letter-spacing: 0.3px;
+    }
+
+    .hero-dot {
+      width: 7px; height: 7px;
+      background: var(--teal);
       border-radius: 50%;
       animation: pulse 2s infinite;
     }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-    .hero-badge span {
-      font-size: 0.82rem; font-weight: 600;
-      color: var(--ice); letter-spacing: 0.5px;
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
     }
+
     .hero h1 {
       font-family: 'Poppins', sans-serif;
-      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-size: clamp(2.4rem, 4.5vw, 3.5rem);
       font-weight: 900;
-      line-height: 1.05;
-      margin-bottom: 24px;
-      letter-spacing: -1.5px;
+      line-height: 1.1;
+      color: var(--navy);
+      margin-bottom: 22px;
+      letter-spacing: -1px;
     }
+
     .hero-sub {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       color: var(--gray);
-      margin-left: auto; margin-right: auto;
-      margin-bottom: 16px;
-      max-width: 540px;
+      line-height: 1.75;
+      margin-bottom: 10px;
+      max-width: 520px;
     }
+
     .hero-tagline {
       font-family: 'Poppins', sans-serif;
-      font-size: 1.05rem;
+      font-size: 0.9rem;
+      color: var(--teal);
       font-style: italic;
-      color: var(--ice2);
-      margin-bottom: 40px;
-      letter-spacing: 0.3px;
+      font-weight: 500;
+      margin-bottom: 34px;
     }
-    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; justify-content: center; }
-    .hero-note { font-size: 0.78rem; color: var(--gray); margin-top: 12px; }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .hero-note {
+      font-size: 0.8rem;
+      color: var(--gray2);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hero-note-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .hero-note-item::before {
+      content: '✓';
+      color: var(--teal);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    /* Hero right — pay card visual */
+    .hero-visual {
+      position: relative;
+    }
+
+    .hero-phone {
+      background: var(--white);
+      border-radius: 28px;
+      box-shadow: 0 30px 80px rgba(15,39,71,0.12), 0 0 0 1px rgba(0,184,148,0.1);
+      padding: 28px;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+
+    .pay-card-widget {
+      background: linear-gradient(135deg, var(--teal), #009B7C);
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 20px;
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pay-card-widget::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+
+    .pay-widget-label { font-size: 0.72rem; opacity: 0.8; margin-bottom: 6px; letter-spacing: 0.5px; }
+    .pay-widget-amount { font-family: 'Poppins', sans-serif; font-size: 2rem; font-weight: 900; margin-bottom: 4px; }
+    .pay-widget-sub { font-size: 0.78rem; opacity: 0.75; margin-bottom: 20px; }
+    .pay-widget-btn {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.35);
+      color: white;
+      border-radius: 50px;
+      padding: 8px 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .tx-mini { display: flex; flex-direction: column; gap: 10px; }
+    .tx-mini-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--bg);
+      border-radius: 12px;
+      font-size: 0.82rem;
+    }
+    .tx-mini-name { color: var(--text); font-weight: 500; }
+    .tx-mini-date { color: var(--gray2); font-size: 0.72rem; }
+    .tx-mini-amt { font-weight: 700; }
+    .tx-credit { color: var(--teal); }
+    .tx-debit { color: var(--text2); }
+
+    .hero-floating-badge {
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      background: var(--white);
+      border-radius: 16px;
+      padding: 12px 16px;
+      box-shadow: 0 8px 32px rgba(15,39,71,0.12);
+      border: 1px solid var(--gray3);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--navy);
+      white-space: nowrap;
+    }
+
+    .hero-floating-badge span { color: var(--teal); }
+
+    .hero-floating-badge2 {
+      position: absolute;
+      bottom: -16px;
+      left: -16px;
+      background: var(--navy);
+      border-radius: 16px;
+      padding: 12px 18px;
+      box-shadow: 0 8px 32px rgba(15,39,71,0.2);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--white);
+      white-space: nowrap;
+    }
+
+    .hero-floating-badge2 span { color: var(--teal2); }
+
+    /* ─── TRUST BAR ─── */
+    .trust-bar {
+      background: var(--white);
+      border-top: 1px solid var(--gray3);
+      border-bottom: 1px solid var(--gray3);
+      padding: 20px 0;
+    }
+
+    .trust-bar-inner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .trust-icon {
+      width: 28px; height: 28px;
+      background: var(--teal-bg);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
 
     /* ─── STATS BAR ─── */
     .stats-bar {
-      background: var(--navy2);
-      border-top: 1px solid rgba(0,212,255,0.1);
-      border-bottom: 1px solid rgba(0,212,255,0.1);
-      padding: 28px 0;
+      padding: 64px 0;
+      background: var(--bg);
     }
+
     .stats-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 24px; text-align: center;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
     }
+
+    .stat-card {
+      background: var(--white);
+      border-radius: var(--card-radius);
+      padding: 28px 24px;
+      text-align: center;
+      border: 1px solid var(--gray3);
+      box-shadow: 0 2px 12px rgba(15,39,71,0.04);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(15,39,71,0.08); }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--teal), var(--ice));
+    }
+
     .stat-num {
       font-family: 'Poppins', sans-serif;
-      font-size: 2rem; font-weight: 800;
-      color: var(--ice); line-height: 1;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, var(--teal), var(--ice));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .stat-label { font-size: 0.78rem; color: var(--gray); margin-top: 4px; }
 
-    /* ─── PRODUCTS SECTION ─── */
-    .products { padding: 100px 0; }
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--gray);
+      line-height: 1.4;
+    }
+
+    /* ─── PRODUCTS ─── */
+    .products { padding: 96px 0; background: var(--white); }
+
     .products-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .product-card {
+      background: var(--bg);
+      border-radius: var(--card-radius);
+      padding: 32px 28px;
+      border: 1px solid var(--gray3);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(15,39,71,0.09);
+      border-color: var(--teal3);
+    }
+
+    .product-card.featured {
+      background: linear-gradient(145deg, var(--teal), #009B7C);
+      border-color: transparent;
+      color: var(--white);
+    }
+
+    .product-card.featured:hover {
+      box-shadow: 0 16px 48px rgba(0,184,148,0.35);
+    }
+
+    .product-badge-new {
+      position: absolute;
+      top: 20px; right: 20px;
+      background: var(--white);
+      color: var(--teal);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 50px;
+    }
+
+    .product-icon {
+      font-size: 1.8rem;
+      margin-bottom: 18px;
+      display: block;
+      width: 52px; height: 52px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-card:not(.featured) .product-icon {
+      background: var(--teal-bg);
+    }
+
+    .product-name {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--navy);
+    }
+
+    .product-card.featured .product-name { color: var(--white); }
+
+    .product-desc {
+      font-size: 0.88rem;
+      color: var(--gray);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .product-card.featured .product-desc { color: rgba(255,255,255,0.82); }
+
+    .product-fee {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 50px;
+      background: var(--teal-bg);
+      color: var(--teal);
+      border: 1px solid var(--teal-mid);
+    }
+
+    .product-card.featured .product-fee {
+      background: rgba(255,255,255,0.2);
+      color: var(--white);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    /* ─── FEATURE SPLIT — Same-Day Pay ─── */
+    .feature-split {
+      padding: 96px 0;
+      background: var(--bg);
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center;
+    }
+
+    .check-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .check-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.92rem;
+      color: var(--text2);
+      line-height: 1.55;
+    }
+    .check-icon {
+      width: 22px; height: 22px;
+      background: var(--teal-bg);
+      color: var(--teal);
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Pay widget visual */
+    .feature-visual { display: flex; flex-direction: column; gap: 16px; }
+
+    .mock-pay-card {
+      background: linear-gradient(135deg, var(--teal), #008B70);
+      border-radius: 22px;
+      padding: 32px;
+      color: white;
+      margin-bottom: 6px;
+      box-shadow: 0 20px 60px rgba(0,184,148,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mock-pay-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 50%;
+    }
+
+    .mock-label { font-size: 0.78rem; opacity: 0.8; margin-bottom: 8px; letter-spacing: 0.5px; }
+    .mock-amount { font-family: 'Poppins', sans-serif; font-size: 2.4rem; font-weight: 900; margin-bottom: 8px; }
+    .mock-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.18);
+      padding: 5px 14px;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .mock-status-dot { width: 7px; height: 7px; background: #7BFFD4; border-radius: 50%; }
+
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 14px 20px;
+      background: var(--white);
+      border-radius: 14px;
+      border: 1px solid var(--gray3);
+      margin-bottom: 10px;
+    }
+
+    .timeline-dot {
+      width: 30px; height: 30px;
+      background: linear-gradient(135deg, var(--teal), var(--ice));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 0.78rem;
+      flex-shrink: 0;
+    }
+
+    .timeline-content h4 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+
+    .timeline-content p { font-size: 0.8rem; color: var(--gray); }
+
+    /* ─── REVENUE PARTNERSHIP — dark contrast section ─── */
+    .revenue-section {
+      padding: 96px 0;
+      background: var(--navy);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .revenue-section::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(0,212,168,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .revenue-section .section-label { color: var(--teal2); }
+    .revenue-section .section-title { color: var(--white); }
+
+    .rev-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: start;
+    }
+
+    .rev-percentage {
+      font-family: 'Poppins', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--teal2), var(--ice2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .rev-detail { font-size: 0.88rem; color: var(--gray2); margin-bottom: 28px; line-height: 1.6; }
+
+    .rev-example {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 20px 24px;
+      font-size: 0.85rem;
+      color: var(--gray2);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .rev-example strong { color: var(--teal2); }
+
+    .rev-flow {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--card-radius);
+      padding: 32px;
+    }
+
+    .rev-flow-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal2);
+      margin-bottom: 24px;
+    }
+
+    .flow-step {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 4px;
+    }
+
+    .flow-num {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--teal), var(--ice));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .flow-text h4 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .flow-text p { font-size: 0.82rem; color: var(--gray2); line-height: 1.55; }
+
+    .flow-arrow {
+      color: var(--teal3);
+      text-align: left;
+      padding: 4px 0 4px 16px;
+      font-size: 1rem;
+    }
+
+    /* ─── ICE CARDS — keep premium dark feel ─── */
+    .cards-section {
+      padding: 96px 0;
+      background: var(--navy3);
+      position: relative;
+    }
+
+    .cards-section .section-label { color: var(--ice2); }
+    .cards-section .section-title { color: var(--white); }
+    .cards-section .section-sub { color: var(--gray2); }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .ice-card {
+      border-radius: var(--card-radius);
+      padding: 28px;
+      aspect-ratio: 3/2;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .white-ice {
+      background: linear-gradient(145deg, #E8F4FF, #C8E0F8, #A8C4E8);
+      border: 1px solid rgba(168,220,245,0.4);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .blue-ice {
+      background: linear-gradient(145deg, #003A6B, #005AA0, #0080D0);
+      box-shadow: 0 20px 60px rgba(0,128,208,0.3);
+    }
+
+    .black-ice {
+      background: linear-gradient(145deg, #0A0A0A, #1A1A2E, #16213E);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,215,0,0.1);
+    }
+
+    .card-iceberg-svg {
+      position: absolute;
+      bottom: -10px; right: -20px;
+      width: 160px;
+      opacity: 0.18;
+      mix-blend-mode: soft-light;
+    }
+
+    .card-tier-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 4px;
+    }
+
+    .card-logo {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: white;
+    }
+
+    .card-name {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 900;
+      font-size: 1.5rem;
+      line-height: 1;
+      color: white;
+    }
+
+    .card-chip {
+      width: 38px; height: 28px;
+      background: linear-gradient(135deg, #FFD166, #E8A000);
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    .card-number {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 10px;
+    }
+
+    .card-details-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .card-holder { font-size: 0.7rem; letter-spacing: 1.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; }
+    .card-network { font-family: 'Poppins', sans-serif; font-size: 0.75rem; font-weight: 700; color: rgba(255,255,255,0.6); }
+
+    .card-spec {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .card-spec:last-child { border-bottom: none; }
+    .spec-label { color: var(--gray2); }
+    .spec-value { font-weight: 600; color: var(--white); }
+
+    /* ─── DIGITAL WALLET ─── */
+    .wallet-section {
+      padding: 96px 0;
+      background: var(--bg);
+    }
+
+    .wallet-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center;
+    }
+
+    .wallet-mockup {
+      background: var(--white);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: 0 20px 60px rgba(15,39,71,0.10);
+      border: 1px solid var(--gray3);
+    }
+
+    .wallet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .wallet-balance-label { font-size: 0.75rem; color: var(--gray); margin-bottom: 4px; letter-spacing: 0.5px; }
+    .wallet-balance {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1;
+    }
+    .wallet-sub { font-size: 0.75rem; color: var(--gray2); margin-top: 4px; }
+
+    .wallet-actions-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .wallet-action {
+      flex: 1;
+      background: var(--bg);
+      border-radius: 14px;
+      padding: 12px 8px;
+      text-align: center;
+      border: 1px solid var(--gray3);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .wallet-action:hover { background: var(--teal-bg); border-color: var(--teal3); }
+    .wallet-action-icon { font-size: 1.1rem; margin-bottom: 4px; }
+    .wallet-action-label { font-size: 0.68rem; color: var(--gray); font-weight: 500; }
+
+    .tx-list { display: flex; flex-direction: column; gap: 2px; }
+
+    .tx-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 14px;
+      background: var(--bg);
+      border-radius: 12px;
+    }
+
+    .tx-name { font-size: 0.84rem; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+    .tx-date { font-size: 0.72rem; color: var(--gray2); }
+    .tx-amount { font-size: 0.9rem; font-weight: 700; }
+    .credit { color: var(--teal); }
+    .debit { color: var(--text2); }
+
+    .wallet-features { list-style: none; display: flex; flex-direction: column; gap: 22px; }
+
+    .wallet-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .wallet-feat-icon {
+      width: 44px; height: 44px;
+      background: var(--teal-bg);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .wallet-feat-text h4 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .wallet-feat-text p { font-size: 0.83rem; color: var(--gray); line-height: 1.6; }
+
+    /* ─── BNPL ─── */
+    .bnpl-section {
+      padding: 96px 0;
+      background: var(--white);
+    }
+
+    .bnpl-terms {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 24px;
     }
-    .product-card {
-      background: var(--navy2);
-      border: 1px solid rgba(0,212,255,0.12);
+
+    .term-card {
+      background: var(--bg);
       border-radius: var(--card-radius);
-      padding: 32px;
-      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
-      position: relative;
-      overflow: hidden;
+      padding: 36px 28px;
+      text-align: center;
+      border: 2px solid var(--gray3);
+      transition: all 0.2s;
     }
-    .product-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, transparent, var(--ice), transparent);
-      opacity: 0; transition: opacity 0.3s;
+
+    .term-card:hover { border-color: var(--teal); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,184,148,0.12); }
+
+    .term-card.middle {
+      background: linear-gradient(145deg, var(--teal), #009B7C);
+      border-color: transparent;
+      color: white;
+      transform: scale(1.03);
+      box-shadow: 0 20px 60px rgba(0,184,148,0.25);
     }
-    .product-card:hover { transform: translateY(-4px); border-color: rgba(0,212,255,0.35); box-shadow: 0 20px 48px rgba(0,212,255,0.08); }
-    .product-card:hover::before { opacity: 1; }
-    .product-card.featured {
-      background: linear-gradient(160deg, #0C2244, #0A1628);
-      border-color: rgba(0,212,255,0.3);
-      grid-column: span 1;
+
+    .term-days {
+      font-family: 'Poppins', sans-serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--teal);
+      line-height: 1;
+      margin-bottom: 2px;
     }
-    .product-icon {
-      width: 52px; height: 52px;
-      background: rgba(0,212,255,0.1);
-      border: 1px solid rgba(0,212,255,0.2);
+
+    .term-card.middle .term-days { color: var(--white); }
+
+    .term-label { font-size: 0.88rem; color: var(--gray); margin-bottom: 20px; }
+    .term-card.middle .term-label { color: rgba(255,255,255,0.75); }
+
+    .term-feature {
+      font-size: 0.83rem;
+      color: var(--text2);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--gray3);
+    }
+
+    .term-card.middle .term-feature {
+      color: rgba(255,255,255,0.85);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .term-feature:last-of-type { border-bottom: none; }
+
+    .term-limit {
+      margin-top: 16px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--teal);
+      letter-spacing: 0.3px;
+    }
+
+    .term-card.middle .term-limit { color: var(--teal3); }
+
+    /* ─── CLOCK IN/OUT ─── */
+    .clock-section {
+      padding: 96px 0;
+      background: var(--bg2);
+    }
+
+    .clock-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .clock-feat {
+      background: var(--white);
+      border-radius: 18px;
+      padding: 30px 26px;
+      border: 1px solid var(--gray3);
+      transition: all 0.2s;
+    }
+
+    .clock-feat:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(15,39,71,0.07); border-color: var(--teal3); }
+
+    .clock-feat-icon {
+      font-size: 1.6rem;
+      width: 50px; height: 50px;
+      background: var(--teal-bg);
       border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-    }
-    .product-name {
-      font-family: 'Poppins', sans-serif;
-      font-size: 1.1rem; font-weight: 700;
-      margin-bottom: 8px; color: var(--white);
-    }
-    .product-desc { font-size: 0.88rem; color: var(--gray); line-height: 1.7; margin-bottom: 16px; }
-    .product-fee {
-      display: inline-block;
-      background: rgba(0,212,255,0.08);
-      color: var(--ice);
-      font-size: 0.8rem; font-weight: 600;
-      padding: 4px 14px; border-radius: 50px;
-      border: 1px solid rgba(0,212,255,0.2);
-    }
-    .product-badge-new {
-      position: absolute; top: 20px; right: 20px;
-      background: linear-gradient(135deg, #00FF88, #00C876);
-      color: var(--navy); font-size: 0.68rem; font-weight: 800;
-      padding: 3px 10px; border-radius: 50px;
-      letter-spacing: 1px; text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
     }
 
-    /* ─── SAME DAY PAY FEATURE ─── */
-    .feature-split {
-      padding: 80px 0;
-      background: var(--navy2);
-    }
-    .split-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 80px; align-items: center;
-    }
-    .feature-visual {
-      background: var(--navy3);
-      border: 1px solid rgba(0,212,255,0.15);
-      border-radius: var(--card-radius);
-      padding: 32px;
-      position: relative;
-    }
-    .mock-pay-card {
-      background: linear-gradient(135deg, #0C1E3C, #0A1628);
-      border: 1px solid rgba(0,212,255,0.2);
-      border-radius: 14px;
-      padding: 24px;
-      margin-bottom: 16px;
-    }
-    .mock-label { font-size: 0.72rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
-    .mock-amount {
+    .clock-feat h3 {
       font-family: 'Poppins', sans-serif;
-      font-size: 2.4rem; font-weight: 800;
-      color: var(--white); margin: 4px 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 10px;
     }
-    .mock-status {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 0.82rem; color: #00FF88; font-weight: 600;
-    }
-    .mock-status-dot { width: 7px; height: 7px; background: #00FF88; border-radius: 50%; }
-    .timeline-item {
-      display: flex; align-items: flex-start; gap: 16px;
-      margin-bottom: 20px;
-    }
-    .timeline-dot {
-      width: 36px; height: 36px; flex-shrink: 0;
-      background: rgba(0,212,255,0.1);
-      border: 2px solid rgba(0,212,255,0.3);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.85rem; font-weight: 700; color: var(--ice);
-    }
-    .timeline-content h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; }
-    .timeline-content p { font-size: 0.82rem; color: var(--gray); }
-    .check-list { list-style: none; margin-top: 24px; }
-    .check-list li {
-      display: flex; align-items: flex-start; gap: 10px;
-      font-size: 0.92rem; color: var(--offwhite);
-      margin-bottom: 12px;
-    }
-    .check-icon { color: var(--ice); flex-shrink: 0; font-size: 1rem; margin-top: 1px; }
 
-    /* ─── REVENUE PARTNERSHIP ─── */
-    .revenue-section { padding: 100px 0; background: var(--navy); }
-    .rev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
-    .rev-flow {
-      background: var(--navy2);
-      border: 1px solid rgba(0,212,255,0.15);
-      border-radius: var(--card-radius);
-      padding: 32px;
-    }
-    .flow-step {
-      display: flex; align-items: center; gap: 16px;
-      padding: 16px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    .flow-step:last-child { border-bottom: none; }
-    .flow-num {
-      width: 40px; height: 40px; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--ice), #0088AA);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700; font-size: 0.9rem; color: var(--navy);
-    }
-    .flow-text h4 { font-size: 0.92rem; font-weight: 600; margin-bottom: 2px; }
-    .flow-text p { font-size: 0.8rem; color: var(--gray); }
-    .flow-arrow {
-      text-align: center; color: var(--ice); font-size: 1.2rem;
-      padding: 4px 0; opacity: 0.5;
-    }
-    .rev-percentage {
-      font-family: 'Poppins', sans-serif;
-      font-size: 3.5rem; font-weight: 900;
-      color: var(--ice); line-height: 1;
-    }
-    .rev-detail { font-size: 0.85rem; color: var(--gray); margin-top: 6px; }
-
-    /* ─── ICE CREDIT CARDS ─── */
-    .cards-section {
-      padding: 100px 0;
-      background: var(--navy2);
-    }
-    .cards-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 28px; margin-top: 20px;
-    }
-    .card-iceberg-svg {
-      position: absolute; bottom: -10px; right: -20px;
-      width: 160px; pointer-events: none; z-index: 0;
-      opacity: 0.18; mix-blend-mode: soft-light;
-    }
-    .ice-card > *:not(.card-iceberg-svg) { position: relative; z-index: 1; }
-    .ice-card {
-      position: relative; overflow: hidden;
-      border-radius: var(--card-radius);
-      padding: 32px 28px;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.3s, box-shadow 0.3s;
-      cursor: default;
-    }
-    .ice-card:hover { transform: translateY(-6px); }
-    .ice-card.white-ice {
-      background: linear-gradient(145deg, #E8F4FD, #C5DFF0, #9EC8E4);
-      color: #0A1628;
-      box-shadow: 0 16px 48px rgba(200,230,250,0.15);
-    }
-    .ice-card.white-ice:hover { box-shadow: 0 24px 64px rgba(200,230,250,0.25); }
-    .ice-card.blue-ice {
-      background: linear-gradient(145deg, #0A2A6E, #0D3A9E, #1A5DB8);
-      color: #FFFFFF;
-      box-shadow: 0 16px 48px rgba(0,80,200,0.2);
-    }
-    .ice-card.blue-ice:hover { box-shadow: 0 24px 64px rgba(0,80,200,0.35); }
-    .ice-card.black-ice {
-      background: linear-gradient(145deg, #0A0A0A, #1A1A1A, #0D1520);
-      color: #FFFFFF;
-      border: 1px solid rgba(255,215,0,0.3);
-      box-shadow: 0 16px 48px rgba(255,215,0,0.08);
-    }
-    .ice-card.black-ice:hover { box-shadow: 0 24px 64px rgba(255,215,0,0.2); }
-    .card-tier-label {
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
-      opacity: 0.7; margin-bottom: 24px; font-family: 'Poppins', sans-serif;
-    }
-    .white-ice .card-tier-label { color: #0A3A7C; }
-    .black-ice .card-tier-label { color: var(--gold); }
-    .card-logo {
-      font-family: 'Poppins', sans-serif;
-      font-size: 1.5rem; font-weight: 900;
-      letter-spacing: -0.5px; margin-bottom: 4px;
-    }
-    .white-ice .card-logo { color: #0A1628; }
-    .blue-ice .card-logo, .black-ice .card-logo { color: var(--white); }
-    .card-name {
-      font-family: 'Poppins', sans-serif;
-      font-size: 1.8rem; font-weight: 800;
-      margin-bottom: 28px; line-height: 1;
-    }
-    .white-ice .card-name { color: #0A2855; }
-    .blue-ice .card-name, .black-ice .card-name { color: var(--white); }
-    .black-ice .card-name { color: var(--gold); }
-    .card-chip {
-      width: 38px; height: 28px;
-      background: linear-gradient(135deg, #D4A017, #FFD700);
-      border-radius: 5px; margin-bottom: 32px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .card-number {
-      font-family: 'Courier New', monospace;
-      font-size: 0.85rem; letter-spacing: 3px; opacity: 0.6;
-      margin-bottom: 16px;
-    }
-    .white-ice .card-number { color: #0A3A7C; }
-    .blue-ice .card-number, .black-ice .card-number { color: rgba(255,255,255,0.6); }
-    .card-details-row {
-      display: flex; justify-content: space-between; align-items: flex-end;
-    }
-    .card-holder { font-size: 0.78rem; font-weight: 600; letter-spacing: 1px; }
-    .white-ice .card-holder { color: #0A3A7C; }
-    .card-network {
-      font-size: 0.7rem; font-weight: 800; opacity: 0.6;
-      letter-spacing: 2px; text-transform: uppercase;
-    }
-    /* ICE card info panel below each card */
-    .card-info-panel {
-      background: rgba(0,0,0,0.2);
-      border-radius: 0 0 var(--card-radius) var(--card-radius);
-      padding: 0 28px 28px;
-      margin: -8px -28px -32px;
-    }
-    .card-info-panel.white-panel {
-      background: rgba(0,40,120,0.06);
-    }
-    .card-spec {
-      display: flex; justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      font-size: 0.8rem;
-    }
-    .white-ice .card-spec { border-bottom-color: rgba(0,50,150,0.1); }
-    .card-spec:last-child { border-bottom: none; }
-    .spec-label { opacity: 0.75; }
-    .spec-value { font-weight: 700; }
-    .white-ice .spec-value { color: #1A5DC8; }
-    .blue-ice .spec-value, .black-ice .spec-value { color: var(--ice2); }
-    .black-ice .spec-value { color: var(--gold); }
-
-    /* ─── DIGITAL WALLET ─── */
-    .wallet-section { padding: 100px 0; background: var(--navy); }
-    .wallet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-    .wallet-mockup {
-      background: linear-gradient(160deg, #0C1E3C, #050E1F);
-      border: 1px solid rgba(0,212,255,0.2);
-      border-radius: 28px;
-      padding: 36px;
-      max-width: 380px;
-    }
-    .wallet-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 24px;
-    }
-    .wallet-balance-label { font-size: 0.75rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
-    .wallet-balance {
-      font-family: 'Poppins', sans-serif;
-      font-size: 2.8rem; font-weight: 800;
-      color: var(--white); margin: 4px 0 2px;
-    }
-    .wallet-sub { font-size: 0.8rem; color: var(--gray); }
-    .wallet-actions-row {
-      display: flex; gap: 12px; margin: 24px 0;
-    }
-    .wallet-action {
-      flex: 1; text-align: center;
-      background: rgba(0,212,255,0.08);
-      border: 1px solid rgba(0,212,255,0.15);
-      border-radius: 12px; padding: 14px 8px;
-    }
-    .wallet-action-icon { font-size: 1.2rem; margin-bottom: 4px; }
-    .wallet-action-label { font-size: 0.7rem; color: var(--gray); }
-    .tx-list { margin-top: 8px; }
-    .tx-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    .tx-item:last-child { border-bottom: none; }
-    .tx-name { font-size: 0.84rem; font-weight: 500; }
-    .tx-date { font-size: 0.72rem; color: var(--gray); margin-top: 2px; }
-    .tx-amount { font-size: 0.88rem; font-weight: 700; }
-    .tx-amount.credit { color: #00FF88; }
-    .tx-amount.debit { color: #FF6B6B; }
-    .wallet-features { list-style: none; }
-    .wallet-features li {
-      display: flex; align-items: flex-start; gap: 12px;
-      margin-bottom: 20px;
-    }
-    .wallet-feat-icon {
-      width: 40px; height: 40px; flex-shrink: 0;
-      background: rgba(0,212,255,0.1);
-      border: 1px solid rgba(0,212,255,0.2);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
-    }
-    .wallet-feat-text h4 { font-size: 0.92rem; font-weight: 600; }
-    .wallet-feat-text p { font-size: 0.8rem; color: var(--gray); }
+    .clock-feat p { font-size: 0.84rem; color: var(--gray); line-height: 1.7; }
 
     /* ─── TIPFLIC ─── */
     .tipflic-section {
-      padding: 100px 0;
-      background: linear-gradient(180deg, var(--navy2) 0%, var(--navy) 100%);
-      position: relative;
-      overflow: hidden;
+      padding: 96px 0;
+      background: linear-gradient(145deg, #1A0938, #2D0F5A);
     }
+
     .tipflic-inner {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 60px; align-items: center;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center;
     }
+
     .tipflic-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(128,0,255,0.12);
-      border: 1px solid rgba(128,0,255,0.3);
-      border-radius: 50px; padding: 6px 16px;
-      margin-bottom: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(123,79,255,0.15);
+      border: 1px solid rgba(123,79,255,0.35);
+      border-radius: 50px;
+      padding: 6px 16px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #B88AFF;
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
     }
-    .tipflic-badge span { font-size: 0.78rem; font-weight: 600; color: #B88AFF; letter-spacing: 0.5px; }
+
     .tipflic-logo {
       font-family: 'Poppins', sans-serif;
-      font-size: 2.8rem; font-weight: 900;
+      font-size: 2.8rem;
+      font-weight: 900;
       background: linear-gradient(135deg, #B88AFF, #7B4FFF);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text; margin-bottom: 16px;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
     }
-    .tipflic-desc { font-size: 0.95rem; color: var(--gray); line-height: 1.8; margin-bottom: 28px; }
+
+    .tipflic-desc { font-size: 0.95rem; color: #9EB0C8; line-height: 1.8; margin-bottom: 28px; }
+
     .tipflic-visual {
-      background: linear-gradient(160deg, #1A0A35, #0D0520);
-      border: 1px solid rgba(128,0,255,0.2);
-      border-radius: var(--card-radius);
-      padding: 32px;
-    }
-    .tipflic-screen {
-      background: #0A0314;
-      border-radius: 12px;
-      padding: 20px;
-      aspect-ratio: 16/9;
-      display: flex; flex-direction: column; justify-content: space-between;
-      border: 1px solid rgba(128,0,255,0.15);
-    }
-    .tipflic-top { display: flex; justify-content: space-between; align-items: center; }
-    .tipflic-title { font-size: 0.75rem; font-weight: 700; color: #B88AFF; letter-spacing: 2px; text-transform: uppercase; }
-    .tipflic-label { font-size: 0.7rem; color: rgba(184,138,255,0.5); }
-    .tipflic-bars { display: flex; gap: 6px; align-items: flex-end; height: 60px; }
-    .bar {
-      flex: 1; border-radius: 3px 3px 0 0;
-      background: linear-gradient(180deg, #7B4FFF, #3A1A8F);
-    }
-    .tipflic-stat-row { display: flex; gap: 12px; }
-    .tipflic-stat {
-      flex: 1; background: rgba(123,79,255,0.1);
+      background: rgba(255,255,255,0.04);
       border: 1px solid rgba(123,79,255,0.2);
-      border-radius: 8px; padding: 10px;
-    }
-    .tipflic-stat-num { font-family: 'Poppins', sans-serif; font-size: 1.2rem; font-weight: 800; color: #B88AFF; }
-    .tipflic-stat-label { font-size: 0.65rem; color: rgba(255,255,255,0.4); }
-
-    /* ─── CLOCK IN/OUT ─── */
-    .clock-section { padding: 100px 0; background: var(--navy2); }
-    .clock-features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-    .clock-feat {
-      background: var(--navy);
-      border: 1px solid rgba(0,212,255,0.1);
-      border-radius: var(--card-radius);
+      border-radius: 24px;
       padding: 28px;
-      transition: transform 0.25s;
     }
-    .clock-feat:hover { transform: translateY(-3px); }
-    .clock-feat-icon {
-      font-size: 2rem; margin-bottom: 16px;
-    }
-    .clock-feat h3 { font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
-    .clock-feat p { font-size: 0.83rem; color: var(--gray); line-height: 1.7; }
 
-    /* ─── BNPL SECTION ─── */
-    .bnpl-section { padding: 100px 0; background: var(--navy); }
-    .bnpl-terms {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 24px; margin-top: 48px;
+    .tipflic-screen { background: rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; }
+
+    .tipflic-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
     }
-    .term-card {
-      background: var(--navy2);
-      border: 1px solid rgba(0,212,255,0.12);
-      border-radius: var(--card-radius);
-      padding: 32px;
+
+    .tipflic-title { font-family: 'Poppins', sans-serif; font-size: 0.88rem; font-weight: 600; color: white; }
+    .tipflic-label { font-size: 0.72rem; color: #9EB0C8; }
+
+    .tipflic-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 80px;
+      margin-bottom: 16px;
+    }
+
+    .bar {
+      flex: 1;
+      background: linear-gradient(180deg, #7B4FFF, #4A2FCC);
+      border-radius: 4px 4px 0 0;
+      transition: height 0.3s;
+    }
+
+    .tipflic-stat-row { display: flex; gap: 12px; }
+
+    .tipflic-stat {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 12px;
       text-align: center;
-      transition: transform 0.25s, border-color 0.25s;
     }
-    .term-card:hover { transform: translateY(-4px); border-color: rgba(0,212,255,0.3); }
-    .term-card.middle { border-color: rgba(0,212,255,0.3); background: linear-gradient(160deg, #0C2244, #0A1628); }
-    .term-days {
+
+    .tipflic-stat-num {
       font-family: 'Poppins', sans-serif;
-      font-size: 3rem; font-weight: 900;
-      color: var(--ice); line-height: 1; margin-bottom: 4px;
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #B88AFF;
+      margin-bottom: 4px;
     }
-    .term-label { font-size: 0.75rem; color: var(--gray); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
-    .term-feature { font-size: 0.85rem; color: var(--offwhite); margin-bottom: 8px; }
-    .term-limit { font-size: 0.8rem; color: var(--ice2); font-weight: 600; margin-top: 16px; }
 
-    /* ─── PRE-ORDER SECTION ─── */
+    .tipflic-stat-label { font-size: 0.68rem; color: #9EB0C8; line-height: 1.3; }
+
+    /* ─── PRICING ─── */
     .preorder-section {
-      padding: 100px 0;
-      background: linear-gradient(180deg, var(--navy2) 0%, #071530 100%);
-      position: relative; overflow: hidden;
+      padding: 96px 0;
+      background: var(--bg);
     }
-    .preorder-section::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(0,212,255,0.06) 0%, transparent 70%);
-      pointer-events: none;
+
+    .preorder-inner { text-align: center; }
+
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 52px;
     }
-    .preorder-inner { text-align: center; max-width: 760px; margin: 0 auto; position: relative; }
-    .plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 48px 0; }
+
     .plan-card {
-      background: var(--navy2);
-      border: 1px solid rgba(0,212,255,0.15);
+      background: var(--white);
       border-radius: var(--card-radius);
-      padding: 32px 24px;
-      text-align: center;
-      transition: transform 0.25s;
-    }
-    .plan-card:hover { transform: translateY(-4px); }
-    .plan-card.popular {
-      border-color: var(--ice);
-      background: linear-gradient(160deg, #0C2244, #0A1628);
-      box-shadow: 0 0 32px rgba(0,212,255,0.1);
+      padding: 36px 28px;
+      border: 2px solid var(--gray3);
+      text-align: left;
       position: relative;
+      transition: all 0.2s;
     }
+
+    .plan-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(15,39,71,0.08); }
+
+    .plan-card.popular {
+      border-color: var(--teal);
+      box-shadow: 0 8px 40px rgba(0,184,148,0.15);
+    }
+
     .popular-tag {
-      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-      background: linear-gradient(135deg, var(--ice), #0088AA);
-      color: var(--navy); font-size: 0.68rem; font-weight: 800;
-      padding: 4px 14px; border-radius: 50px; letter-spacing: 1px; white-space: nowrap;
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--teal), #009B7C);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 18px;
+      border-radius: 50px;
+      white-space: nowrap;
     }
-    .plan-name { font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--gray); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+
+    .plan-name {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .plan-orig { font-size: 0.78rem; color: var(--gray2); text-decoration: line-through; margin-bottom: 4px; }
+
     .plan-price {
       font-family: 'Poppins', sans-serif;
-      font-size: 2.4rem; font-weight: 900;
-      color: var(--white); line-height: 1; margin-bottom: 4px;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: 2px;
     }
-    .plan-price sup { font-size: 1rem; vertical-align: super; }
-    .plan-period { font-size: 0.75rem; color: var(--gray); margin-bottom: 20px; }
-    .plan-orig { font-size: 0.78rem; color: var(--gray); text-decoration: line-through; margin-bottom: 4px; }
-    .plan-save { font-size: 0.8rem; color: #00FF88; font-weight: 600; margin-bottom: 20px; }
-    .plan-features { list-style: none; margin-bottom: 24px; }
+
+    .plan-price sup { font-size: 1.2rem; vertical-align: top; margin-top: 10px; display: inline-block; }
+    .plan-period { font-size: 0.78rem; color: var(--gray); margin-bottom: 10px; }
+
+    .plan-save {
+      display: inline-block;
+      background: var(--teal-bg);
+      color: var(--teal);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 50px;
+      margin-bottom: 24px;
+      border: 1px solid var(--teal-mid);
+    }
+
+    .plan-features {
+      list-style: none;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     .plan-features li {
-      font-size: 0.82rem; color: var(--offwhite);
-      padding: 5px 0; display: flex; align-items: center; justify-content: center; gap: 6px;
+      font-size: 0.84rem;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .plan-features li::before { content: '✓'; color: var(--ice); font-weight: 700; }
-    .waitlist-form {
-      display: flex; flex-direction: column; gap: 14px; max-width: 520px; margin: 32px auto 0;
-      text-align: left;
+
+    .plan-features li::before {
+      content: '✓';
+      color: var(--teal);
+      font-weight: 700;
+      flex-shrink: 0;
     }
-    .waitlist-row { display: flex; gap: 14px; flex-wrap: wrap; }
-    .waitlist-row .waitlist-field { flex: 1; min-width: 200px; }
-    .waitlist-field { display: flex; flex-direction: column; gap: 5px; }
-    .waitlist-field label { font-size: 0.78rem; color: var(--ice2); font-family: 'Inter', sans-serif; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+
+    .plan-card .btn-primary { width: 100%; text-align: center; display: block; }
+    .plan-card .btn-outline { width: 100%; text-align: center; display: block; }
+
+    /* ─── WAITLIST ─── */
+    .waitlist-section {
+      padding: 96px 0;
+      background: linear-gradient(145deg, var(--teal), #009B7C, var(--ice));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .waitlist-section::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 300px; height: 300px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .waitlist-section::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -80px;
+      width: 350px; height: 350px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .waitlist-section .section-label { color: rgba(255,255,255,0.75); }
+    .waitlist-section .section-title { color: white; }
+
+    .waitlist-inner { max-width: 580px; margin: 0 auto; text-align: center; }
+
+    .waitlist-sub { color: rgba(255,255,255,0.82); font-size: 1rem; margin-bottom: 36px; line-height: 1.75; }
+
+    .waitlist-form { text-align: left; }
+    .waitlist-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .waitlist-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+
+    .waitlist-field label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 0.3px;
+    }
+
     .waitlist-input {
       width: 100%;
-      background: var(--navy2);
-      border: 1px solid rgba(0,212,255,0.25);
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.25);
       border-radius: 12px;
-      padding: 14px 22px;
-      color: var(--white);
+      padding: 12px 16px;
+      color: white;
       font-family: 'Inter', sans-serif;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .waitlist-input:focus { border-color: var(--ice); }
-    .waitlist-input::placeholder { color: var(--gray); }
-    .waitlist-note { font-size: 0.75rem; color: var(--gray); margin-top: 12px; text-align: center; }
+
+    .waitlist-input::placeholder { color: rgba(255,255,255,0.5); }
+
+    .waitlist-input:focus {
+      border-color: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .waitlist-input option { color: var(--navy); background: white; }
+
     .waitlist-submit {
-      width: 100%; padding: 16px; margin-top: 6px;
-      background: linear-gradient(135deg, var(--ice), #00A8E8);
-      color: var(--navy); font-family: 'Poppins', sans-serif;
-      font-weight: 700; font-size: 1rem; border: none;
-      border-radius: 50px; cursor: pointer; letter-spacing: 0.5px;
-      transition: transform 0.2s, box-shadow 0.2s;
+      width: 100%;
+      background: white;
+      color: var(--teal);
+      border: none;
+      border-radius: 50px;
+      padding: 16px 24px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.15);
     }
-    .waitlist-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,212,255,0.35); }
+
+    .waitlist-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(0,0,0,0.2); }
+
+    .waitlist-note { font-size: 0.78rem; color: rgba(255,255,255,0.6); text-align: center; margin-top: 16px; }
+
     .waitlist-success {
-      display: none; text-align: center; padding: 28px 20px;
-      background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.3);
-      border-radius: 16px; margin-top: 24px;
+      display: none;
+      text-align: center;
+      padding: 40px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.25);
     }
-    .waitlist-success .success-icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .waitlist-success h3 { color: var(--ice); font-family: 'Poppins', sans-serif; font-size: 1.2rem; margin-bottom: 8px; }
-    .waitlist-success p { color: var(--gray); font-size: 0.9rem; }
+
+    .waitlist-success .success-icon { font-size: 3rem; margin-bottom: 16px; }
+
+    .waitlist-success h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    .waitlist-success p { color: rgba(255,255,255,0.8); }
 
     /* ─── FAQ ─── */
-    .faq-section { padding: 100px 0; background: var(--navy); }
-    .faq-accordion { max-width: 780px; margin: 48px auto 0; }
+    .faq-section {
+      padding: 96px 0;
+      background: var(--white);
+    }
+
+    .faq-accordion { max-width: 700px; margin: 0 auto; }
+
     .faq-item {
-      background: var(--navy2);
-      border: 1px solid rgba(0,212,255,0.08);
+      border: 1.5px solid var(--gray3);
       border-radius: 14px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       overflow: hidden;
-      transition: border-color 0.3s;
+      transition: border-color 0.2s;
     }
-    .faq-item.open { border-color: rgba(0,212,255,0.25); }
+
+    .faq-item.open { border-color: var(--teal3); }
+
     .faq-trigger {
-      width: 100%; background: none; border: none; cursor: pointer;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 22px 24px; text-align: left;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      gap: 12px;
     }
-    .faq-trigger-text { font-family: 'Poppins', sans-serif; font-size: 0.92rem; font-weight: 600; color: var(--white); }
+
+    .faq-trigger-text {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
     .faq-icon {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; margin-left: 16px; color: var(--ice); font-size: 1.1rem;
-      transition: transform 0.3s, background 0.3s;
+      width: 28px; height: 28px;
+      background: var(--teal-bg);
+      color: var(--teal);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: transform 0.2s, background 0.2s;
     }
-    .faq-item.open .faq-icon { transform: rotate(45deg); background: rgba(0,212,255,0.2); }
-    .faq-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; padding: 0 24px; }
+
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: var(--teal); color: white; }
+
+    .faq-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+
     .faq-item.open .faq-body { max-height: 300px; }
-    .faq-body p { font-size: 0.83rem; color: var(--gray); line-height: 1.7; padding-bottom: 20px; }
+
+    .faq-body p {
+      padding: 0 22px 20px;
+      font-size: 0.88rem;
+      color: var(--gray);
+      line-height: 1.75;
+    }
+
     .faq-show-more {
-      display: block; margin: 24px auto 0; background: none;
-      border: 1px solid rgba(0,212,255,0.2); color: var(--ice);
-      font-size: 0.85rem; font-weight: 600; padding: 12px 32px;
-      border-radius: 50px; cursor: pointer;
+      display: block;
+      margin: 20px auto 0;
+      background: none;
+      border: 1.5px solid var(--teal);
+      color: var(--teal);
+      border-radius: 50px;
+      padding: 10px 28px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
     }
-    .faq-item-old {
-      background: var(--navy2);
-      border: 1px solid rgba(0,212,255,0.08);
-      border-radius: 14px;
-      padding: 24px;
-    }
-    .faq-item h4 { font-family: 'Poppins', sans-serif; font-size: 0.92rem; font-weight: 600; margin-bottom: 8px; color: var(--white); }
-    .faq-item p { font-size: 0.83rem; color: var(--gray); line-height: 1.7; }
+
+    .faq-show-more:hover { background: var(--teal); color: white; }
 
     /* ─── FOOTER ─── */
     footer {
-      background: var(--navy2);
-      border-top: 1px solid rgba(0,212,255,0.1);
-      padding: 60px 0 32px;
+      background: var(--navy);
+      padding: 72px 0 36px;
     }
+
     .footer-grid {
-      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 48px; margin-bottom: 48px;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 52px;
+      margin-bottom: 52px;
     }
-    .footer-brand p { font-size: 0.85rem; color: var(--gray); max-width: 280px; line-height: 1.7; margin-top: 16px; }
+
+    .footer-brand .logo { margin-bottom: 16px; display: inline-flex; }
+    .footer-brand .logo-text { color: var(--white); }
+
+    .footer-brand p {
+      font-size: 0.85rem;
+      color: var(--gray2);
+      line-height: 1.75;
+      max-width: 300px;
+    }
+
     .footer-col h4 {
       font-family: 'Poppins', sans-serif;
-      font-size: 0.8rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 2px;
-      color: var(--white); margin-bottom: 16px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--white);
+      margin-bottom: 18px;
     }
+
     .footer-col a {
-      display: block; color: var(--gray);
-      font-size: 0.85rem; text-decoration: none;
-      margin-bottom: 10px; transition: color 0.2s;
+      display: block;
+      color: var(--gray2);
+      font-size: 0.86rem;
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: color 0.2s;
     }
-    .footer-col a:hover { color: var(--ice); }
+
+    .footer-col a:hover { color: var(--teal2); }
+
     .footer-bottom {
       border-top: 1px solid rgba(255,255,255,0.06);
-      padding-top: 24px;
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 12px;
+      padding-top: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
     }
-    .footer-legal { font-size: 0.75rem; color: var(--gray); max-width: 600px; line-height: 1.6; }
-    .footer-copy { font-size: 0.75rem; color: var(--gray); }
+
+    .footer-legal { font-size: 0.72rem; color: var(--gray2); max-width: 620px; line-height: 1.65; opacity: 0.7; }
+    .footer-copy { font-size: 0.72rem; color: var(--gray2); opacity: 0.7; white-space: nowrap; }
 
     /* ─── RESPONSIVE ─── */
-    @media (max-width: 900px) {
-      .products-grid, .cards-grid, .bnpl-terms, .plans-grid { grid-template-columns: 1fr 1fr; }
-      .split-grid, .rev-grid, .wallet-grid, .tipflic-inner { grid-template-columns: 1fr; gap: 40px; }
-      .clock-features { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 960px) {
+      .hero-grid, .split-grid, .rev-grid, .wallet-grid, .tipflic-inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero-visual { display: none; }
+      .products-grid, .cards-grid { grid-template-columns: 1fr 1fr; }
+      .clock-features, .plans-grid, .bnpl-terms { grid-template-columns: 1fr 1fr; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
       .stats-grid { grid-template-columns: 1fr 1fr; }
-      .faq-accordion { margin: 32px 0 0; }
       .nav-links { display: none; }
+      .term-card.middle { transform: none; }
     }
-    @media (max-width: 580px) {
-      .products-grid, .cards-grid, .bnpl-terms, .plans-grid, .clock-features { grid-template-columns: 1fr; }
-      .footer-grid { grid-template-columns: 1fr; }
+
+    @media (max-width: 600px) {
+      .products-grid, .cards-grid, .clock-features, .plans-grid, .bnpl-terms { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .waitlist-row { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -851,8 +1679,8 @@
         <li><a href="#preorder">Pricing</a></li>
       </ul>
       <div class="nav-cta">
-        <a href="#preorder" class="btn-outline" style="padding:10px 20px; font-size:0.85rem;">Learn More</a>
-        <a href="/app" class="btn-primary" style="padding:10px 22px; font-size:0.85rem;">Join Waitlist</a>
+        <a href="/employer" class="btn-outline" style="padding:10px 20px; font-size:0.85rem;">For Employers</a>
+        <a href="/app" class="btn-primary" style="padding:10px 24px; font-size:0.85rem;">Get Started Free</a>
       </div>
     </div>
   </div>
@@ -860,47 +1688,100 @@
 
 <!-- ═══ HERO ═══ -->
 <section class="hero">
-  <div class="hero-bg"></div>
-  <svg class="hero-iceberg" viewBox="0 0 400 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="200,20 340,220 60,220" fill="white"/>
-    <polygon points="200,220 380,600 20,600" fill="white" opacity="0.5"/>
-    <line x1="200" y1="220" x2="200" y2="600" stroke="white" stroke-width="1" stroke-dasharray="8,8" opacity="0.3"/>
-  </svg>
   <div class="container">
-    <div class="hero-content">
-      <h1>The Future of <span class="ice-gradient">Salary Management</span> Starts Here.</h1>
-      <p class="hero-sub">TiposIt is the all-in-one payroll and salary management platform with same-day pay, digital wallets, and a revenue partnership model that makes your company money.</p>
-      <p class="hero-tagline">"This is just the tip of the iceberg."</p>
-      <div class="hero-actions">
-        <a href="/app" class="btn-primary">Get Early Access →</a>
-        <a href="/employer" class="btn-outline">Partner With Us</a>
+    <div class="hero-grid">
+      <!-- Left: Text -->
+      <div>
+        <div class="hero-eyebrow">
+          <div class="hero-dot"></div>
+          Now Accepting Early Access — Limited Spots
+        </div>
+        <h1>Get Paid<br><span class="teal-gradient">The Day</span><br>You Earn It.</h1>
+        <p class="hero-sub">TiposIt puts earned wages in your employees' hands the same day they work — while generating a recurring revenue stream for your company. No caps. No waiting. No compromises.</p>
+        <p class="hero-tagline">"This is just the tip of the iceberg."</p>
+        <div class="hero-actions">
+          <a href="/app" class="btn-primary">Get Early Access →</a>
+          <a href="/employer" class="btn-outline">Partner With Us</a>
+        </div>
+        <div class="hero-note">
+          <span class="hero-note-item">No credit card required</span>
+          <span class="hero-note-item">Texas-based fintech</span>
+          <span class="hero-note-item">FDIC-compliant structure</span>
+        </div>
       </div>
-      <p class="hero-note">No credit card required &nbsp;·&nbsp; Texas-based fintech &nbsp;·&nbsp; FDIC-compliant structure</p>
-      <div class="hero-badge" style="margin-top: 20px;">
-        <div class="hero-badge-dot"></div>
-        <span>Now Accepting Pre-Orders — Limited Early Access</span>
+
+      <!-- Right: App preview -->
+      <div class="hero-visual">
+        <div style="position:relative; display:inline-block; width:100%;">
+          <div class="hero-floating-badge">Today's pay: <span>+$247.50 ✓</span></div>
+          <div class="hero-phone">
+            <div class="pay-card-widget">
+              <div class="pay-widget-label">Today's Earned Wages Available</div>
+              <div class="pay-widget-amount">$247.50</div>
+              <div class="pay-widget-sub">Based on 8.5 hrs · $29.12/hr</div>
+              <button class="pay-widget-btn">Transfer to Wallet Now →</button>
+            </div>
+            <div class="tx-mini">
+              <div class="tx-mini-item">
+                <div>
+                  <div class="tx-mini-name">Same-Day Pay Transfer</div>
+                  <div class="tx-mini-date">Today, 4:23 PM</div>
+                </div>
+                <div class="tx-mini-amt tx-credit">+$247.50</div>
+              </div>
+              <div class="tx-mini-item">
+                <div>
+                  <div class="tx-mini-name">Grocery Store</div>
+                  <div class="tx-mini-date">Today, 1:15 PM</div>
+                </div>
+                <div class="tx-mini-amt tx-debit">-$64.80</div>
+              </div>
+              <div class="tx-mini-item">
+                <div>
+                  <div class="tx-mini-name">Bank Transfer</div>
+                  <div class="tx-mini-date">Yesterday</div>
+                </div>
+                <div class="tx-mini-amt tx-debit">-$200.00</div>
+              </div>
+            </div>
+          </div>
+          <div class="hero-floating-badge2">Company earned: <span>+$1,640/mo</span> 💚</div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══ STATS BAR ═══ -->
+<!-- ═══ TRUST BAR ═══ -->
+<div class="trust-bar">
+  <div class="container">
+    <div class="trust-bar-inner">
+      <div class="trust-item"><div class="trust-icon">🏦</div>FDIC-Compliant Banking Structure</div>
+      <div class="trust-item"><div class="trust-icon">🔒</div>256-Bit Encryption</div>
+      <div class="trust-item"><div class="trust-icon">⚡</div>Same-Day Pay — No Caps</div>
+      <div class="trust-item"><div class="trust-icon">🤝</div>Employer Revenue Share up to 33%</div>
+      <div class="trust-item"><div class="trust-icon">📍</div>Texas-Based Fintech</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STATS ═══ -->
 <div class="stats-bar">
   <div class="container">
     <div class="stats-grid">
-      <div>
+      <div class="stat-card">
         <div class="stat-num">Pays For Itself</div>
         <div class="stat-label">Recoups Cost in Under 90 Days</div>
       </div>
-      <div>
+      <div class="stat-card">
         <div class="stat-num">100%</div>
         <div class="stat-label">Same-Day Pay, Every Day Worked</div>
       </div>
-      <div>
+      <div class="stat-card">
         <div class="stat-num">33%</div>
         <div class="stat-label">Revenue Share Back to Your Company</div>
       </div>
-      <div>
+      <div class="stat-card">
         <div class="stat-num">3</div>
         <div class="stat-label">ICE Credit Card Tiers for Employees</div>
       </div>
@@ -912,7 +1793,7 @@
 <section class="products" id="products">
   <div class="container">
     <div class="section-label">Our Product Suite</div>
-    <h2 class="section-title">Everything Your Workforce <span class="ice-gradient">Deserves</span></h2>
+    <h2 class="section-title">Everything Your Workforce <span class="teal-gradient">Deserves</span></h2>
     <p class="section-sub">One platform. Every financial tool your employees need — and a model that rewards the companies who offer them.</p>
     <div class="products-grid">
       <div class="product-card featured">
@@ -920,7 +1801,7 @@
         <div class="product-icon">⚡</div>
         <div class="product-name">Same-Day Pay</div>
         <p class="product-desc">Employees access their earned wages the same day they work — no daily caps, no dollar limits. Built on our proprietary clock-in/clock-out system with HR-controlled overtime approval.</p>
-        <span class="product-fee">5% per transaction</span>
+        <span class="product-fee">1.5% per transaction</span>
       </div>
       <div class="product-card">
         <div class="product-icon">💳</div>
@@ -962,15 +1843,15 @@
     <div class="split-grid">
       <div>
         <div class="section-label">Same-Day Pay</div>
-        <h2 class="section-title">Your Employees Worked Today.<br><span class="ice-gradient">They Get Paid Today.</span></h2>
+        <h2 class="section-title">Your Employees Worked Today.<br><span class="teal-gradient">They Get Paid Today.</span></h2>
         <p style="color:var(--gray); font-size:0.95rem; margin-bottom:28px; line-height:1.8;">Unlike every other EWA platform on the market, TiposIt has no daily caps and no dollar limits on earned wage access. If you worked it, it's yours — that day.</p>
         <ul class="check-list">
-          <li><span class="check-icon">✦</span> No dollar cap on same-day pay — access every dollar earned</li>
-          <li><span class="check-icon">✦</span> HR-controlled overtime approval within 24-hour window</li>
-          <li><span class="check-icon">✦</span> Firewall controls for management and department heads</li>
-          <li><span class="check-icon">✦</span> Auto-sync with our clock-in/clock-out system</li>
-          <li><span class="check-icon">✦</span> Supports hourly, salaried, and shift-based workers</li>
-          <li><span class="check-icon">✦</span> Full audit trail for payroll compliance</li>
+          <li><span class="check-icon">✓</span> No dollar cap on same-day pay — access every dollar earned</li>
+          <li><span class="check-icon">✓</span> HR-controlled overtime approval within 24-hour window</li>
+          <li><span class="check-icon">✓</span> Firewall controls for management and department heads</li>
+          <li><span class="check-icon">✓</span> Auto-sync with our clock-in/clock-out system</li>
+          <li><span class="check-icon">✓</span> Supports hourly, salaried, and shift-based workers</li>
+          <li><span class="check-icon">✓</span> Full audit trail for payroll compliance</li>
         </ul>
       </div>
       <div class="feature-visual">
@@ -979,34 +1860,32 @@
           <div class="mock-amount">$247.50</div>
           <div class="mock-status"><span class="mock-status-dot"></span> Ready to Transfer Now</div>
         </div>
-        <div style="padding: 8px 0;">
-          <div class="timeline-item">
-            <div class="timeline-dot">1</div>
-            <div class="timeline-content">
-              <h4>Clock In via TiposIt App</h4>
-              <p>GPS verified. Shift starts tracking instantly.</p>
-            </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">1</div>
+          <div class="timeline-content">
+            <h4>Clock In via TiposIt App</h4>
+            <p>GPS verified. Shift starts tracking instantly.</p>
           </div>
-          <div class="timeline-item">
-            <div class="timeline-dot">2</div>
-            <div class="timeline-content">
-              <h4>Earnings Accrue in Real Time</h4>
-              <p>Hourly rate multiplied by hours worked — live.</p>
-            </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">2</div>
+          <div class="timeline-content">
+            <h4>Earnings Accrue in Real Time</h4>
+            <p>Hourly rate multiplied by hours worked — live.</p>
           </div>
-          <div class="timeline-item">
-            <div class="timeline-dot">3</div>
-            <div class="timeline-content">
-              <h4>Request Same-Day Pay</h4>
-              <p>Tap to transfer to your TiposIt Wallet instantly.</p>
-            </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">3</div>
+          <div class="timeline-content">
+            <h4>Request Same-Day Pay</h4>
+            <p>Tap to transfer to your TiposIt Wallet instantly.</p>
           </div>
-          <div class="timeline-item">
-            <div class="timeline-dot">4</div>
-            <div class="timeline-content">
-              <h4>Funds Land in Seconds</h4>
-              <p>Use your TiposIt card or transfer to any bank.</p>
-            </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">4</div>
+          <div class="timeline-content">
+            <h4>Funds Land in Seconds</h4>
+            <p>Use your TiposIt card or transfer to any bank.</p>
           </div>
         </div>
       </div>
@@ -1014,25 +1893,25 @@
   </div>
 </section>
 
-<!-- ═══ REVENUE PARTNERSHIP ═══ -->
+<!-- ═══ REVENUE PARTNERSHIP — dark section ═══ -->
 <section class="revenue-section" id="partnership">
   <div class="container">
     <div class="rev-grid">
       <div>
         <div class="section-label">Revenue Partnership Model</div>
-        <h2 class="section-title">Your Company Earns <span class="ice-gradient">Every Month.</span></h2>
-        <p style="color:var(--gray); font-size:0.95rem; line-height:1.8; margin-bottom:28px;">TiposIt shares a percentage of every fee collected from your employees' financial activity back to your company — automatically, every month.</p>
-        <div style="margin-bottom: 32px;">
+        <h2 class="section-title">Your Company Earns <span class="teal-gradient">Every Month.</span></h2>
+        <p style="color:var(--gray2); font-size:0.95rem; line-height:1.8; margin-bottom:28px;">TiposIt shares a percentage of every fee collected from your employees' financial activity back to your company — automatically, every month.</p>
+        <div style="margin-bottom: 28px;">
           <div class="rev-percentage">Up to 33%</div>
           <div class="rev-detail">of collected fees returned to your company account monthly</div>
         </div>
-        <p style="font-size:0.85rem; color:var(--gray); line-height:1.7;">Example: If Company A's 100 employees use same-day pay and collectively generate $5,000/month in platform fees, Company A receives a direct deposit of $1,000–$1,650 every month from TiposIt. That's money you earn just for offering a benefit your employees love.</p>
-        <div style="margin-top:28px;">
-          <a href="/employer" class="btn-primary">Earn With TiposIt →</a>
+        <div class="rev-example">
+          Example: 100 employees generate <strong>$5,000/mo</strong> in platform fees → your company receives a direct deposit of <strong>$1,000–$1,650</strong> every month. That's money you earn just for offering a benefit your employees love.
         </div>
+        <a href="/employer" class="btn-primary">Earn With TiposIt →</a>
       </div>
       <div class="rev-flow">
-        <h4 style="font-family:'Poppins',sans-serif; font-size:0.95rem; font-weight:700; margin-bottom:24px; color:var(--ice);">How It Works</h4>
+        <div class="rev-flow-title">How It Works</div>
         <div class="flow-step">
           <div class="flow-num">1</div>
           <div class="flow-text">
@@ -1053,7 +1932,7 @@
           <div class="flow-num">3</div>
           <div class="flow-text">
             <h4>Fees Are Collected by TiposIt</h4>
-            <p>5% same-day pay fee, 3% transfer fee — charged to the employee.</p>
+            <p>1.5% same-day pay fee, 3% transfer fee — charged to the employee.</p>
           </div>
         </div>
         <div class="flow-arrow">↓</div>
@@ -1061,7 +1940,7 @@
           <div class="flow-num">4</div>
           <div class="flow-text">
             <h4>Company Gets Paid Monthly</h4>
-            <p>20%, 25%, or 33.3% revenue share deposited to your TiposIt account.</p>
+            <p>20%, 25%, or 33% revenue share deposited to your account.</p>
           </div>
         </div>
       </div>
@@ -1069,7 +1948,7 @@
   </div>
 </section>
 
-<!-- ═══ ICE CREDIT CARDS ═══ -->
+<!-- ═══ ICE CREDIT CARDS — premium dark section ═══ -->
 <section class="cards-section" id="ice-cards">
   <div class="container">
     <div class="section-label">TiposIt ICE Cards</div>
@@ -1092,19 +1971,18 @@
             <polygon points="126,130 172,130 148,212 112,320"     fill="#0A1628" opacity="0.28"/>
             <polygon points="172,130 148,212 112,320"             fill="#0A1628" opacity="0.15"/>
           </svg>
-          <div class="card-tier-label">Entry Level</div>
-          <div class="card-logo">TiposIt</div>
-          <div class="card-name">WHITE<br>ICE</div>
-          <div class="card-chip"></div>
-          <div class="card-number">•••• •••• •••• ○○○○</div>
-          <div class="card-details-row">
-            <div>
-              <div class="card-holder" style="color:#0A3A7C;">CARDHOLDER NAME</div>
+          <div><div class="card-tier-label" style="color:rgba(10,58,124,0.7);">Entry Level</div><div class="card-logo" style="color:#0A3A7C;">TiposIt</div></div>
+          <div class="card-name" style="color:#0A3A7C;">WHITE<br>ICE</div>
+          <div>
+            <div class="card-chip"></div>
+            <div class="card-number" style="color:rgba(10,58,124,0.7);">•••• •••• •••• ○○○○</div>
+            <div class="card-details-row">
+              <div class="card-holder" style="color:rgba(10,58,124,0.6);">CARDHOLDER NAME</div>
+              <div class="card-network" style="color:#0A3A7C;">TIPOSIT</div>
             </div>
-            <div class="card-network" style="color:#0A3A7C;">TIPOSIT</div>
           </div>
         </div>
-        <div style="background: rgba(0,40,120,0.06); border: 1px solid rgba(0,212,255,0.12); border-top:none; border-radius: 0 0 var(--card-radius) var(--card-radius); padding: 20px 28px;">
+        <div style="background: rgba(0,40,120,0.05); border: 1px solid rgba(0,153,204,0.15); border-top:none; border-radius: 0 0 var(--card-radius) var(--card-radius); padding: 20px 28px;">
           <div class="card-spec"><span class="spec-label">Credit Limit</span><span class="spec-value" style="color:#1A5DC8;">$500 – $2,500</span></div>
           <div class="card-spec"><span class="spec-label">Cash Back</span><span class="spec-value" style="color:#1A5DC8;">1% All Purchases</span></div>
           <div class="card-spec"><span class="spec-label">Qualification</span><span class="spec-value" style="color:#1A5DC8;">580+ Credit Score</span></div>
@@ -1128,17 +2006,18 @@
             <polygon points="126,130 172,130 148,212 112,320"     fill="white" opacity="0.28"/>
             <polygon points="172,130 148,212 112,320"             fill="white" opacity="0.15"/>
           </svg>
-          <div class="card-tier-label" style="color:var(--ice2);">Mid Tier</div>
-          <div class="card-logo">TiposIt</div>
+          <div><div class="card-tier-label" style="color:var(--ice3);">Mid Tier</div><div class="card-logo">TiposIt</div></div>
           <div class="card-name">BLUE<br>ICE</div>
-          <div class="card-chip"></div>
-          <div class="card-number">•••• •••• •••• ○○○○</div>
-          <div class="card-details-row">
-            <div><div class="card-holder">CARDHOLDER NAME</div></div>
-            <div class="card-network" style="color:rgba(255,255,255,0.6);">TIPOSIT</div>
+          <div>
+            <div class="card-chip"></div>
+            <div class="card-number">•••• •••• •••• ○○○○</div>
+            <div class="card-details-row">
+              <div class="card-holder">CARDHOLDER NAME</div>
+              <div class="card-network" style="color:rgba(255,255,255,0.6);">TIPOSIT</div>
+            </div>
           </div>
         </div>
-        <div style="background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.2); border-top:none; border-radius: 0 0 var(--card-radius) var(--card-radius); padding: 20px 28px;">
+        <div style="background: rgba(0,100,200,0.08); border: 1px solid rgba(0,153,204,0.25); border-top:none; border-radius: 0 0 var(--card-radius) var(--card-radius); padding: 20px 28px;">
           <div class="card-spec"><span class="spec-label">Credit Limit</span><span class="spec-value">$2,500 – $10,000</span></div>
           <div class="card-spec"><span class="spec-label">Cash Back</span><span class="spec-value">2% + 3x on dining</span></div>
           <div class="card-spec"><span class="spec-label">Qualification</span><span class="spec-value">660+ Credit Score</span></div>
@@ -1162,27 +2041,28 @@
             <polygon points="126,130 172,130 148,212 112,320"     fill="#FFD700" opacity="0.28"/>
             <polygon points="172,130 148,212 112,320"             fill="#FFD700" opacity="0.15"/>
           </svg>
-          <div class="card-tier-label">Premium</div>
-          <div class="card-logo">TiposIt</div>
-          <div class="card-name" style="color:var(--gold);">BLACK<br>ICE</div>
-          <div class="card-chip"></div>
-          <div class="card-number">•••• •••• •••• ○○○○</div>
-          <div class="card-details-row">
-            <div><div class="card-holder" style="color:rgba(255,215,0,0.8);">CARDHOLDER NAME</div></div>
-            <div class="card-network" style="color:var(--gold);">TIPOSIT</div>
+          <div><div class="card-tier-label">Premium</div><div class="card-logo">TiposIt</div></div>
+          <div class="card-name" style="color:var(--gold2);">BLACK<br>ICE</div>
+          <div>
+            <div class="card-chip"></div>
+            <div class="card-number">•••• •••• •••• ○○○○</div>
+            <div class="card-details-row">
+              <div class="card-holder" style="color:rgba(255,215,0,0.8);">CARDHOLDER NAME</div>
+              <div class="card-network" style="color:var(--gold2);">TIPOSIT</div>
+            </div>
           </div>
         </div>
         <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,215,0,0.15); border-top:none; border-radius: 0 0 var(--card-radius) var(--card-radius); padding: 20px 28px;">
-          <div class="card-spec"><span class="spec-label">Credit Limit</span><span class="spec-value" style="color:var(--gold);">$10,000 – $50,000</span></div>
-          <div class="card-spec"><span class="spec-label">Cash Back</span><span class="spec-value" style="color:var(--gold);">3% + 5x categories</span></div>
-          <div class="card-spec"><span class="spec-label">Qualification</span><span class="spec-value" style="color:var(--gold);">720+ Credit Score</span></div>
-          <div class="card-spec"><span class="spec-label">Term Options</span><span class="spec-value" style="color:var(--gold);">12 Month Card</span></div>
-          <div class="card-spec"><span class="spec-label">Annual Fee</span><span class="spec-value" style="color:var(--gold);">$149</span></div>
+          <div class="card-spec"><span class="spec-label">Credit Limit</span><span class="spec-value" style="color:var(--gold2);">$10,000 – $50,000</span></div>
+          <div class="card-spec"><span class="spec-label">Cash Back</span><span class="spec-value" style="color:var(--gold2);">3% + 5x categories</span></div>
+          <div class="card-spec"><span class="spec-label">Qualification</span><span class="spec-value" style="color:var(--gold2);">720+ Credit Score</span></div>
+          <div class="card-spec"><span class="spec-label">Term Options</span><span class="spec-value" style="color:var(--gold2);">12 Month Card</span></div>
+          <div class="card-spec"><span class="spec-label">Annual Fee</span><span class="spec-value" style="color:var(--gold2);">$149</span></div>
         </div>
       </div>
 
     </div>
-    <p style="text-align:center; font-size:0.78rem; color:var(--gray); margin-top:28px;">ICE Cards will be issued in partnership with an FDIC-insured banking partner. Subject to credit approval. Details finalized at launch.</p>
+    <p style="text-align:center; font-size:0.78rem; color:var(--gray2); margin-top:28px; opacity:0.7;">ICE Cards issued in partnership with an FDIC-insured banking partner. Subject to credit approval. Details finalized at launch.</p>
   </div>
 </section>
 
@@ -1194,10 +2074,10 @@
         <div class="wallet-header">
           <div>
             <div class="wallet-balance-label">Total Balance</div>
-            <div class="wallet-balance">$1,842<span style="font-size:1.4rem; color:var(--gray);">.50</span></div>
+            <div class="wallet-balance">$1,842<span style="font-size:1.3rem; color:var(--gray2);">.50</span></div>
             <div class="wallet-sub">TiposIt Digital Wallet</div>
           </div>
-          <div class="logo-mark" style="width:36px;height:36px;font-size:1rem;">T</div>
+          <div class="logo-mark" style="width:38px;height:38px;font-size:1rem;">T</div>
         </div>
         <div class="wallet-actions-row">
           <div class="wallet-action"><div class="wallet-action-icon">⬆️</div><div class="wallet-action-label">Send</div></div>
@@ -1205,7 +2085,7 @@
           <div class="wallet-action"><div class="wallet-action-icon">⚡</div><div class="wallet-action-label">Same-Day</div></div>
           <div class="wallet-action"><div class="wallet-action-icon">📋</div><div class="wallet-action-label">History</div></div>
         </div>
-        <div style="font-size:0.72rem; color:var(--gray); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Recent Transactions</div>
+        <div style="font-size:0.72rem; color:var(--gray); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; font-weight:600;">Recent Transactions</div>
         <div class="tx-list">
           <div class="tx-item">
             <div><div class="tx-name">Same-Day Pay Transfer</div><div class="tx-date">Today, 4:23 PM</div></div>
@@ -1227,8 +2107,8 @@
       </div>
       <div>
         <div class="section-label">Digital Wallet</div>
-        <h2 class="section-title">A Real Bank Account. <span class="ice-gradient">In Your Phone.</span></h2>
-        <p style="color:var(--gray); font-size:0.95rem; line-height:1.8; margin-bottom:32px;">Every TiposIt employee gets a full-featured digital bank account — not just an app. Real FDIC-insured checking, real debit card, real bank transfers.</p>
+        <h2 class="section-title">A Real Bank Account. <span class="teal-gradient">In Your Phone.</span></h2>
+        <p style="color:var(--gray); font-size:0.95rem; line-height:1.8; margin-bottom:36px;">Every TiposIt employee gets a full-featured digital bank account — not just an app. Real FDIC-insured checking, real debit card, real bank transfers.</p>
         <ul class="wallet-features">
           <li>
             <div class="wallet-feat-icon">🏦</div>
@@ -1256,7 +2136,7 @@
 <section class="bnpl-section" id="bnpl">
   <div class="container">
     <div class="section-label">Buy Now, Pay Later</div>
-    <h2 class="section-title">Real Flexibility. <span class="ice-gradient">Real Terms.</span></h2>
+    <h2 class="section-title">Real Flexibility. <span class="teal-gradient">Real Terms.</span></h2>
     <p class="section-sub">Access up to 25% of your monthly paycheck in advance. Choose your own repayment timeline. No predatory rates. No credit check for existing TiposIt members.</p>
     <div class="bnpl-terms">
       <div class="term-card">
@@ -1291,9 +2171,9 @@
 <section class="clock-section" id="clock">
   <div class="container">
     <div class="section-label">Workforce Management</div>
-    <h2 class="section-title">Smart Clock-In/Out. <span class="ice-gradient">Built for EWA.</span></h2>
+    <h2 class="section-title">Smart Clock-In/Out. <span class="teal-gradient">Built for EWA.</span></h2>
     <p class="section-sub" style="margin-bottom:0;">The only time-tracking system built specifically to power same-day wage access — with real HR controls for management.</p>
-    <div class="clock-features" style="margin-top:48px;">
+    <div class="clock-features" style="margin-top:52px;">
       <div class="clock-feat">
         <div class="clock-feat-icon">📍</div>
         <h3>GPS-Verified Clock In</h3>
@@ -1333,20 +2213,18 @@
   <div class="container">
     <div class="tipflic-inner">
       <div>
-        <div class="tipflic-badge">
-          <span>A TiposIt Company</span>
-        </div>
+        <div class="tipflic-badge">✦ A TiposIt Company</div>
         <div class="tipflic-logo">Tipflic</div>
-        <h2 class="section-title" style="font-size:2rem;">Financial Intelligence <span style="background: linear-gradient(135deg, #B88AFF, #7B4FFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">For Your Workforce.</span></h2>
+        <h2 class="section-title" style="font-size:2rem; color:white;">Financial Intelligence <span style="background: linear-gradient(135deg, #B88AFF, #7B4FFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">For Your Workforce.</span></h2>
         <p class="tipflic-desc">Tipflic is TiposIt's analytics and intelligence platform — giving HR teams, CFOs, and business owners real-time insight into workforce financial behavior, payroll cost optimization, and employee financial wellness metrics.</p>
-        <a href="#waitlist" class="btn-outline" style="border-color: #7B4FFF; color: #B88AFF;">Coming Soon →</a>
+        <a href="#waitlist" class="btn-outline-navy" style="border-color:rgba(123,79,255,0.5); color:#B88AFF;">Coming Soon →</a>
       </div>
       <div class="tipflic-visual">
-        <h4 style="color:#B88AFF; font-family:'Poppins',sans-serif; font-size:0.85rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:20px;">Tipflic Analytics Dashboard</h4>
+        <div style="font-size:0.75rem; color:#B88AFF; font-weight:700; letter-spacing:2px; text-transform:uppercase; margin-bottom:16px;">Tipflic Analytics Dashboard</div>
         <div class="tipflic-screen">
           <div class="tipflic-top">
             <div class="tipflic-title">Workforce Pay Trends</div>
-            <div class="tipflic-label">March 2026</div>
+            <div class="tipflic-label">April 2026</div>
           </div>
           <div class="tipflic-bars">
             <div class="bar" style="height:40%"></div>
@@ -1359,18 +2237,9 @@
             <div class="bar" style="height:75%"></div>
           </div>
           <div class="tipflic-stat-row">
-            <div class="tipflic-stat">
-              <div class="tipflic-stat-num">94%</div>
-              <div class="tipflic-stat-label">Employee Adoption</div>
-            </div>
-            <div class="tipflic-stat">
-              <div class="tipflic-stat-num">$12K</div>
-              <div class="tipflic-stat-label">Revenue Share MTD</div>
-            </div>
-            <div class="tipflic-stat">
-              <div class="tipflic-stat-num">+3.2%</div>
-              <div class="tipflic-stat-label">Retention Lift</div>
-            </div>
+            <div class="tipflic-stat"><div class="tipflic-stat-num">94%</div><div class="tipflic-stat-label">Employee Adoption</div></div>
+            <div class="tipflic-stat"><div class="tipflic-stat-num">$12K</div><div class="tipflic-stat-label">Revenue Share MTD</div></div>
+            <div class="tipflic-stat"><div class="tipflic-stat-num">+3.2%</div><div class="tipflic-stat-label">Retention Lift</div></div>
           </div>
         </div>
       </div>
@@ -1378,13 +2247,13 @@
   </div>
 </section>
 
-<!-- ═══ PRE-ORDER / PRICING ═══ -->
+<!-- ═══ PRICING ═══ -->
 <section class="preorder-section" id="preorder">
   <div class="container">
     <div class="preorder-inner">
       <div class="section-label">Pre-Order Pricing</div>
-      <h2 class="section-title">Lock In Your Rate <span class="ice-gradient">Before Launch.</span></h2>
-      <p class="section-sub" style="margin: 0 auto 0; text-align:center; color:var(--gray);">Pre-order now to secure founding member pricing. Early adopters get locked-in rates for life — no price increases, ever.</p>
+      <h2 class="section-title">Lock In Your Rate <span class="teal-gradient">Before Launch.</span></h2>
+      <p class="section-sub" style="margin: 0 auto 0; text-align:center;">Pre-order now to secure founding member pricing. Early adopters get locked-in rates for life — no price increases, ever.</p>
       <div class="plans-grid">
         <div class="plan-card">
           <div class="plan-name">Starter</div>
@@ -1399,7 +2268,7 @@
             <li>HR Portal</li>
             <li>Basic Revenue Share (20%)</li>
           </ul>
-          <a href="/employer" class="btn-outline" style="width:100%; text-align:center; display:block;">Get Started →</a>
+          <a href="/employer" class="btn-outline">Get Started →</a>
         </div>
         <div class="plan-card popular">
           <div class="popular-tag">Most Popular</div>
@@ -1415,7 +2284,7 @@
             <li>ICE Card Program</li>
             <li>Enhanced Revenue Share (25%)</li>
           </ul>
-          <a href="/employer" class="btn-primary" style="width:100%; text-align:center; display:block;">Get Started →</a>
+          <a href="/employer" class="btn-primary">Get Started →</a>
         </div>
         <div class="plan-card">
           <div class="plan-name">Enterprise</div>
@@ -1430,7 +2299,7 @@
             <li>Custom Integrations</li>
             <li>Max Revenue Share (33.3%)</li>
           </ul>
-          <a href="/employer" class="btn-outline" style="width:100%; text-align:center; display:block;">Get Started →</a>
+          <a href="/employer" class="btn-outline">Get Started →</a>
         </div>
       </div>
     </div>
@@ -1438,97 +2307,65 @@
 </section>
 
 <!-- ═══ WAITLIST ═══ -->
-<section style="padding:80px 0; background:var(--navy);" id="waitlist">
-  <div class="container" style="text-align:center; max-width:580px;">
-    <div class="section-label">Join the Waitlist</div>
-    <h2 class="section-title">Be First. <span class="ice-gradient">Be Founding.</span></h2>
-    <p style="color:var(--gray); font-size:0.95rem; margin-bottom:8px;">Reserve your founding member spot. We'll reach out within 48 hours with your custom revenue share estimate and a personal onboarding call.</p>
-
-    <form
-      class="waitlist-form"
-      id="waitlist-form"
-      action="https://formspree.io/f/xvzvwwnn"
-      method="POST"
-    >
-      <div class="waitlist-row">
-        <div class="waitlist-field">
-          <label for="company">Company Name *</label>
-          <input class="waitlist-input" type="text" id="company" name="company" placeholder="Acme Restaurant Group" required />
+<section class="waitlist-section" id="waitlist">
+  <div class="container">
+    <div class="waitlist-inner">
+      <div class="section-label">Join the Waitlist</div>
+      <h2 class="section-title" style="color:white;">Be First. <span style="opacity:0.85;">Be Founding.</span></h2>
+      <p class="waitlist-sub">Reserve your founding member spot. We'll reach out within 48 hours with your custom revenue share estimate and a personal onboarding call.</p>
+      <form class="waitlist-form" id="waitlist-form" action="https://formspree.io/f/xvzvwwnn" method="POST">
+        <div class="waitlist-row">
+          <div class="waitlist-field">
+            <label for="company">Company Name *</label>
+            <input class="waitlist-input" type="text" id="company" name="company" placeholder="Acme Restaurant Group" required />
+          </div>
+          <div class="waitlist-field">
+            <label for="name">Your Name *</label>
+            <input class="waitlist-input" type="text" id="name" name="name" placeholder="Jane Smith" required />
+          </div>
         </div>
         <div class="waitlist-field">
-          <label for="name">Your Name *</label>
-          <input class="waitlist-input" type="text" id="name" name="name" placeholder="Jane Smith" required />
+          <label for="email">Work Email *</label>
+          <input class="waitlist-input" type="email" id="email" name="email" placeholder="jane@yourcompany.com" required />
         </div>
+        <div class="waitlist-row">
+          <div class="waitlist-field">
+            <label for="phone">Phone Number</label>
+            <input class="waitlist-input" type="tel" id="phone" name="phone" placeholder="(555) 000-0000" />
+          </div>
+          <div class="waitlist-field">
+            <label for="employees">Number of Employees *</label>
+            <select class="waitlist-input" id="employees" name="employees" required style="cursor:pointer;">
+              <option value="" disabled selected>Select range</option>
+              <option value="1-24">1 – 24</option>
+              <option value="25-49">25 – 49</option>
+              <option value="50-99">50 – 99</option>
+              <option value="100-249">100 – 249</option>
+              <option value="250-499">250 – 499</option>
+              <option value="500+">500+</option>
+            </select>
+          </div>
+        </div>
+        <input type="text" name="_gotcha" style="display:none" />
+        <input type="hidden" name="_next" value="https://tiposit.com/#waitlist-success" />
+        <button type="submit" class="waitlist-submit">Reserve My Founding Member Spot →</button>
+      </form>
+      <div class="waitlist-success" id="waitlist-success">
+        <div class="success-icon">🎉</div>
+        <h3>You're on the list!</h3>
+        <p>We'll reach out within 48 hours with your custom revenue share calculation and next steps. Welcome to TiposIt.</p>
       </div>
-      <div class="waitlist-field">
-        <label for="email">Work Email *</label>
-        <input class="waitlist-input" type="email" id="email" name="email" placeholder="jane@yourcompany.com" required />
-      </div>
-      <div class="waitlist-row">
-        <div class="waitlist-field">
-          <label for="phone">Phone Number</label>
-          <input class="waitlist-input" type="tel" id="phone" name="phone" placeholder="(555) 000-0000" />
-        </div>
-        <div class="waitlist-field">
-          <label for="employees">Number of Employees *</label>
-          <select class="waitlist-input" id="employees" name="employees" required style="cursor:pointer;">
-            <option value="" disabled selected>Select range</option>
-            <option value="1-24">1 – 24</option>
-            <option value="25-49">25 – 49</option>
-            <option value="50-99">50 – 99</option>
-            <option value="100-249">100 – 249</option>
-            <option value="250-499">250 – 499</option>
-            <option value="500+">500+</option>
-          </select>
-        </div>
-      </div>
-      <!-- Hidden honeypot field — keeps out spam bots -->
-      <input type="text" name="_gotcha" style="display:none" />
-      <!-- After submission, stay on the page and show success message -->
-      <input type="hidden" name="_next" value="https://tiposit.com/#waitlist-success" />
-      <button type="submit" class="waitlist-submit">Reserve My Founding Member Spot →</button>
-    </form>
-
-    <!-- Success message (shown via JS after ?success redirect) -->
-    <div class="waitlist-success" id="waitlist-success">
-      <div class="success-icon">🎉</div>
-      <h3>You're on the list!</h3>
-      <p>We'll reach out within 48 hours with your custom revenue share calculation and next steps. Welcome to TiposIt.</p>
+      <p class="waitlist-note">No spam. No credit card required. Unsubscribe anytime.</p>
     </div>
-
-    <p class="waitlist-note">No spam. No credit card required. Unsubscribe anytime.</p>
   </div>
 </section>
 
-<script>
-  // Show success message if URL contains #waitlist-success (Formspree redirect)
-  if (window.location.hash === '#waitlist-success') {
-    document.getElementById('waitlist-form').style.display = 'none';
-    document.getElementById('waitlist-success').style.display = 'block';
-    document.getElementById('waitlist-success').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  function toggleFaq(btn) {
-    var item = btn.closest('.faq-item');
-    item.classList.toggle('open');
-  }
-
-  function toggleFaqExtra() {
-    var extra = document.getElementById('faq-extra');
-    var btn = document.getElementById('faq-toggle-btn');
-    var isHidden = extra.style.display === 'none';
-    extra.style.display = isHidden ? 'block' : 'none';
-    btn.textContent = isHidden ? 'Show Less ↑' : 'Show More Questions ↓';
-  }
-</script>
-
 <!-- ═══ FAQ ═══ -->
 <section class="faq-section" id="faq">
-  <div class="container">
+  <div class="container" style="text-align:center;">
     <div class="section-label">FAQ</div>
-    <h2 class="section-title">Got Questions? <span class="ice-gradient">We've Got Answers.</span></h2>
+    <h2 class="section-title">Got Questions? <span class="teal-gradient">We've Got Answers.</span></h2>
     <div class="faq-accordion">
-      <!-- Always visible (first 2) -->
       <div class="faq-item open">
         <button class="faq-trigger" onclick="toggleFaq(this)">
           <span class="faq-trigger-text">Is TiposIt FDIC insured?</span>
@@ -1544,7 +2381,6 @@
         <div class="faq-body"><p>Every major competitor caps same-day pay at 50% of wages or limits access to a certain number of days per week. TiposIt has no cap — if you worked it, you can access it, every day.</p></div>
       </div>
 
-      <!-- Hidden extra items -->
       <div id="faq-extra" style="display:none;">
         <div class="faq-item">
           <button class="faq-trigger" onclick="toggleFaq(this)">
@@ -1558,7 +2394,7 @@
             <span class="faq-trigger-text">What does it cost to get started?</span>
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-body"><p>Pre-order pricing starts at $99/month for up to 50 employees. There are no per-employee per-month setup fees. The platform fee is flat.</p></div>
+          <div class="faq-body"><p>Pre-order pricing starts at $99/month for up to 50 employees. There are no per-employee setup fees. The platform fee is flat — the more employees you have, the lower your cost per employee.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" onclick="toggleFaq(this)">
@@ -1572,14 +2408,14 @@
             <span class="faq-trigger-text">Does TiposIt replace our existing payroll system?</span>
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-body"><p>TiposIt can be used as a standalone payroll and salary management platform or as an enhancement layer on top of existing systems. We offer integrations with major HR software.</p></div>
+          <div class="faq-body"><p>TiposIt can be used as a standalone payroll platform or as an enhancement layer on top of existing systems. We offer integrations with major HR software.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" onclick="toggleFaq(this)">
             <span class="faq-trigger-text">What is Tipflic?</span>
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-body"><p>Tipflic is TiposIt's analytics subsidiary — a workforce intelligence platform that gives HR and finance teams real-time visibility into payroll trends, employee financial wellness, and cost optimization.</p></div>
+          <div class="faq-body"><p>Tipflic is TiposIt's analytics subsidiary — a workforce intelligence platform that gives HR and finance teams real-time visibility into payroll trends, employee financial wellness, and cost optimization. Launching Q3 2026.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" onclick="toggleFaq(this)">
@@ -1600,12 +2436,12 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="#" class="logo" style="margin-bottom:0;">
+        <a href="#" class="logo">
           <div class="logo-mark">T</div>
-          <span class="logo-text">Tipos<span>It</span></span>
+          <span class="logo-text">Tipos<span style="color:var(--teal2);">It</span></span>
         </a>
         <p>The salary management platform that pays your employees today, rewards your company every month, and sets the standard for modern workforce finance.</p>
-        <p style="margin-top:12px; font-size:0.78rem; color:rgba(139,165,192,0.6);">A TiposIt Holdings company &nbsp;|&nbsp; Tipflic is a TiposIt product</p>
+        <p style="margin-top:12px; font-size:0.76rem; color:rgba(139,175,200,0.5);">A TiposIt Holdings company &nbsp;|&nbsp; Tipflic is a TiposIt product</p>
       </div>
       <div class="footer-col">
         <h4>Products</h4>
@@ -1634,11 +2470,32 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p class="footer-legal">TiposIt is a financial technology company, not a bank. Banking services are provided by our FDIC-insured banking partners. Same-Day Pay services are earned wage access products. TiposIt ICE Cards are pending final regulatory approval and will be issued upon product launch. Pre-order pricing locks in your rate for the life of your account. Revenue share percentages are subject to signed partnership agreement terms.</p>
-      <p class="footer-copy">© 2026 TiposIt Holdings, LLC. All rights reserved. &nbsp;·&nbsp; <a href="/dashboard" style="color:var(--gray);text-decoration:none;opacity:0.5;font-size:0.72rem;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">Admin</a></p>
+      <p class="footer-legal">TiposIt is a financial technology company, not a bank. Banking services are provided by our FDIC-insured banking partners. Same-Day Pay services are earned wage access products. TiposIt ICE Cards are pending final regulatory approval. Pre-order pricing locks in your rate for the life of your account. Revenue share percentages are subject to signed partnership agreement terms.</p>
+      <p class="footer-copy">© 2026 TiposIt Holdings, LLC. All rights reserved. &nbsp;·&nbsp; <a href="/dashboard" style="color:var(--gray2);text-decoration:none;opacity:0.5;font-size:0.72rem;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">Admin</a></p>
     </div>
   </div>
 </footer>
+
+<script>
+  if (window.location.hash === '#waitlist-success') {
+    document.getElementById('waitlist-form').style.display = 'none';
+    document.getElementById('waitlist-success').style.display = 'block';
+    document.getElementById('waitlist-success').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function toggleFaq(btn) {
+    var item = btn.closest('.faq-item');
+    item.classList.toggle('open');
+  }
+
+  function toggleFaqExtra() {
+    var extra = document.getElementById('faq-extra');
+    var btn = document.getElementById('faq-toggle-btn');
+    var isHidden = extra.style.display === 'none';
+    extra.style.display = isHidden ? 'block' : 'none';
+    btn.textContent = isHidden ? 'Show Less ↑' : 'Show More Questions ↓';
+  }
+</script>
 
 </body>
 </html>
